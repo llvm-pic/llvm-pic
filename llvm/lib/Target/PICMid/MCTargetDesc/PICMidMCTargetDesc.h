@@ -17,4 +17,4 @@
 #include "llvm/MC/MCInstrDesc.h"
 #include "llvm/Support/DataTypes.h"
 
-#endif LLVM_PICMID_MCTARGET_DESC_H
+#endif // LLVM_PICMID_MCTARGET_DESC_H

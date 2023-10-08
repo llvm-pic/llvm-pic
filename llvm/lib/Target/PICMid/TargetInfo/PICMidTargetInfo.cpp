@@ -10,15 +10,16 @@
 #include "llvm/MC/TargetRegistry.h"
 
 namespace llvm {
-Target &getTheMOSTarget() {
-  static Target TheMOSTarget;
-  return TheMOSTarget;
+
+Target &getThePICMidTarget() {
+  static Target ThePICMidTarget;
+  return ThePICMidTarget;
 }
 } // namespace llvm
 
 extern "C" LLVM_EXTERNAL_VISIBILITY void
 LLVMInitializePICMidTargetInfo() { // NOLINT
-  //   llvm::RegisterTarget<llvm::Triple::mos> X(
-  //       llvm::getTheMOSTarget(), "mos", "MOS Technologies 65xx and variants",
-  //       "MOS");
+    llvm::RegisterTarget<llvm::Triple::picmid> X(
+        llvm::getThePICMidTarget(), "picmid", "PIC Mid-range core devices", "PICMid"
+    );
 }
