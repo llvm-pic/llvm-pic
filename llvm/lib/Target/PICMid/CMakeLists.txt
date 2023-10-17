@@ -2,7 +2,7 @@ add_llvm_component_group(PICMid)
 
 set(LLVM_TARGET_DEFINITIONS PICMid.td)
 
-# tablegen(LLVM PICMidGenAsmMatcher.inc -gen-asm-matcher)
+tablegen(LLVM PICMidGenAsmMatcher.inc -gen-asm-matcher)
 # tablegen(LLVM PICMidGenAsmWriter.inc -gen-asm-writer)
 # tablegen(LLVM PICMidGenCallingConv.inc -gen-callingconv)
 # tablegen(LLVM PICMidGenDAGISel.inc -gen-dag-isel)
@@ -15,7 +15,7 @@ tablegen(LLVM PICMidGenInstrInfo.inc -gen-instr-info)
 # tablegen(LLVM PICMidGenRegisterBank.inc -gen-register-bank)
 tablegen(LLVM PICMidGenRegisterInfo.inc -gen-register-info)
 # tablegen(LLVM PICMidGenSearchableTables.inc -gen-searchable-tables)
-# tablegen(LLVM PICMidGenSubtargetInfo.inc -gen-subtarget)
+tablegen(LLVM PICMidGenSubtargetInfo.inc -gen-subtarget)
 
 add_public_tablegen_target(PICMidCommonTableGen)
 
