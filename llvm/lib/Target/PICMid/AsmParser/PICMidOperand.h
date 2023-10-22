@@ -21,6 +21,10 @@ private:
   enum KindTy { None, Token, Register, Immediate } Kind{None};
 
   SMLoc start, end;
+  StringRef tok;
+  const MCExpr *imm{};
+  unsigned int reg{};
+  const PICMidSubtarget & sti;
 
 public:
   template <int64_t Low, int64_t High> bool isImmediate() const;
@@ -36,8 +40,8 @@ public:
 
   const StringRef &getToken() const;
   const MCExpr *getImm() const;
-
   unsigned getReg() const override;
+
   bool isImm1() const;
   bool isImm3() const;
   bool isImm8() const;
@@ -62,6 +66,22 @@ public:
 
   void print(raw_ostream &o) const override;
 };
+
+template <int64_t Low, int64_t High>
+inline bool PICMidOperand::isImmediate() const {
+  if (!isImm()) { return false; }
+
+// TODO: Handle PIC specific modifiers
+
+  const auto * sre = dyn_cast<MCSymbolRefExpr>(getImm());
+  if (sre) { return true; }
+
+  const auto *ce = dyn_cast<MCConstantExpr>(getImm());
+  if (!ce) { return true; }
+
+  int64_t value = ce->getValue();
+  return value >= Low && value <= High;
+}
 
 } // namespace llvm
 
