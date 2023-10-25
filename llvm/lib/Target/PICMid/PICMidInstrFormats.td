@@ -77,7 +77,8 @@ def pcabs11 : Operand<i32> {
     let EncoderMethod = "encodeImm<PICMid::PCAbs11, 1>";
     let DecoderMethod = "decodeSImmOperand<11>";
     let PrintMethod = "printBranchOperand";
-    let OperandType = "OPERAND_PCABS";
+    let OperandType = "OPERAND_PCABS11";
+    let OperandNamespace = "PICMidOp";
 }
 
 def addr7 : Operand<i32> {

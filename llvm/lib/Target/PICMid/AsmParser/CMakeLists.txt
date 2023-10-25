@@ -1,5 +1,6 @@
 add_llvm_component_library(LLVMPICMidAsmParser
   PICMidAsmParser.cpp
+  PICMidOperand.cpp
 
   LINK_COMPONENTS
   MC
