@@ -394,7 +394,8 @@ Improvements to Clang's diagnostics
   (`#62353: <https://github.com/llvm/llvm-project/issues/62353>`_,
   fallout from the non-POD packing ABI fix in LLVM 15).
 - Clang constexpr evaluator now prints subobject's name instead of its type in notes
-  when a constexpr variable has uninitialized subobjects after its constructor call.
+  when a constexpr variable has uninitialized member subobjects or base class subobjects
+  after its constructor call.
   (`#58601 <https://github.com/llvm/llvm-project/issues/58601>`_)
 - Clang's `-Wshadow` warning now warns about shadowings by static local variables
   (`#62850: <https://github.com/llvm/llvm-project/issues/62850>`_).
@@ -719,6 +720,12 @@ Bug Fixes in This Version
   points (i.e., uses function descriptor objects instead).
 - Fixes a ``clang-17`` regression where ``LLVM_UNREACHABLE_OPTIMIZE=OFF``
   cannot be used with ``Release`` mode builds. (`#68237 <https://github.com/llvm/llvm-project/issues/68237>`_).
+- Fix crash from constexpr evaluator evaluating uninitialized arrays as rvalue.
+  Fixes (`#67317 <https://github.com/llvm/llvm-project/issues/67317>`_)
+- No longer use C++ ``thread_local`` semantics in C23 when using
+  ``thread_local`` instead of ``_Thread_local``.
+  Fixes (`#70068 <https://github.com/llvm/llvm-project/issues/70068>`_) and
+  (`#69167 <https://github.com/llvm/llvm-project/issues/69167>`_)
 
 Bug Fixes to Compiler Builtins
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
