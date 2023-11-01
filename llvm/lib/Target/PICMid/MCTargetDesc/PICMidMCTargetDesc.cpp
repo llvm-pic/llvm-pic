@@ -1,5 +1,6 @@
 #include "PICMidMCTargetDesc.h"
 #include "PICMidMCAsmInfo.h"
+#include "PICMidMCInstPrinter.h"
 #include "TargetInfo/PICMidTargetInfo.h"
 
 #include "llvm/ADT/ArrayRef.h"
@@ -42,6 +43,19 @@ MCInstrInfo *createPICMidMCInstrInfo() {
   return X;
 }
 
+static MCInstPrinter *createPICMCInstPrinter(const Triple &T,
+                                             unsigned SyntaxVariant,
+                                             const MCAsmInfo &MAI,
+                                             const MCInstrInfo &MII,
+                                             const MCRegisterInfo &MRI) {
+  switch (SyntaxVariant) {
+  case 0:
+    return new PICMidMCInstPrinter(MAI, MII, MRI);
+  default:
+    return nullptr;
+  }
+}
+
 extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializePICMidTargetMC() {
   RegisterMCAsmInfo<PICMidMCAsmInfo> X(getThePICMidTarget());
 
@@ -49,6 +63,8 @@ extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializePICMidTargetMC() {
                                       createPICMidMCInstrInfo);
   TargetRegistry::RegisterMCRegInfo(getThePICMidTarget(),
                                     createPICMidMCRegisterInfo);
+  TargetRegistry::RegisterMCInstPrinter(getThePICMidTarget(),
+                                        createPICMCInstPrinter);
   TargetRegistry::RegisterMCSubtargetInfo(getThePICMidTarget(),
                                           createPICMidMCSubtargetInfo);
 }

@@ -3,7 +3,7 @@ add_llvm_component_group(PICMid)
 set(LLVM_TARGET_DEFINITIONS PICMid.td)
 
 tablegen(LLVM PICMidGenAsmMatcher.inc -gen-asm-matcher)
-# tablegen(LLVM PICMidGenAsmWriter.inc -gen-asm-writer)
+tablegen(LLVM PICMidGenAsmWriter.inc -gen-asm-writer)
 # tablegen(LLVM PICMidGenCallingConv.inc -gen-callingconv)
 # tablegen(LLVM PICMidGenDAGISel.inc -gen-dag-isel)
 # tablegen(LLVM PICMidGenDisassemblerTables.inc -gen-disassembler)

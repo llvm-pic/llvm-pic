@@ -2,9 +2,10 @@ add_llvm_component_library(LLVMPICMidDesc
 #   PICMidAsmBackend.cpp
 #   PICMidELFObjectWriter.cpp
 #   PICMidFixupKinds.cpp
-#   PICMidInstPrinter.cpp
+  PICMidMCInstPrinter.cpp
+
   PICMidMCAsmInfo.cpp
-#   PICMidMCCodeEmitter.cpp
+  PICMidMCCodeEmitter.cpp
 #   PICMidMCELFStreamer.cpp
 #   PICMidMCExpr.cpp
 #   PICMidMCInstrAnalysis.cpp

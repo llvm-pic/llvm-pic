@@ -12,7 +12,7 @@ def PICMidInstrInfo : InstrInfo {
 }
 
 def PICMidAsmWriter : AsmWriter {
-    string AsmWriterClassName = "InstPrinter";
+    string AsmWriterClassName = "MCInstPrinter";
     bit isMCAsmWriter = 1;
 }
 
