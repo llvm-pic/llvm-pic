@@ -1400,12 +1400,10 @@ static unsigned getArchPointerBitWidth(llvm::Triple::ArchType Arch) {
   case llvm::Triple::UnknownArch:
     return 0;
 
-  // TODO: Add other PIC ISAs
-  case llvm::Triple::picmid:
-    return 12;
-
   case llvm::Triple::avr:
   case llvm::Triple::msp430:
+  // TODO: Add other PIC ISAs
+  case llvm::Triple::picmid:
     return 16;
 
   case llvm::Triple::aarch64_32:

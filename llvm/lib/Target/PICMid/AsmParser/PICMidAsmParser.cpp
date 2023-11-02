@@ -1,9 +1,13 @@
-#include "PICMidSubtarget.h"
 #include "PICMidOperand.h"
+#include "PICMidSubtarget.h"
+#include "TargetInfo/PICMidTargetInfo.h"
+#include "MCTargetDesc/PICMidMCTargetDesc.h"
 
 #include "llvm/MC/MCContext.h"
+#include "llvm/MC/MCParser/MCAsmLexer.h"
 #include "llvm/MC/MCParser/MCTargetAsmParser.h"
 #include "llvm/MC/MCStreamer.h"
+#include "llvm/MC/TargetRegistry.h"
 #include "llvm/Support/Compiler.h"
 
 namespace llvm {
@@ -99,10 +103,92 @@ public:
     }
   }
 
+  ParseStatus parseDirective(AsmToken DirectiveID) override {
+    // TODO: Implement own asm directives
+    return ParseStatus{false};
+  }
+
+  bool parseRegister(MCRegister &Reg, SMLoc &StartLoc, SMLoc &EndLoc) override {
+    auto result = tryParseRegister(Reg, StartLoc, EndLoc);
+
+    return result != MatchOperand_Success;
+  }
+
+  OperandMatchResultTy tryParseRegister(MCRegister &Reg, SMLoc &StartLoc,
+                                        SMLoc &EndLoc) override {
+    std::string AnyCase(StartLoc.getPointer(),
+                        EndLoc.getPointer() - StartLoc.getPointer());
+    std::transform(AnyCase.begin(), AnyCase.end(), AnyCase.begin(),
+                   [](unsigned char C) { return std::tolower(C); });
+    StringRef RegisterName(AnyCase.c_str(), AnyCase.size());
+    Reg = MCRegister(MatchRegisterName(RegisterName));
+
+    return Reg.isValid() ? MatchOperand_Success : MatchOperand_NoMatch;
+  }
+
+  bool ParseInstruction(ParseInstructionInfo &Info, StringRef Name,
+                        SMLoc NameLoc, OperandVector &Operands) override {
+    Operands.push_back(PICMidOperand::createToken(sti, Name, NameLoc));
+
+    if (getLexer().is(AsmToken::EndOfStatement)) {
+      return false;
+    }
+
+    if (ParseOperand(Operands)) {
+      return true;
+    }
+
+    while (getLexer().isNot(AsmToken::EndOfStatement)) {
+      if (getLexer().isNot(AsmToken::Comma)) {
+        return Error(getTok().getLoc(), "missing delimiter, i.e., comma");
+      }
+
+      // Consume comma
+      getLexer().Lex();
+      if (ParseOperand(Operands)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  bool ParseRegister(OperandVector &Operands) {
+    MCRegister reg = 0;
+    SMLoc s = getLexer().getLoc();
+    SMLoc e = getLexer().getTok().getEndLoc();
+
+    if (tryParseRegister(reg, s, e) != MatchOperand_Success) {
+      return true;
+    }
+
+    Operands.push_back(PICMidOperand::createReg(sti, reg, s, e));
+    return false;
+  }
+
+  bool ParseImmediate(OperandVector &Operands) {
+    SMLoc startLoc = getLexer().getLoc();
+    SMLoc endLoc;
+    const MCExpr *expr;
+    if (parsePrimaryExpr(expr, endLoc)) {
+      return true;
+    }
+
+    Operands.push_back(PICMidOperand::createImm(sti, expr, startLoc, endLoc));
+    return false;
+  }
+
+  bool ParseOperand(OperandVector &Operands) {
+    return !(ParseRegister(Operands) && ParseImmediate(Operands));
+  }
 };
+
+#define GET_MATCHER_IMPLEMENTATION
+#include "PICMidGenAsmMatcher.inc"
 
 extern "C" LLVM_EXTERNAL_VISIBILITY void
 LLVMInitializePICMidAsmParser() { // NOLINT
+  RegisterMCAsmParser<PICMidAsmParser> X(getThePICMidTarget());
 }
 
 } // namespace llvm

@@ -1,4 +1,6 @@
 #include "PICMidMCTargetDesc.h"
+#include "PICMidMCAsmInfo.h"
+#include "PICMidMCInstPrinter.h"
 #include "TargetInfo/PICMidTargetInfo.h"
 
 #include "llvm/ADT/ArrayRef.h"
@@ -14,8 +16,8 @@
 #define GET_INSTRINFO_MC_DESC
 #include "PICMidGenInstrInfo.inc"
 
-// #define GET_SUBTARGETINFO_MC_DESC
-// #include "PICMidGenSubtargetInfo.inc"
+#define GET_SUBTARGETINFO_MC_DESC
+#include "PICMidGenSubtargetInfo.inc"
 
 #define GET_REGINFO_MC_DESC
 #include "PICMidGenRegisterInfo.inc"
@@ -29,16 +31,42 @@ static MCRegisterInfo *createPICMidMCRegisterInfo(const Triple &tt) {
   return X;
 }
 
-extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializePICMidTargetMC() {}
+static MCSubtargetInfo *
+createPICMidMCSubtargetInfo(const Triple &tt, StringRef cpu, StringRef fs) {
+  return createPICMidMCSubtargetInfoImpl(tt, cpu, cpu, fs);
+}
 
 MCInstrInfo *createPICMidMCInstrInfo() {
   MCInstrInfo *X = new MCInstrInfo();
   InitPICMidMCInstrInfo(X);
 
-  TargetRegistry::RegisterMCInstrInfo(getThePICMidTarget(), createPICMidMCInstrInfo);
-  TargetRegistry::RegisterMCRegInfo(getThePICMidTarget(), createPICMidMCRegisterInfo);
-
   return X;
+}
+
+static MCInstPrinter *createPICMCInstPrinter(const Triple &T,
+                                             unsigned SyntaxVariant,
+                                             const MCAsmInfo &MAI,
+                                             const MCInstrInfo &MII,
+                                             const MCRegisterInfo &MRI) {
+  switch (SyntaxVariant) {
+  case 0:
+    return new PICMidMCInstPrinter(MAI, MII, MRI);
+  default:
+    return nullptr;
+  }
+}
+
+extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializePICMidTargetMC() {
+  RegisterMCAsmInfo<PICMidMCAsmInfo> X(getThePICMidTarget());
+
+  TargetRegistry::RegisterMCInstrInfo(getThePICMidTarget(),
+                                      createPICMidMCInstrInfo);
+  TargetRegistry::RegisterMCRegInfo(getThePICMidTarget(),
+                                    createPICMidMCRegisterInfo);
+  TargetRegistry::RegisterMCInstPrinter(getThePICMidTarget(),
+                                        createPICMCInstPrinter);
+  TargetRegistry::RegisterMCSubtargetInfo(getThePICMidTarget(),
+                                          createPICMidMCSubtargetInfo);
 }
 
 } // namespace llvm

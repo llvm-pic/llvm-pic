@@ -6,7 +6,7 @@
 namespace llvm
 {
 
-class MOSMCExpr : public MCTargetExpr {
+class PICMidMCExpr : public MCTargetExpr {
 
 };
 
