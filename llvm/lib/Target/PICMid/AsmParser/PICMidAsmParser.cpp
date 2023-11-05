@@ -179,7 +179,7 @@ public:
   }
 
   bool ParseOperand(OperandVector &Operands) {
-    return !(ParseRegister(Operands) && ParseImmediate(Operands));
+    return (ParseImmediate(Operands) && ParseRegister(Operands));
   }
 };
 
