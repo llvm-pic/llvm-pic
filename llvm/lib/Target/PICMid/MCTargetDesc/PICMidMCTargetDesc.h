@@ -27,8 +27,6 @@
 
 namespace llvm {
 MCInstrInfo *createPICMidMCInstrInfo();
-MCCodeEmitter *createPICMidMCCodeEmitter(const MCInstrInfo &mcii,
-                                         MCContext &ctx);
 MCAsmBackend *createPICMidMCAsmBackend(const Target &t,
                                        const MCSubtargetInfo &sti,
                                        const MCRegisterInfo &mri,
