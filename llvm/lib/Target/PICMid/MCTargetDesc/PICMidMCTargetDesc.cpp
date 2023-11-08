@@ -1,5 +1,6 @@
 #include "PICMidMCTargetDesc.h"
 #include "PICMidMCAsmInfo.h"
+#include "PICMidMCCodeEmitter.h"
 #include "PICMidMCInstPrinter.h"
 #include "TargetInfo/PICMidTargetInfo.h"
 
@@ -67,6 +68,8 @@ extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializePICMidTargetMC() {
                                         createPICMCInstPrinter);
   TargetRegistry::RegisterMCSubtargetInfo(getThePICMidTarget(),
                                           createPICMidMCSubtargetInfo);
+  TargetRegistry::RegisterMCCodeEmitter(getThePICMidTarget(),
+                                        createPICMidMCCodeEmitter);
 }
 
 } // namespace llvm

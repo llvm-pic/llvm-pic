@@ -64,7 +64,6 @@ def imm3 : Operand<i32> {
 
 def imm8 : Operand<i32> {
     let ParserMatchClass = ImmediateAsmOperand<"Imm8">;
-    // TODO: Investigate `let EncoderMethod = "encodeImm<PICMid::Imm8, 1>";`
     let EncoderMethod = "encodeImm<PICMid::Imm8, 1>";
     let DecoderMethod = "decodeUImmOperand<8>";
     let OperandType = "OPERAND_IMM8";
@@ -132,7 +131,7 @@ class InstWithAddressingMode<string asmstr, AddressingMode mode = Implicit> : In
 }
 
 class PICMidInst<string opcodestr, AddressingMode mode = Implicit> : InstWithAddressingMode<opcodestr, mode> {
-    let Size = 1;
+    let Size = 2;
     bits<14> Inst;
 
     let AsmString = opcodestr # " " # mode.OperandsStr;
@@ -140,12 +139,17 @@ class PICMidInst<string opcodestr, AddressingMode mode = Implicit> : InstWithAdd
 
 // Corresponds to "BYTE-ORIENTED FILE REGISTER OPERATIONS"
 // TODO: May want to check if this work with DAG and stuff
-class PICMidByteFileOp<string opcodestr, bits<6> opcode, bit dOpt = 0, bits<7> fOpt = 0, AddressingMode mode = AddressWithSaveDirection> : PICMidInst<opcodestr, mode> {
-    bit d = dOpt;
-    bits<7> f = fOpt;
+class PICMidByteFileOp<string opcodestr, bits<6> opcode> : PICMidInst<opcodestr, AddressWithSaveDirection> {
+    bit d;
+    bits<7> f;
     let Inst{13-8} = opcode;
     let Inst{7} = d;
     let Inst{6-0} = f;
+}
+class PICMidByteFileOp_Other<string opcodestr, bits<6> opcode, bit d, AddressingMode mode> : PICMidInst<opcodestr, mode> {
+    let Inst{13-8} = opcode;
+    let Inst{7} = d;
+    let Inst{6-0} = 0;
 }
 
 // Corresponds to "BIT-ORIENTED FILE REGISTER OPERATIONS"
@@ -160,10 +164,15 @@ class PICMidBitFileOp<string opcodestr, bits<4> opcode, AddressingMode mode = Ad
 
 // Corresponds to "LITERAL AND CONTROL OPERATIONS"
 // TODO: May want to check if this work with DAG and stuff
-class PICMidLiteralAndControlOp<string opcodestr, bits<6> opcode, bits<8> kOpt = 0, AddressingMode mode = Immediate> : PICMidInst<opcodestr, mode> {
-    bits<8> k = kOpt;
+class PICMidLiteralAndControlOp<string opcodestr, bits<6> opcode> : PICMidInst<opcodestr, Immediate> {
+    bits<8> k;
     let Inst{13-8} = opcode;
     let Inst{7-0} = k;
+}
+
+class PICMidLiteralAndControlOp_Implicit<string opcodestr, bits<8> kOpt> : PICMidInst<opcodestr, Implicit> {
+    let Inst{13-8} = 0;
+    let Inst{7-0} = kOpt;
 }
 
 class PICMidCallOrGotoOp<string opcodestr, bits<3> opcode> : PICMidInst<opcodestr, PCAbsolute> {
