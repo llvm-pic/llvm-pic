@@ -10,7 +10,7 @@ namespace llvm {
 
     class PICMidLegalizerInfo : public LegalizerInfo {
         public:
-        PICMidLegalizerInfo(const PICMidSubtarget &ST);
+        PICMidLegalizerInfo();
     };
 
 } // namespace llvm
