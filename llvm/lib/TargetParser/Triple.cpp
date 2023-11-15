@@ -1403,7 +1403,7 @@ static unsigned getArchPointerBitWidth(llvm::Triple::ArchType Arch) {
   case llvm::Triple::avr:
   case llvm::Triple::msp430:
   // TODO: Add other PIC ISAs
-  case llvm::Triple::picmid: // FIXME: WRONG! It's 14 bits
+  case llvm::Triple::picmid: // INHX8M: Is actually 14-bits, for MC encoding reasons set to 16 bits
     return 16;
 
   case llvm::Triple::aarch64_32:
