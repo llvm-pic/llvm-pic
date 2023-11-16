@@ -26,11 +26,11 @@ PICMidMCCodeEmitter::PICMidMCCodeEmitter(const MCInstrInfo &MCII,
                                          MCContext &Ctx)
     : mcii(MCII), ctx(Ctx) {}
 
-static void
-emitBigEndian(uint64_t BinaryOpCode, unsigned Size,
-              raw_ostream &OS) { // TODO: Turn these into 14-bit instructions!!!
-  for (int i = Size - 1; i >= 0; --i) {
-    char next = (BinaryOpCode & (0xFF << i * 8)) >> (i * 8);
+static void emitLittleEndian(uint64_t BinaryOpCode, unsigned Size,
+                             raw_ostream &OS) {
+  for (unsigned i = 0; i < Size; ++i) {
+    char next = (BinaryOpCode & 0xFF);
+    BinaryOpCode >>= 8;
     OS << next;
   }
 }
@@ -44,7 +44,7 @@ void PICMidMCCodeEmitter::encodeInstruction(const MCInst &Inst, raw_ostream &OS,
 
   assert(Size > 0 && "Instruction size cannot be zero");
   uint64_t BinaryOpCode = getBinaryCodeForInstr(Inst, Fixups, STI);
-  emitBigEndian(BinaryOpCode, Size, OS);
+  emitLittleEndian(BinaryOpCode, Size, OS);
 }
 
 template <PICMid::Fixups Fixup, unsigned Offset>
