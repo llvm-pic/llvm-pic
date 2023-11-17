@@ -7,7 +7,7 @@ add_llvm_component_library(LLVMPICMidDesc
   PICMidMCAsmInfo.cpp
   PICMidMCCodeEmitter.cpp
 #   PICMidMCELFStreamer.cpp
-#   PICMidMCExpr.cpp
+  PICMidMCExpr.cpp
 #   PICMidMCInstrAnalysis.cpp
   PICMidMCTargetDesc.cpp
 #   PICMidTargetStreamer.cpp
