@@ -77,8 +77,9 @@ unsigned
 PICMidMCCodeEmitter::getMachineOpValue(const MCInst &MI, const MCOperand &MO,
                                        SmallVectorImpl<MCFixup> &Fixups,
                                        const MCSubtargetInfo &STI) const {
-  if (MO.isImm())
+  if (MO.isImm()) {
     return MO.getImm();
+  }
 
   assert(MO.isExpr());
 

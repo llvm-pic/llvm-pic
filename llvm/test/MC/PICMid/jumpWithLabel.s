@@ -2,4 +2,6 @@
 
 what: nop
 ; CHECK: encoding: [0x00,0x00]
-    goto what
+    ADDLW 69
+; CHECK: encoding: [0x45,0x3e]
+    ; goto what
