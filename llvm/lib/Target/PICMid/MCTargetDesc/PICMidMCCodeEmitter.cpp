@@ -59,7 +59,6 @@ unsigned PICMidMCCodeEmitter::encodeImm(const MCInst &MI, unsigned OpNo,
   }
 
   if (isa<PICMidMCExpr>(MO.getExpr())) {
-    assert(0 && "To be implemented!!!");
     return getExprOpValue(MO.getExpr(), Fixups, STI, Offset);
   }
 
@@ -70,6 +69,34 @@ unsigned PICMidMCCodeEmitter::encodeImm(const MCInst &MI, unsigned OpNo,
   Fixups.push_back(
       MCFixup::create(Offset, MO.getExpr(), FixupKind, MI.getLoc()));
 
+  return 0;
+}
+
+unsigned PICMidMCCodeEmitter::getExprOpValue(const MCExpr *Expr,
+                                             SmallVectorImpl<MCFixup> &Fixups,
+                                             const MCSubtargetInfo &STI,
+                                             unsigned int Offset) const {
+  MCExpr::ExprKind Kind = Expr->getKind();
+
+  if (Kind == MCExpr::Binary) {
+    Expr = static_cast<const MCBinaryExpr *>(Expr)->getLHS();
+    Kind = Expr->getKind();
+  }
+
+  if (Kind == PICMidMCExpr::Target) {
+    const PICMidMCExpr *PICMidExpr = cast<PICMidMCExpr>(Expr);
+    int64_t Result;
+    if (PICMidExpr->evaluateAsConstant(Result)) {
+      return Result;
+    }
+
+    MCFixupKind FixupKind =
+        static_cast<MCFixupKind>(PICMidExpr->getFixupKind());
+    Fixups.push_back(MCFixup::create(Offset, PICMidExpr, FixupKind));
+    return 0;
+  }
+
+  assert(Kind == MCExpr::SymbolRef);
   return 0;
 }
 

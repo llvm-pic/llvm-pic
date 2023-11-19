@@ -1,5 +1,5 @@
 add_llvm_component_library(LLVMPICMidDesc
-#   PICMidAsmBackend.cpp
+  PICMidMCAsmBackend.cpp
 #   PICMidELFObjectWriter.cpp
   PICMidFixupKinds.cpp
   PICMidMCInstPrinter.cpp

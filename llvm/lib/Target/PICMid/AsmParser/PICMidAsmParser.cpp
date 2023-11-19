@@ -1,7 +1,8 @@
+#include "MCTargetDesc/PICMidMCExpr.h"
+#include "MCTargetDesc/PICMidMCTargetDesc.h"
 #include "PICMidOperand.h"
 #include "PICMidSubtarget.h"
 #include "TargetInfo/PICMidTargetInfo.h"
-#include "MCTargetDesc/PICMidMCTargetDesc.h"
 
 #include "llvm/MC/MCContext.h"
 #include "llvm/MC/MCParser/MCAsmLexer.h"
@@ -174,6 +175,15 @@ public:
       return true;
     }
 
+    // Is program memory address
+    if (const auto *SymbolRef = dyn_cast<MCSymbolRefExpr>(expr)) {
+      // asm("nop");
+      // Operands.push_back(PICMidOperand::createImm(sti, expr->))
+      expr = PICMidMCExpr::create(PICMidMCExpr::VK_PICMID_PCABS11, SymbolRef,
+                                  false, getContext());
+    }
+
+    // Is literal
     Operands.push_back(PICMidOperand::createImm(sti, expr, startLoc, endLoc));
     return false;
   }

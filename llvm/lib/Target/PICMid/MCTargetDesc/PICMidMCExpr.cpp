@@ -79,9 +79,9 @@ void PICMidMCExpr::printImpl(raw_ostream &OS, const MCAsmInfo *MAI) const {
     OS << '-';
   }
 
-  OS << getName() << '(';
+//   OS << getName() << '(';
   getSubExpr()->print(OS, MAI);
-  OS << ')';
+//   OS << ')';
 }
 
 bool PICMidMCExpr::evaluateAsRelocatableImpl(MCValue &Result,
@@ -137,7 +137,7 @@ int64_t PICMidMCExpr::evaluateAsInt64(int64_t Value) const {
     out = -out;
   }
 
-  switch (getKind()) {
+  switch (Kind) {
   case VK_PICMID_IMM1:
     out &= 0b1;
     if (isNegated()) {
