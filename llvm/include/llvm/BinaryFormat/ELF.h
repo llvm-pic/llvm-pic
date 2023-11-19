@@ -503,6 +503,16 @@ enum {
 #include "ELFRelocs/AVR.def"
 };
 
+// PICMid specific e_flags
+enum : unsigned {
+    EF_PICMID_ARCH_ENHANCED = 0x00000001,
+};
+
+// ELF Relocation types for PICMid
+enum {
+#include "ELFRelocs/PICMid.def"
+};
+
 // Mips Specific e_flags
 enum : unsigned {
   EF_MIPS_NOREORDER = 0x00000001, // Don't reorder instructions
