@@ -12,8 +12,8 @@ enum Fixups {
   Imm1 = FirstTargetFixupKind,
   Imm3,
   Imm8,
-  PCAbs11,
   Addr7,
+  PCAbs11,
   LastTargetFixupKind,
   NumTargetFixupKinds = LastTargetFixupKind - FirstTargetFixupKind
 };

@@ -50,7 +50,7 @@ bool PICMidOperand::isImm1() const { return isImmediate<0, 1>(); }
 
 bool PICMidOperand::isImm3() const { return isImmediate<0, 0b111>(); }
 
-bool PICMidOperand::isImm8() const { return isImmediate<0, 0x10 - 1>(); }
+bool PICMidOperand::isImm8() const { return isImmediate<0, 0xFF>(); }
 
 bool PICMidOperand::isPCAbs11() const { return isImmediate<0, 0b1111'1111'111>(); }
 

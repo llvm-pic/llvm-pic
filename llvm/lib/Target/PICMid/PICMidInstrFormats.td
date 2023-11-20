@@ -64,7 +64,7 @@ def imm3 : Operand<i32> {
 
 def imm8 : Operand<i32> {
     let ParserMatchClass = ImmediateAsmOperand<"Imm8">;
-    let EncoderMethod = "encodeImm<PICMid::Imm8, 1>";
+    let EncoderMethod = "encodeImm<PICMid::Imm8, 0>";
     let DecoderMethod = "decodeUImmOperand<8>";
     let OperandType = "OPERAND_IMM8";
     let OperandNamespace = "PICMidOp";
@@ -73,7 +73,7 @@ def imm8 : Operand<i32> {
 
 def pcabs11 : Operand<i32> {
     let ParserMatchClass = PCAbsoluteOperand<"PCAbs11">;
-    let EncoderMethod = "encodeImm<PICMid::PCAbs11, 1>";
+    let EncoderMethod = "encodeImm<PICMid::PCAbs11, 0>";
     let DecoderMethod = "decodeSImmOperand<11>";
     let PrintMethod = "printBranchOperand";
     let OperandType = "OPERAND_PCABS11";
@@ -82,7 +82,7 @@ def pcabs11 : Operand<i32> {
 
 def addr7 : Operand<i32> {
     let ParserMatchClass = Addr7Operand<"Addr7">;
-    let EncoderMethod = "encodeImm<PICMid::Addr7, 1>";
+    let EncoderMethod = "encodeImm<PICMid::Addr7, 0>";
     let DecoderMethod = "decodeAddr7Operand";
     let OperandType = "OPERAND_ADDR7";
     let OperandNamespace = "PICMidOp";
