@@ -1,5 +1,8 @@
 ; RUN: llvm-mc -filetype=obj -triple=picmid %s -o -
 
+    .globl _start;
+    .text
+_start:
     nop
     nop
     nop
@@ -291,4 +294,5 @@
 what: ; Label at address 0x120
     ADDLW 128
     ADDWF 69, 1
+    GOTO what
     GOTO what
