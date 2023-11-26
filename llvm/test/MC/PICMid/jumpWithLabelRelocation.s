@@ -288,7 +288,7 @@
     nop
     nop
     nop
-what:
+what: ; Label at address 0x120
     ADDLW 128
     ADDWF 69, 1
-    goto what
+    GOTO what
