@@ -106,7 +106,7 @@ public:
 
   ParseStatus parseDirective(AsmToken DirectiveID) override {
     // TODO: Implement own asm directives
-    return ParseStatus{false};
+    return ParseStatus{ParseStatus::NoMatch};
   }
 
   bool parseRegister(MCRegister &Reg, SMLoc &StartLoc, SMLoc &EndLoc) override {
