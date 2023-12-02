@@ -4,6 +4,16 @@
 ; RUN: llvm-mc -filetype=obj -triple=picmid %t/config.s -o %t/config.o
 ; RUN: ld.lld -T %t/link.ld %t/a.o %t/config.o -o %t/a
 ; RUN: llvm-objcopy -O ihex %t/a %t/a.hex
+; RUN: FileCheck %s --check-prefix=CHECK1 --input-file=%t/a.hex 
+
+; CHECK1:       :020000000628D0
+; CHECK1-NEXT:  :10000A0000008312031387018316031788018316DE
+; CHECK1-NEXT:  :10001A0003130C308700831203130714871400009C
+; CHECK1-NEXT:  :06002A0000001528000093
+; CHECK1-NEXT:  :024014000000AA
+; CHECK1-NEXT:  :024016000000A8
+; CHECK1-NEXT:  :040000030000000CED
+; CHECK1-NEXT:  :00000001FF
 
 ; TODO: Document "ax"
 ; TODO: Use FileCheck
@@ -11,25 +21,28 @@
 ;           is always a multiple of 4. Should be 2. 
 
 #--- link.ld
-
-SECTIONS
-{
-.reset_vector 0x0000 : {
-    KEEP(*(.reset_vector))
+MEMORY {
+    prog_mem : ORIGIN = 0x0000, LENGTH = 0x2000
+    config_mem : ORIGIN = 0x4000, LENGTH = 0x4000
 }
 
-. = 0x0010;
-.text : { *(.text) }
-.data : { *(.data) }
-.bss : { *(.bss) }
+SECTIONS {
+    .reset_vector 0x0000 : {
+        KEEP(*(.reset_vector))
+    } > prog_mem
 
-.config1 0x4014 : { 
-    KEEP(*(.config1))
-}
-.config2 0x4016 : { 
-    KEEP(*(.config2)) 
-}
+    .text 0x000A : { 
+        *(.text) 
+        *(.data)
+        *(.bss)
+    } > prog_mem
 
+    .config1 0x4014 : { 
+        KEEP(*(.config1))
+    } > config_mem
+    .config2 0x4016 : { 
+        KEEP(*(.config2)) 
+    } > config_mem
 }
 
 #--- a.s
@@ -69,7 +82,9 @@ _start:
     BSF     0x07, 0  ; CLRF PORTC
     BSF     0x07, 1  ; CLRF PORTC
 
+    nop
 loop:
+    nop
     goto    loop
 
 
@@ -77,5 +92,6 @@ loop:
 
     .section .config1,"ax",@progbits
 .byte   0x00, 0x00
+
     .section .config2,"ax",@progbits
 .byte   0x00, 0x00
