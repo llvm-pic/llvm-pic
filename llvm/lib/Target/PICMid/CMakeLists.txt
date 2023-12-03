@@ -45,8 +45,8 @@ add_llvm_target(PICMidCodeGen
 #   PICMidRegisterBankInfo.cpp
 #   PICMidRegisterInfo.cpp
 #   PICMidStaticStackAlloc.cpp
-#   PICMidSubtarget.cpp
-  PICMidTargetMachine.cpp
+# PICMidSubtarget.cpp
+    PICMidTargetMachine.cpp
 #   PICMidTargetObjectFile.cpp
 #   PICMidZeroPageAlloc.cpp
 

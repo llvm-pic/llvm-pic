@@ -1,3 +1,4 @@
+#include <llvm/CodeGen/GlobalISel/LegalizerHelper.h>
 #include "./PICMidLegalizerInfo.h"
 #include "../PICMidSubtarget.h"
 #include "llvm/CodeGen/TargetOpcodes.h"
@@ -17,12 +18,11 @@ PICMidLegalizerInfo::PICMidLegalizerInfo() {
   LLT P = LLT::pointer(0, 8);
 
   // Constants
-
   getActionDefinitionsBuilder(G_CONSTANT)
       .legalFor({S1, S8, P})
       .widenScalarToNextMultipleOf(0, 8)
       .maxScalar(0, S8)
-      .unsupported();
+      .unsupported(); 
 
   // Integer Extension and Truncations
 
@@ -37,7 +37,7 @@ PICMidLegalizerInfo::PICMidLegalizerInfo() {
   getActionDefinitionsBuilder({G_ADD, G_SUB})
       .legalFor({S8})
       .widenScalarToNextMultipleOf(0, 8)
-      .unsupported();
+      .unsupported(); 
 
   getActionDefinitionsBuilder({G_AND, G_OR})
       .legalFor({S8})
@@ -53,13 +53,13 @@ PICMidLegalizerInfo::PICMidLegalizerInfo() {
   getActionDefinitionsBuilder(G_XOR)
     .legalFor({S8})
     .widenScalarToNextMultipleOf(0, 8)
-    .maxScalar(0, S8) 
+    .maxScalar(0, S8)
     .unsupported();
 
   getActionDefinitionsBuilder(G_ICMP)
     .legalFor({S8})
-    .unsupported(); 
-  
+    .unsupported();
+
   // unsupport all float, as well as G_FCONSTANT
   getActionDefinitionsBuilder(
       {G_FCONSTANT,    G_FCMP,     G_FNEG,      G_FPEXT,      G_FPTRUNC,
@@ -78,7 +78,7 @@ PICMidLegalizerInfo::PICMidLegalizerInfo() {
   // Vector reductions operations
 
   // Memory operations
-  
+
   getActionDefinitionsBuilder({G_LOAD, G_STORE})
     .legalFor({S8})
     .unsupported();

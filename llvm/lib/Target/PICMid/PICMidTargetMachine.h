@@ -1,0 +1,34 @@
+//===-- MOSTargetMachine.h - Define TargetMachine for MOS -------*- C++ -*-===//
+//
+// Part of LLVM-MOS, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//
+//===----------------------------------------------------------------------===//
+//
+// This file declares the MOS specific subclass of TargetMachine.
+//
+//===----------------------------------------------------------------------===//
+
+#ifndef LLVM_PICMID_TARGET_MACHINE_H
+#define LLVM_PICMID_TARGET_MACHINE_H
+
+#include "llvm/IR/DataLayout.h"
+#include "llvm/Target/TargetMachine.h"
+
+namespace llvm {
+
+/// A generic MOS implementation.
+class PICMidTargetMachine : public LLVMTargetMachine {
+public:
+  PICMidTargetMachine(const Target &T, const Triple &TT, StringRef CPU,
+                   StringRef FS, const TargetOptions &Options,
+                   std::optional<Reloc::Model> RM,
+                   std::optional<CodeModel::Model> CM, CodeGenOpt::Level OL,
+                   bool JIT);
+
+  };
+
+} // end namespace llvm
+
+#endif // LLVM_MOS_TARGET_MACHINE_H
