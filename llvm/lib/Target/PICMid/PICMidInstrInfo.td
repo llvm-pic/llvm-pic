@@ -5,8 +5,8 @@ include "PICMidInstrFormats.td"
 // BYTE-ORIENTED FILE REGISTER OPERATIONS
 def ADDWF : PICMidByteFileOp<"addwf", 0b000111>;
 def ANDWF : PICMidByteFileOp<"andwf", 0b000101>;
-def CLRF : PICMidByteFileOp_Other<"clrf", 0b000001, 0b1, Address>;
-def CLRW : PICMidByteFileOp_Other<"clrw", 0b000001, 0b1, Implicit>;
+def CLRF : PICMidByteFileOp_Address<"clrf", 0b000001, 0b1>;
+def CLRW : PICMidByteFileOp_Implicit<"clrw", 0b000001, 0b0>;
 def COMF : PICMidByteFileOp<"comf", 0b001001>;
 def DECF : PICMidByteFileOp<"decf", 0b000011>;
 def DECFSZ : PICMidByteFileOp<"decfsz", 0b001011>;
@@ -14,8 +14,8 @@ def INCF : PICMidByteFileOp<"incf", 0b001010>;
 def INCFSZ : PICMidByteFileOp<"incfsz", 0b001111>; 
 def IORWF : PICMidByteFileOp<"iorwf", 0b000100>; 
 def MOVF : PICMidByteFileOp<"movf", 0b001000>; 
-def MOVWF : PICMidByteFileOp_Other<"movwf", 0b000000, 0b1, Address>; 
-def NOP : PICMidByteFileOp_Other<"nop", 0b000000, 0b0, Implicit>; 
+def MOVWF : PICMidByteFileOp_Address<"movwf", 0b000000, 0b1>; 
+def NOP : PICMidByteFileOp_Implicit<"nop", 0b000000, 0b0>; 
 def RLF : PICMidByteFileOp<"rlf", 0b001101>; 
 def RRF : PICMidByteFileOp<"rrf", 0b001100>; 
 def SUBWF : PICMidByteFileOp<"subwf", 0b000010>; 
