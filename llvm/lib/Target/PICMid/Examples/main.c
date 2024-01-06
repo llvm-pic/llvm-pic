@@ -6,7 +6,7 @@ int foo(int baa) {
 
 void main() {
     //declare
-    uint16_t i, j, h;
+    int i, j, h;
 
     //initialize
     i = 2;
