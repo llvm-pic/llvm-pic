@@ -6,12 +6,15 @@
 
 namespace llvm {
 
-    class PICMidSubtarget;
+class PICMidSubtarget;
 
-    class PICMidLegalizerInfo : public LegalizerInfo {
-        public:
-        PICMidLegalizerInfo();
-    };
+class PICMidLegalizerInfo : public LegalizerInfo {
+public:
+  PICMidLegalizerInfo();
+  bool legalizeCustom(LegalizerHelper &Helper, MachineInstr &MI) const override;
+  bool legalizeIntrinsic(LegalizerHelper &Helper,
+                         MachineInstr &MI) const override;
+};
 
 } // namespace llvm
 #endif
