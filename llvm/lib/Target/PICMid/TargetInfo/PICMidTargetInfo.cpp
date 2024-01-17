@@ -9,7 +9,7 @@
 #include "TargetInfo/PICMidTargetInfo.h"
 #include "llvm/MC/TargetRegistry.h"
 
-using namespace llvm;
+namespace llvm {
 
 Target &getThePICMidTarget() {
   static Target ThePICMidTarget;
@@ -18,7 +18,8 @@ Target &getThePICMidTarget() {
 
 extern "C" LLVM_EXTERNAL_VISIBILITY void
 LLVMInitializePICMidTargetInfo() { // NOLINT
-    RegisterTarget<Triple::picmid> X(
-        llvm::getThePICMidTarget(), "picmid", "PIC Mid-range core devices", "PICMid"
-    );
+  RegisterTarget<Triple::picmid> X(llvm::getThePICMidTarget(), "picmid",
+                                   "PIC Mid-range core devices", "PICMid");
 }
+
+} // namespace llvm
