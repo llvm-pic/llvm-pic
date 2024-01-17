@@ -90,19 +90,6 @@ bool PICMidMCAsmBackend::evaluateTargetFixup(const MCAssembler &Asm,
   const bool IsPCAbs11 = Fixup.getKind() == (MCFixupKind)PICMid::PCAbs11;
 
   assert(IsPCAbs11 && "unexpected target fixup kind");
-  bool IsResolved = false;
-
-  if (!Target.getSymB() && Target.getSymA()) {
-    const MCSymbolRefExpr *A = Target.getSymA();
-    const MCSymbol &SA = A->getSymbol();
-
-    if (A->getKind() == MCSymbolRefExpr::VK_None && SA.isDefined()) {
-      if (auto *Writer = Asm.getWriterPtr()) {
-        IsResolved = Writer->isSymbolRefDifferenceFullyResolvedImpl(
-            Asm, SA, *DF, false, false);
-      }
-    }
-  }
 
   Value = Target.getConstant();
   if (const MCSymbolRefExpr *A = Target.getSymA()) {
@@ -125,21 +112,22 @@ bool PICMidMCAsmBackend::evaluateTargetFixup(const MCAssembler &Asm,
          "Program memory address in bytes must be evenly divisible by 2");
   Value /= 2;
 
-  return IsResolved;
+  return false;
 }
 
 bool PICMidMCAsmBackend::fixupNeedsRelaxation(const MCFixup &Fixup,
                                               uint64_t Value,
                                               const MCRelaxableFragment *DF,
                                               const MCAsmLayout &Layout) const {
-  return true;
+  return false;
 }
 
 bool PICMidMCAsmBackend::fixupNeedsRelaxationAdvanced(
     const MCFixup &Fixup, bool Resolved, uint64_t Value,
     const MCRelaxableFragment *DF, const MCAsmLayout &Layout,
     const bool WasForced) const {
-  return Fixup.getKind() == (MCFixupKind)PICMid::PCAbs11;
+  //   return Fixup.getKind() == (MCFixupKind)PICMid::PCAbs11;
+  return false;
 }
 
 bool PICMidMCAsmBackend::writeNopData(raw_ostream &OS, uint64_t Count,

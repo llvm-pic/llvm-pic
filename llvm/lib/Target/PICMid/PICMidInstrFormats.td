@@ -146,7 +146,13 @@ class PICMidByteFileOp<string opcodestr, bits<6> opcode> : PICMidInst<opcodestr,
     let Inst{7} = d;
     let Inst{6-0} = f;
 }
-class PICMidByteFileOp_Other<string opcodestr, bits<6> opcode, bit d, AddressingMode mode> : PICMidInst<opcodestr, mode> {
+class PICMidByteFileOp_Address<string opcodestr, bits<6> opcode, bit d> : PICMidInst<opcodestr, Address> {
+    bits<7> f;
+    let Inst{13-8} = opcode;
+    let Inst{7} = d;
+    let Inst{6-0} = f;
+}
+class PICMidByteFileOp_Implicit<string opcodestr, bits<6> opcode, bit d> : PICMidInst<opcodestr, Implicit> {
     let Inst{13-8} = opcode;
     let Inst{7} = d;
     let Inst{6-0} = 0;

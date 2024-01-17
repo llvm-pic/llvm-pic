@@ -29,6 +29,17 @@ public:
                   uint64_t Value, bool IsResolved,
                   const MCSubtargetInfo *STI) const override;
 
+  /// Apply target-specific fixup, i.e., annotated with
+  /// MCFixupKindInfo::FKF_IsTarget
+  ///
+  /// FIXME:    In its current form, this function may be redundant.
+  ///           That's because it always returns false which is why
+  ///           Value is ignored.
+  /// TODO:     Decide, what to do with this function
+  ///
+  /// @return bool If true, fixup may be resolved prior to linking stage.
+  ///               In that case, the fixup is not listed as a relocation
+  ///               entry.
   bool evaluateTargetFixup(const MCAssembler &Asm, const MCAsmLayout &Layout,
                            const MCFixup &Fixup, const MCFragment *DF,
                            const MCValue &Target, uint64_t &Value,
