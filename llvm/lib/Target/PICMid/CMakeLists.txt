@@ -46,8 +46,8 @@ add_llvm_target(PICMidCodeGen
 #   PICMidRegisterInfo.cpp
 #   PICMidStaticStackAlloc.cpp
 # PICMidSubtarget.cpp
-    PICMidTargetMachine.cpp
-#   PICMidTargetObjectFile.cpp
+  PICMidTargetMachine.cpp
+  PICMidTargetObjectFile.cpp
 #   PICMidZeroPageAlloc.cpp
 
   DEPENDS
