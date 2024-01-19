@@ -26,7 +26,8 @@ PICMidTargetMachine::PICMidTargetMachine(const Target &T, const Triple &TT,
                                          std::optional<CodeModel::Model> CM,
                                          CodeGenOpt::Level OL, bool JIT)
     : LLVMTargetMachine(T, PICMidDataLayout, TT, getCPU(CPU), FS, Options,
-                        Reloc::Static, CodeModel::Small, OL) {
+                        Reloc::Static, CodeModel::Small, OL),
+      SubTarget(TT, getCPU(CPU).str(), FS.str(), *this) {
   initAsmInfo();
   setGlobalISel(true);
 }

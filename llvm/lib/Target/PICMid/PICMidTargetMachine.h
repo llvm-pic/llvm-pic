@@ -13,6 +13,7 @@
 #ifndef LLVM_PICMID_TARGET_MACHINE_H
 #define LLVM_PICMID_TARGET_MACHINE_H
 
+#include "PICMidSubtarget.h"
 #include "llvm/IR/DataLayout.h"
 #include "llvm/Target/TargetMachine.h"
 
@@ -28,6 +29,9 @@ public:
                       bool JIT);
 
   TargetPassConfig *createPassConfig(PassManagerBase &PM) override;
+
+private:
+  PICMidSubtarget SubTarget;
 };
 
 } // end namespace llvm
