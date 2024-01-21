@@ -15,11 +15,11 @@ Target &getThePICMidTarget() {
   static Target ThePICMidTarget;
   return ThePICMidTarget;
 }
-} // namespace llvm
 
 extern "C" LLVM_EXTERNAL_VISIBILITY void
 LLVMInitializePICMidTargetInfo() { // NOLINT
-    llvm::RegisterTarget<llvm::Triple::picmid> X(
-        llvm::getThePICMidTarget(), "picmid", "PIC Mid-range core devices", "PICMid"
-    );
+  RegisterTarget<Triple::picmid> X(llvm::getThePICMidTarget(), "picmid",
+                                   "PIC Mid-range core devices", "PICMid");
 }
+
+} // namespace llvm
