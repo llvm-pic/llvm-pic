@@ -11,7 +11,7 @@ tablegen(LLVM PICMidGenAsmWriter.inc -gen-asm-writer)
 # tablegen(LLVM PICMidGenGlobalISel.inc -gen-global-isel)
 tablegen(LLVM PICMidGenInstrInfo.inc -gen-instr-info)
 tablegen(LLVM PICMidGenMCCodeEmitter.inc -gen-emitter)
-# tablegen(LLVM PICMidGenMCPseudoLowering.inc -gen-pseudo-lowering)
+tablegen(LLVM PICMidGenMCPseudoLowering.inc -gen-pseudo-lowering)
 # tablegen(LLVM PICMidGenRegisterBank.inc -gen-register-bank)
 tablegen(LLVM PICMidGenRegisterInfo.inc -gen-register-info)
 # tablegen(LLVM PICMidGenSearchableTables.inc -gen-searchable-tables)
@@ -20,7 +20,7 @@ tablegen(LLVM PICMidGenSubtargetInfo.inc -gen-subtarget)
 add_public_tablegen_target(PICMidCommonTableGen)
 
 add_llvm_target(PICMidCodeGen
-#   PICMidAsmPrinter.cpp
+  PICMidAsmPrinter.cpp
 #   PICMidCallLowering.cpp
 #   PICMidCallingConv.cpp
 #   PICMidCombiner.cpp
