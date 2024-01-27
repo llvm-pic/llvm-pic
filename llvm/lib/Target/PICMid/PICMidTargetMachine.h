@@ -30,8 +30,13 @@ public:
 
   TargetPassConfig *createPassConfig(PassManagerBase &PM) override;
 
+  TargetLoweringObjectFile *getObjFileLowering() const override {
+    return TLOF.get();
+  }
+
 private:
   PICMidSubtarget SubTarget;
+  std::unique_ptr<TargetLoweringObjectFile> TLOF;
 };
 
 } // end namespace llvm

@@ -1,6 +1,11 @@
 #include "PICMidTargetMachine.h"
 #include "MCTargetDesc/PICMidMCTargetDesc.h"
 #include "TargetInfo/PICMidTargetInfo.h"
+#include "llvm/CodeGen/GlobalISel/IRTranslator.h"
+#include "llvm/CodeGen/GlobalISel/InstructionSelect.h"
+#include "llvm/CodeGen/GlobalISel/Legalizer.h"
+#include "llvm/CodeGen/GlobalISel/RegBankSelect.h"
+#include "llvm/CodeGen/TargetLoweringObjectFileImpl.h"
 #include "llvm/CodeGen/TargetPassConfig.h"
 #include "llvm/InitializePasses.h"
 #include "llvm/MC/TargetRegistry.h"
@@ -27,7 +32,8 @@ PICMidTargetMachine::PICMidTargetMachine(const Target &T, const Triple &TT,
                                          CodeGenOpt::Level OL, bool JIT)
     : LLVMTargetMachine(T, PICMidDataLayout, TT, getCPU(CPU), FS, Options,
                         Reloc::Static, CodeModel::Small, OL),
-      SubTarget(TT, getCPU(CPU).str(), FS.str(), *this) {
+      SubTarget(TT, getCPU(CPU).str(), FS.str(), *this),
+      TLOF(std::make_unique<TargetLoweringObjectFileELF>()) {
   initAsmInfo();
   setGlobalISel(true);
 }
@@ -42,7 +48,32 @@ public:
   PICMidTargetMachine &getPICMidTargetMachine() const {
     return getTM<PICMidTargetMachine>();
   }
+
+  bool addIRTranslator() override;
+  bool addLegalizeMachineIR() override;
+  bool addRegBankSelect() override;
+  bool addGlobalInstructionSelect() override;
 };
+
+bool PICMidPassConfig::addIRTranslator() {
+  addPass(new IRTranslator(getOptLevel()));
+  return false;
+}
+
+bool PICMidPassConfig::addLegalizeMachineIR() {
+  addPass(new Legalizer());
+  return false;
+}
+
+bool PICMidPassConfig::addRegBankSelect() {
+  addPass(new RegBankSelect());
+  return false;
+}
+
+bool PICMidPassConfig::addGlobalInstructionSelect() {
+  addPass(new InstructionSelect());
+  return false;
+}
 
 } // namespace
 
