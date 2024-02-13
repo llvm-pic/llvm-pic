@@ -55,6 +55,7 @@ StringRef Triple::getArchTypeName(ArchType Kind) {
   case msp430:         return "msp430";
   case nvptx64:        return "nvptx64";
   case nvptx:          return "nvptx";
+  case picbase:        return "picbase";
   case picmid:         return "picmid";
   case ppc64:          return "powerpc64";
   case ppc64le:        return "powerpc64le";
@@ -108,6 +109,7 @@ StringRef Triple::getArchTypePrefix(ArchType Kind) {
 
   case avr:         return "avr";
 
+  case picbase:
   case picmid:      return "pic";
 
   case ppc64:
@@ -343,6 +345,7 @@ Triple::ArchType Triple::getArchTypeForLLVMName(StringRef Name) {
     .Case("arm", arm)
     .Case("armeb", armeb)
     .Case("avr", avr)
+    .Case("picbase", picbase)
     .Case("picmid", picmid)
     .StartsWith("bpf", BPFArch)
     .Case("m68k", m68k)
@@ -493,6 +496,7 @@ static Triple::ArchType parseArch(StringRef ArchName) {
     .Case("thumb", Triple::thumb)
     .Case("thumbeb", Triple::thumbeb)
     .Case("avr", Triple::avr)
+    .Case("picbase", Triple::picbase)
     .Case("picmid", Triple::picmid)
     .Case("m68k", Triple::m68k)
     .Case("msp430", Triple::msp430)
@@ -838,6 +842,7 @@ static Triple::ObjectFormatType getDefaultFormat(const Triple &T) {
   case Triple::msp430:
   case Triple::nvptx64:
   case Triple::nvptx:
+  case Triple::picbase:
   case Triple::picmid:
   case Triple::ppc64le:
   case Triple::ppcle:
@@ -1403,6 +1408,7 @@ static unsigned getArchPointerBitWidth(llvm::Triple::ArchType Arch) {
   case llvm::Triple::avr:
   case llvm::Triple::msp430:
   // TODO: Add other PIC ISAs
+  case llvm::Triple::picbase: // Actually 12-bits
   case llvm::Triple::picmid: // INHX8M: Is actually 14-bits, for MC encoding reasons set to 16 bits
     return 16;
 
@@ -1492,6 +1498,7 @@ Triple Triple::get32BitArchVariant() const {
   case Triple::bpfeb:
   case Triple::bpfel:
   case Triple::msp430:
+  case Triple::picbase:
   case Triple::picmid:
   case Triple::systemz:
   case Triple::ve:
@@ -1577,6 +1584,7 @@ Triple Triple::get64BitArchVariant() const {
   case Triple::lanai:
   case Triple::m68k:
   case Triple::msp430:
+  case Triple::picbase:
   case Triple::picmid:
   case Triple::r600:
   case Triple::shave:
