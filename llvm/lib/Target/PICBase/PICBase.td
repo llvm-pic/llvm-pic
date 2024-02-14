@@ -1,6 +1,13 @@
 include "llvm/Target/Target.td"
 include "llvm/Target/GlobalISel/Combine.td"
 
+include "PICBaseFeatures.td"
+include "PICBaseDevices.td"
+include "PICBaseRegisterInfo.td"
+//include "PICBaseRegisterBanks.td"
+include "PICBaseInstrInfo.td"
+//include "PICBaseCombine.td"
+
 def PICBaseInstrInfo : InstrInfo {
     let guessInstructionProperties = 0;
 }
