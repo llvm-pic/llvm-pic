@@ -1,9 +1,9 @@
-#include "TargetInfo/PICBaseTargetInfo.h"
+#include "PICBaseTargetInfo.h"
 #include "llvm/MC/TargetRegistry.h"
 
 using namespace llvm;
 
-Target &getThePICBaseTarget() {
+Target &llvm::getThePICBaseTarget() {
   static Target ThePICBaseTarget;
   return ThePICBaseTarget;
 }

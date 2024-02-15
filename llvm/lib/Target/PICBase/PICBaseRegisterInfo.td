@@ -21,7 +21,7 @@ foreach I = 0...!add(MaxImagRegs, -1) in {
 
 // Register Class
 
-class PICBaseRegClass<dag RegList>: RegisterClass<"PICMid", [i8], 8, RegList>;
+class PICBaseRegClass<dag RegList>: RegisterClass<"PICBase", [i8], 8, RegList>;
 
 def Wc : PICBaseRegClass<(add W)>;
 def Imag : PICBaseRegClass<(sequence "R%u", 0, !add(MaxImagRegs, -1))>;

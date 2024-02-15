@@ -13,7 +13,7 @@ tablegen(LLVM PICBaseGenInstrInfo.inc -gen-instr-info)
 # tablegen(LLVM PICBaseGenMCCodeEmitter.inc -gen-emitter)
 # tablegen(LLVM PICBaseGenMCPseudoLowering.inc -gen-pseudo-lowering)
 # tablegen(LLVM PICBaseGenRegisterBank.inc -gen-register-bank)
-# tablegen(LLVM PICBaseGenRegisterInfo.inc -gen-register-info)
+tablegen(LLVM PICBaseGenRegisterInfo.inc -gen-register-info)
 # tablegen(LLVM PICBaseGenSearchableTables.inc -gen-searchable-tables)
 tablegen(LLVM PICBaseGenSubtargetInfo.inc -gen-subtarget)
 
@@ -45,7 +45,7 @@ add_llvm_target(PICBaseCodeGen
 #   PICBaseRegisterBankInfo.cpp
 #   PICBaseRegisterInfo.cpp
 #   PICBaseStaticStackAlloc.cpp
-#   PICBaseSubtarget.cpp
+  PICBaseSubtarget.cpp
   PICBaseTargetMachine.cpp
 #   PICBaseTargetObjectFile.cpp
 #   PICBaseZeroPageAlloc.cpp

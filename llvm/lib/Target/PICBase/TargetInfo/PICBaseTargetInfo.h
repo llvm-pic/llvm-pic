@@ -5,7 +5,7 @@ namespace llvm {
 
 class Target;
 
-Target &getThePICMidTarget();
+Target &getThePICBaseTarget();
 
 } // namespace llvm
 
