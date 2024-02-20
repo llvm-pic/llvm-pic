@@ -3,8 +3,9 @@ include "llvm/Target/GlobalISel/Combine.td"
 
 include "PICMidFeatures.td"
 include "PICMidDevices.td"
-include "PICMidInstrInfo.td"
 include "PICMidRegisterInfo.td"
+include "PICMidRegisterBanks.td"
+include "PICMidInstrInfo.td"
 
 
 def PICMidInstrInfo : InstrInfo {

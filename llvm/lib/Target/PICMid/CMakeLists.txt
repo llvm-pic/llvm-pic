@@ -8,11 +8,11 @@ tablegen(LLVM PICMidGenAsmWriter.inc -gen-asm-writer)
 # tablegen(LLVM PICMidGenDAGISel.inc -gen-dag-isel)
 # tablegen(LLVM PICMidGenDisassemblerTables.inc -gen-disassembler)
 # tablegen(LLVM PICMidGenGICombiner.inc -gen-global-isel-combiner-matchtable -combiners="PICMidCombinerHelper")
-# tablegen(LLVM PICMidGenGlobalISel.inc -gen-global-isel)
+tablegen(LLVM PICMidGenGlobalISel.inc -gen-global-isel)
 tablegen(LLVM PICMidGenInstrInfo.inc -gen-instr-info)
 tablegen(LLVM PICMidGenMCCodeEmitter.inc -gen-emitter)
 tablegen(LLVM PICMidGenMCPseudoLowering.inc -gen-pseudo-lowering)
-# tablegen(LLVM PICMidGenRegisterBank.inc -gen-register-bank)
+tablegen(LLVM PICMidGenRegisterBank.inc -gen-register-bank)
 tablegen(LLVM PICMidGenRegisterInfo.inc -gen-register-info)
 # tablegen(LLVM PICMidGenSearchableTables.inc -gen-searchable-tables)
 tablegen(LLVM PICMidGenSubtargetInfo.inc -gen-subtarget)
@@ -33,7 +33,7 @@ add_llvm_target(PICMidCodeGen
 #   PICMidIncDecPhi.cpp
 #   PICMidInsertCopies.cpp
 #   PICMidInstrInfo.cpp
-#   PICMidInstructionSelector.cpp
+  PICMidInstructionSelector.cpp
 #   PICMidLateOptimization.cpp
   GISel/PICMidLegalizerInfo.cpp
 #   PICMidLowerSelect.cpp
@@ -42,7 +42,7 @@ add_llvm_target(PICMidCodeGen
 #   PICMidMachineScheduler.cpp
 #   PICMidNonReentrant.cpp
 #   PICMidPostRAScavenging.cpp
-#   PICMidRegisterBankInfo.cpp
+  PICMidRegisterBankInfo.cpp
 #   PICMidRegisterInfo.cpp
 #   PICMidStaticStackAlloc.cpp
   PICMidSubtarget.cpp

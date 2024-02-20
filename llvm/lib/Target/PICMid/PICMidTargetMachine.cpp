@@ -1,5 +1,6 @@
 #include "PICMidTargetMachine.h"
 #include "MCTargetDesc/PICMidMCTargetDesc.h"
+#include "PICMidInstructionSelector.h"
 #include "TargetInfo/PICMidTargetInfo.h"
 #include "llvm/CodeGen/GlobalISel/IRTranslator.h"
 #include "llvm/CodeGen/GlobalISel/InstructionSelect.h"
