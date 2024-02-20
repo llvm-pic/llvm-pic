@@ -17,4 +17,5 @@
 llvm::PICMidSubtarget::PICMidSubtarget(const Triple &TT, const std::string &CPU,
                                        const std::string &FS,
                                        const PICMidTargetMachine &TM)
-    : PICMidGenSubtargetInfo(TT, CPU, CPU, FS), Legalizer() {}
+    : PICMidGenSubtargetInfo(TT, CPU, CPU, FS), Legalizer(),
+      TargetLoweringInfo(TM, *this) {}

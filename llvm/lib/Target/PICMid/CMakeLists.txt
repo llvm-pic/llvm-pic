@@ -26,7 +26,7 @@ add_llvm_target(PICMidCodeGen
 #   PICMidCombiner.cpp
 #   PICMidCopyOpt.cpp
 #   PICMidInstrCost.cpp
-#   PICMidFrameLowering.cpp
+  PICMidFrameLowering.cpp
 #   PICMidISelLowering.cpp
 #   PICMidIndexIV.cpp
 #   PICMidInlineAsmLowering.cpp
@@ -46,6 +46,7 @@ add_llvm_target(PICMidCodeGen
 #   PICMidRegisterInfo.cpp
 #   PICMidStaticStackAlloc.cpp
   PICMidSubtarget.cpp
+  PICMidTargetLowering.cpp
   PICMidTargetMachine.cpp
   PICMidTargetObjectFile.cpp
 #   PICMidZeroPageAlloc.cpp
