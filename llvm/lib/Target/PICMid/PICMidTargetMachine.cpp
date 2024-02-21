@@ -104,11 +104,6 @@ llvm::PICMidTargetMachine::createPassConfig(PassManagerBase &PM) {
   return new PICMidPassConfig(*this, PM);
 }
 
-const TargetSubtargetInfo *
-llvm::PICMidTargetMachine::getSubtargetImpl(const Function &) const {
-  return &SubTarget;
-}
-
 extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializePICMidTarget() {
   RegisterTargetMachine<PICMidTargetMachine> X(getThePICMidTarget());
 

@@ -29,8 +29,6 @@ public:
                       bool JIT);
 
   TargetPassConfig *createPassConfig(PassManagerBase &PM) override;
-  const TargetSubtargetInfo *getSubtargetImpl(const Function &) const override;
-
   TargetLoweringObjectFile *getObjFileLowering() const override {
     return TLOF.get();
   }
