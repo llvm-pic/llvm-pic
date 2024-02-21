@@ -1,44 +1,43 @@
 #include <stdint.h>
 
-int foo(int baa) {
-    return baa++;
-}
+// int foo(int baa) { return baa++; }
 
-void main() {
-    //declare
-    int i, j, h;
+int main() {
+  // //declare
+  // int i, j, h;
 
-    //initialize
-    i = 2;
-    j = 3;
+  // //initialize
+  // i = 2;
+  // j = 3;
 
-    // integer operations
-    h = i + j;
-    h = i * j;
-    h = i - j;
-    h = i / j;
-    h = i | j;
-    h = i & j;
-    h = i ^ j;
-    h = i >> j;
-    h = i << j; 
-    h = i || j;
-    h = i && j;
-    h = i % j;
+  // // integer operations
+  // h = i + j;
+  // h = i * j;
+  // h = i - j;
+  // h = i / j;
+  // h = i | j;
+  // h = i & j;
+  // h = i ^ j;
+  // h = i >> j;
+  // h = i << j;
+  // h = i || j;
+  // h = i && j;
+  // h = i % j;
 
-    // for loop
+  // // for loop
 
-    for (int k = 0; k < 10; k++) {
-       i += k; 
-    } 
+  // for (int k = 0; k < 10; k++) {
+  //    i += k;
+  // }
 
-    if (i < 6) {
-        h = 3; 
-    }
+  // if (i < 6) {
+  //     h = 3;
+  // }
 
-    else {
-        h = 4;
-    } 
+  // else {
+  //     h = 4;
+  // }
 
-    h = foo(h);
+  // h = foo(h);
+  return 0;
 }

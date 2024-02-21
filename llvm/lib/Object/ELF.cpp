@@ -87,6 +87,12 @@ StringRef llvm::object::getELFRelocationTypeName(uint32_t Machine,
     default:
       break;
     }
+// TODO: Include PICBase.def
+//     switch (Type) {
+// #include "llvm/BinaryFormat/ELFRelocs/PICBase.def"
+//     default:
+//       break;
+//     }
     break;
   case ELF::EM_HEXAGON:
     switch (Type) {
