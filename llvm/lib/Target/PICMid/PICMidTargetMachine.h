@@ -34,9 +34,11 @@ public:
     return TLOF.get();
   }
 
+  const TargetSubtargetInfo *getSubtargetImpl(const Function &F) const override;
+
 private:
-  PICMidSubtarget SubTarget;
   std::unique_ptr<TargetLoweringObjectFile> TLOF;
+  mutable StringMap<std::unique_ptr<PICMidSubtarget>> SubtargetMap;
 };
 
 } // end namespace llvm

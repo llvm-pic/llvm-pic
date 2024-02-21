@@ -32,10 +32,32 @@ PICMidTargetMachine::PICMidTargetMachine(const Target &T, const Triple &TT,
                                          CodeGenOpt::Level OL, bool JIT)
     : LLVMTargetMachine(T, PICMidDataLayout, TT, getCPU(CPU), FS, Options,
                         Reloc::Static, CodeModel::Small, OL),
-      SubTarget(TT, getCPU(CPU).str(), FS.str(), *this),
       TLOF(std::make_unique<TargetLoweringObjectFileELF>()) {
   initAsmInfo();
   setGlobalISel(true);
+}
+
+const TargetSubtargetInfo *
+llvm::PICMidTargetMachine::getSubtargetImpl(const Function &F) const {
+  Attribute CPUAttr = F.getFnAttribute("target-cpu");
+  Attribute FSAttr = F.getFnAttribute("target-features");
+
+  auto CPU = CPUAttr.isValid()
+                 ? CPUAttr.getValueAsString().str()
+                 : TargetCPU; // FIXME: On my MBP M3 Pro, it defaults to
+                              // apple-m1. Investigate this.
+  auto FS = FSAttr.isValid() ? FSAttr.getValueAsString().str()
+                             : TargetFS; // See above
+
+  auto &I = SubtargetMap[CPU + FS];
+  if (!I) {
+    // This needs to be done before we create a new subtarget since any
+    // creation will depend on the TM and the code generation flags on the
+    // function that reside in TargetOptions.
+    resetTargetOptions(F);
+    I = std::make_unique<PICMidSubtarget>(TargetTriple, CPU, FS, *this);
+  }
+  return I.get();
 }
 
 namespace {
