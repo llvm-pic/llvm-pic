@@ -5,7 +5,7 @@ set(LLVM_TARGET_DEFINITIONS PICMid.td)
 tablegen(LLVM PICMidGenAsmMatcher.inc -gen-asm-matcher)
 tablegen(LLVM PICMidGenAsmWriter.inc -gen-asm-writer)
 # tablegen(LLVM PICMidGenCallingConv.inc -gen-callingconv)
-# tablegen(LLVM PICMidGenDAGISel.inc -gen-dag-isel)
+tablegen(LLVM PICMidGenDAGISel.inc -gen-dag-isel)
 # tablegen(LLVM PICMidGenDisassemblerTables.inc -gen-disassembler)
 # tablegen(LLVM PICMidGenGICombiner.inc -gen-global-isel-combiner-matchtable -combiners="PICMidCombinerHelper")
 tablegen(LLVM PICMidGenGlobalISel.inc -gen-global-isel)
@@ -32,7 +32,7 @@ add_llvm_target(PICMidCodeGen
 #   PICMidInlineAsmLowering.cpp
 #   PICMidIncDecPhi.cpp
 #   PICMidInsertCopies.cpp
-#   PICMidInstrInfo.cpp
+  PICMidInstrInfo.cpp
   PICMidInstructionSelector.cpp
 #   PICMidLateOptimization.cpp
   GISel/PICMidLegalizerInfo.cpp
@@ -43,7 +43,7 @@ add_llvm_target(PICMidCodeGen
 #   PICMidNonReentrant.cpp
 #   PICMidPostRAScavenging.cpp
   PICMidRegisterBankInfo.cpp
-#   PICMidRegisterInfo.cpp
+  PICMidRegisterInfo.cpp
 #   PICMidStaticStackAlloc.cpp
   PICMidSubtarget.cpp
   PICMidTargetLowering.cpp
@@ -59,6 +59,7 @@ add_llvm_target(PICMidCodeGen
   AsmPrinter
   BinaryFormat
   CodeGen
+  CodeGenTypes
   Core
   GlobalISel
   IPO

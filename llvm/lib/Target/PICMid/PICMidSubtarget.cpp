@@ -1,6 +1,8 @@
 #include "PICMidSubtarget.h"
 
 #include "MCTargetDesc/PICMidMCTargetDesc.h"
+#include "PICMidInstructionSelector.h"
+
 #include "llvm/BinaryFormat/ELF.h"
 #include "llvm/CodeGen/GlobalISel/CallLowering.h"
 #include "llvm/CodeGen/GlobalISel/InstructionSelector.h"
@@ -17,5 +19,6 @@
 llvm::PICMidSubtarget::PICMidSubtarget(const Triple &TT, const std::string &CPU,
                                        const std::string &FS,
                                        const PICMidTargetMachine &TM)
-    : PICMidGenSubtargetInfo(TT, CPU, CPU, FS), Legalizer(),
-      TargetLoweringInfo(TM, *this) {}
+    : PICMidGenSubtargetInfo(TT, CPU, CPU, FS), RegBankInfo(), Legalizer(),
+      RegisterInfo(), TargetLoweringInfo(TM, *this),
+      InstSelector(createPICMidInstructionSelector(TM, *this, RegBankInfo)) {}
