@@ -9,7 +9,7 @@ class Inst<string asmstr> : Instruction {
     let Namespace = "PICMid";
 
     let OutOperandList = (outs);
-    let Predicates = [HasMidInstrs];
+//    let Predicates = [HasMidInstrs]; // TODO: Figure out why this does not work
 
     let AsmString = asmstr;
 
