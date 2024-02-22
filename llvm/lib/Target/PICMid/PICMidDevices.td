@@ -1,8 +1,8 @@
-def FeatureMid
+def FeatureMidInstrs
     : SubtargetFeature<"mid-instrs", "HasMidInstrs", "true",
     "Original instructions present on all PIC(r) mid-range core devices">;
 
-def FeatureEnhancedMid
+def FeatureEnhancedMidInstrs
     : SubtargetFeature<"enhanced-mid-instrs", "HasEnhancedMidInstrs", "false",
     "Additional instructions present in enhanced mid-range core devices">;
 
@@ -22,7 +22,7 @@ def Family16F88x
     : Family<
         "pic16f88x", 
         "Microchip's PIC16F882/883/884/886/887 mid-range family of microcontrollers", 
-        [FeatureMid, FeatureStaticStack]>;
+        [FeatureMidInstrs, FeatureStaticStack]>;
 
 //===---------------------------------------------------------------------===//
 // PIC Mid-range Families

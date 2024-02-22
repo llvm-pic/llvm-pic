@@ -33,7 +33,7 @@ def ADDLW : PICMidLiteralAndControlOp<"addlw", 0b111110>;
 def ANDLW : PICMidLiteralAndControlOp<"andlw", 0b111001>; 
 def CALL : PICMidCallOrGotoOp<"call", 0b100>, InstCall; 
 def CLRWDT : PICMidLiteralAndControlOp_Implicit<"clrwdt", 0b01100100>; 
-def GOTO : PICMidCallOrGotoOp<"goto", 0b101>; 
+def GOTO : PICMidCallOrGotoOp<"goto", 0b101>;
 def IORLW : PICMidLiteralAndControlOp<"iorlw", 0b111000>; 
 def MOVLW : PICMidLiteralAndControlOp<"movlw", 0b110000>; 
 def RETFIE : PICMidLiteralAndControlOp_Implicit<"retfie", 0b00000001>, InstReturn; 
@@ -43,4 +43,8 @@ def SLEEP : PICMidLiteralAndControlOp_Implicit<"sleep", 0b01100011>;
 def SUBLW : PICMidLiteralAndControlOp<"sublw", 0b111100>; 
 def XORLW : PICMidLiteralAndControlOp<"xorlw", 0b111010>;
 
+// Operand type for basic block and function labels.
+def label : Operand<OtherVT>;
+
+include "PICMidInstrLogical.td"
 include "PICMidInstrPseudos.td"
