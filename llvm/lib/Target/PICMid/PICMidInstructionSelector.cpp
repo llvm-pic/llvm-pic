@@ -36,9 +36,9 @@ using namespace llvm;
 
 namespace {
 
-#define GET_GLOBALISEL_PREDICATE_BITSET
-#include "PICMidGenGlobalISel.inc"
-#undef GET_GLOBALISEL_PREDICATE_BITSET
+// #define GET_GLOBALISEL_PREDICATE_BITSET
+// #include "PICMidGenGlobalISel.inc"
+// #undef GET_GLOBALISEL_PREDICATE_BITSET
 
 class PICMidInstructionSelector : public InstructionSelector {
 public:
@@ -58,38 +58,38 @@ private:
   /// the patterns that don't require complex C++.
   bool selectImpl(MachineInstr &MI, CodeGenCoverage &CoverageInfo) const;
 
-#define GET_GLOBALISEL_PREDICATES_DECL
-#include "PICMidGenGlobalISel.inc"
-#undef GET_GLOBALISEL_PREDICATES_DECL
+  // #define GET_GLOBALISEL_PREDICATES_DECL
+  // #include "PICMidGenGlobalISel.inc"
+  // #undef GET_GLOBALISEL_PREDICATES_DECL
 
-#define GET_GLOBALISEL_TEMPORARIES_DECL
-#include "PICMidGenGlobalISel.inc"
-#undef GET_GLOBALISEL_TEMPORARIES_DECL
+  // #define GET_GLOBALISEL_TEMPORARIES_DECL
+  // #include "PICMidGenGlobalISel.inc"
+  // #undef GET_GLOBALISEL_TEMPORARIES_DECL
 };
 
 } // anonymous namespace
 
-#define GET_GLOBALISEL_IMPL
-#include "PICMidGenGlobalISel.inc"
-#undef GET_GLOBALISEL_IMPL
+// #define GET_GLOBALISEL_IMPL
+// #include "PICMidGenGlobalISel.inc"
+// #undef GET_GLOBALISEL_IMPL
 
 PICMidInstructionSelector::PICMidInstructionSelector(
     const PICMidTargetMachine &TM, PICMidSubtarget &STI,
     PICMidRegisterBankInfo &RBI)
-    : STI(STI), TII(*STI.getInstrInfo()), TRI(*STI.getRegisterInfo()), RBI(RBI),
-#define GET_GLOBALISEL_PREDICATES_INIT
-#include "PICMidGenGlobalISel.inc"
-#undef GET_GLOBALISEL_PREDICATES_INIT
-#define GET_GLOBALISEL_TEMPORARIES_INIT
-#include "PICMidGenGlobalISel.inc"
-#undef GET_GLOBALISEL_TEMPORARIES_INIT
-{
-}
+    : STI(STI), TII(*STI.getInstrInfo()), TRI(*STI.getRegisterInfo()),
+      RBI(RBI) {}
+// #define GET_GLOBALISEL_PREDICATES_INIT
+// #include "PICMidGenGlobalISel.inc"
+// #undef GET_GLOBALISEL_PREDICATES_INIT
+// #define GET_GLOBALISEL_TEMPORARIES_INIT
+// #include "PICMidGenGlobalISel.inc"
+// #undef GET_GLOBALISEL_TEMPORARIES_INIT
+// {}
 
 bool PICMidInstructionSelector::select(MachineInstr &I) {
-  if (selectImpl(I, *CoverageInfo)) {
-    return true;
-  }
+  //   if (selectImpl(I, *CoverageInfo)) {
+  //     return true;
+  //   }
   return false;
 }
 
