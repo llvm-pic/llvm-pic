@@ -28,28 +28,45 @@ class PICMidUnconditionalBranch : PICMidBranch {
   let isBarrier = true;
 }
 
-def GOTO_L : PICMidUnconditionalBranch {
-    let InOperandList = (ins label:$tgt);
-    let Pattern = [(br bb:$tgt)];
-}
+//def GOTO_L : PICMidUnconditionalBranch {
+//    let InOperandList = (ins label:$tgt);
+//    let Pattern = [(br bb:$tgt)];
+//}
 
-// Addition
+// Addition / Subtraction
 
-class PICMidAddSub : PICMidLogicalInstr {
+class PICMidAddSubOp<Operand op> : PICMidLogicalInstr {
+  dag InOperandList = (ins Wc:$l, op:$r);
   dag OutOperandList = (outs Wc:$dst);
   let Constraints = "$dst = $l";
 }
 
-class PICMidAddSubOp<Operand op> : PICMidAddSub {
-  dag InOperandList = (ins Wc:$l, op:$r);
+class PICMidAddSubToF<RegisterClass rc> : PICMidLogicalInstr {
+  dag InOperandList = (ins Wc:$l, rc:$r);
+  dag OutOperandList = (outs rc:$dst);
+  let Constraints = "$dst = $r";
 }
 
-class PICMidAddSubRC<RegisterClass rc> : PICMidAddSub {
+class PICMidAddSubToW<RegisterClass rc> : PICMidLogicalInstr {
   dag InOperandList = (ins Wc:$l, rc:$r);
+  dag OutOperandList = (outs Wc:$dst);
+  let Constraints = "$dst = $l";
 }
 
 let isAdd = true in {
     def ADDImm : PICMidAddSubOp<imm8>, PseudoInstExpansion<(ADDLW imm8:$r)>;
+    def ADDImagToF : PICMidAddSubToF<Imag>, PseudoInstExpansion<(ADDWF addr7:$r, (imm1 1))>;
+    def ADDImagToW : PICMidAddSubToW<Imag>, PseudoInstExpansion<(ADDWF addr7:$r, (imm1 0))>;
 }
 
+def SUBImm : PICMidAddSubOp<imm8>, PseudoInstExpansion<(SUBLW imm8:$r)>;
+def SUBImagToF : PICMidAddSubToF<Imag>, PseudoInstExpansion<(SUBWF addr7:$r, (imm1 1))>;
+def SUBImagToW : PICMidAddSubToW<Imag>, PseudoInstExpansion<(SUBWF addr7:$r, (imm1 0))>;
+
 def : Pat<(add Wc:$l, (i8 imm:$imm)), (ADDImm Wc:$l, imm:$imm)>;
+def : Pat<(add Wc:$l, Imag:$r), (ADDImagToF Wc:$l, Imag:$r)>;
+def : Pat<(add Wc:$l, Imag:$r), (ADDImagToW Wc:$l, Imag:$r)>;
+
+def : Pat<(sub (i8 imm:$imm), Wc:$l), (SUBImm Wc:$l, imm:$imm)>;
+def : Pat<(sub Imag:$r, Wc:$l), (SUBImagToF Wc:$l, Imag:$r)>;
+def : Pat<(sub Imag:$r, Wc:$l), (SUBImagToW Wc:$l, Imag:$r)>;

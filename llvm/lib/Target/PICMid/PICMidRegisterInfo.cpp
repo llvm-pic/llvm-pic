@@ -32,7 +32,7 @@
 using namespace llvm;
 
 llvm::PICMidRegisterInfo::PICMidRegisterInfo()
-    : PICMidGenRegisterInfo(0, 0, 0, 0, 0) {}
+    : PICMidGenRegisterInfo(0, 0, 0, 0, 0), Reserved(getNumRegs()) {}
 
 const MCPhysReg *
 llvm::PICMidRegisterInfo::getCalleeSavedRegs(const MachineFunction *MF) const {
@@ -41,7 +41,7 @@ llvm::PICMidRegisterInfo::getCalleeSavedRegs(const MachineFunction *MF) const {
 
 BitVector
 llvm::PICMidRegisterInfo::getReservedRegs(const MachineFunction &MF) const {
-  return BitVector();
+  return this->Reserved;
 }
 
 bool llvm::PICMidRegisterInfo::eliminateFrameIndex(

@@ -22,6 +22,7 @@ public:
   Register getFrameRegister(const MachineFunction &MF) const override;
 
 private:
+  BitVector Reserved;
 };
 
 } // namespace llvm

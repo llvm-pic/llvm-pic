@@ -48,3 +48,4 @@ def label : Operand<OtherVT>;
 
 include "PICMidInstrLogical.td"
 include "PICMidInstrPseudos.td"
+include "PICMidInstrGISel.td"
