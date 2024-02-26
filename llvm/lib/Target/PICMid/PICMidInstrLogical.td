@@ -12,22 +12,33 @@ class PICMidLogicalInstr : Instruction {
   let isReMaterializable = true;
 }
 
-class PICMidInstrResultToF<RegisterClass rc> : PICMidLogicalInstr {
+class PICMidBinaryInstrResultToF<RegisterClass rc> : PICMidLogicalInstr {
   dag InOperandList = (ins Wc:$l, rc:$r);
   dag OutOperandList = (outs rc:$dst);
   let Constraints = "$dst = $r";
 }
 
-class PICMidInstrResultToW<RegisterClass rc> : PICMidLogicalInstr {
+class PICMidBinaryInstrResultToW<RegisterClass rc> : PICMidLogicalInstr {
   dag InOperandList = (ins Wc:$l, rc:$r);
   dag OutOperandList = (outs rc:$dst);
   let Constraints = "$dst = $l";
 }
 
-class PICMidInstrWithLiteral<Operand op> : PICMidLogicalInstr {
+class PICMidBinaryInstrWithLiteral<Operand op> : PICMidLogicalInstr {
   dag InOperandList = (ins Wc:$l, op:$r);
   dag OutOperandList = (outs Wc:$dst);
   let Constraints = "$dst = $l";
+}
+
+class PICMidUnaryInstrResultToF<RegisterClass rc> : PICMidLogicalInstr {
+  dag InOperandList = (ins rc:$r);
+  dag OutOperandList = (outs rc:$dst);
+  let Constraints = "$dst = $r";
+}
+
+class PICMidUnaryInstrResultToW<RegisterClass rc> : PICMidLogicalInstr {
+  dag InOperandList = (ins rc:$r);
+  dag OutOperandList = (outs Wc:$dst);
 }
 
 // Control Flow
@@ -51,33 +62,85 @@ class PICMidUnconditionalBranch : PICMidBranch {
 //    let Pattern = [(br bb:$tgt)];
 //}
 
+// Return
+
 class PICMidReturn<Instruction Opcode> : PICMidLogicalInstr, PseudoInstExpansion<(Opcode)> {
   let isBarrier = true;
   let isReturn = true;
   let isTerminator = true; 
 }
 
-def RETURN_L : PICMidReturn<RETURN>;
+def G_RETURN : PICMidReturn<RETURN>;
 
 // Addition / Subtraction
 
 let isAdd = true in {
-    def ADDImm : PICMidInstrWithLiteral<imm8>, PseudoInstExpansion<(ADDLW imm8:$r)>;
-    def ADDImagToF : PICMidInstrResultToF<Imag>, PseudoInstExpansion<(ADDWF addr7:$r, (imm1 1))>;
-    def ADDImagToW : PICMidInstrResultToW<Imag>, PseudoInstExpansion<(ADDWF addr7:$r, (imm1 0))>;
+    def G_ADDLW : PICMidBinaryInstrWithLiteral<imm8>, PseudoInstExpansion<(ADDLW imm8:$r)>;
+    def G_ADDWF_F : PICMidBinaryInstrResultToF<Imag>, PseudoInstExpansion<(ADDWF addr7:$r, (imm1 1))>;
+    def G_ADDWF_W : PICMidBinaryInstrResultToW<Imag>, PseudoInstExpansion<(ADDWF addr7:$r, (imm1 0))>;
 }
 
-def SUBImm : PICMidInstrWithLiteral<imm8>, PseudoInstExpansion<(SUBLW imm8:$r)>;
-def SUBImagToF : PICMidInstrResultToF<Imag>, PseudoInstExpansion<(SUBWF addr7:$r, (imm1 1))>;
-def SUBImagToW : PICMidInstrResultToW<Imag>, PseudoInstExpansion<(SUBWF addr7:$r, (imm1 0))>;
+def G_SUBLW : PICMidBinaryInstrWithLiteral<imm8>, PseudoInstExpansion<(SUBLW imm8:$r)>;
+def G_SUBWF_F : PICMidBinaryInstrResultToF<Imag>, PseudoInstExpansion<(SUBWF addr7:$r, (imm1 1))>;
+def G_SUBWF_W : PICMidBinaryInstrResultToW<Imag>, PseudoInstExpansion<(SUBWF addr7:$r, (imm1 0))>;
 
-def : Pat<(add Wc:$l, (i8 imm:$imm)), (ADDImm Wc:$l, imm:$imm)>;
-def : Pat<(add Wc:$l, Imag:$r), (ADDImagToF Wc:$l, Imag:$r)>;
-def : Pat<(add Wc:$l, Imag:$r), (ADDImagToW Wc:$l, Imag:$r)>;
+def G_INCF_F : PICMidUnaryInstrResultToF<Imag>, PseudoInstExpansion<(INCF addr7:$r, (imm1 1))>;
+def G_INCF_W : PICMidUnaryInstrResultToW<Imag>, PseudoInstExpansion<(INCF addr7:$r, (imm1 0))>;
 
-def : Pat<(sub (i8 imm:$imm), Wc:$l), (SUBImm Wc:$l, imm:$imm)>;
-def : Pat<(sub Imag:$r, Wc:$l), (SUBImagToF Wc:$l, Imag:$r)>;
-def : Pat<(sub Imag:$r, Wc:$l), (SUBImagToW Wc:$l, Imag:$r)>;
+def G_DECF_F : PICMidUnaryInstrResultToF<Imag>, PseudoInstExpansion<(DECF addr7:$r, (imm1 1))>;
+def G_DECF_W : PICMidUnaryInstrResultToW<Imag>, PseudoInstExpansion<(DECF addr7:$r, (imm1 0))>;
+
+def : Pat<(add Wc:$l, (i8 imm:$imm)), (G_ADDLW Wc:$l, imm:$imm)>;
+def : Pat<(add Wc:$l, Imag:$r), (G_ADDWF_F Wc:$l, Imag:$r)>;
+def : Pat<(add Wc:$l, Imag:$r), (G_ADDWF_W Wc:$l, Imag:$r)>;
+
+def : Pat<(sub (i8 imm:$imm), Wc:$l), (G_SUBLW Wc:$l, imm:$imm)>;
+def : Pat<(sub Imag:$r, Wc:$l), (G_SUBWF_F Wc:$l, Imag:$r)>;
+def : Pat<(sub Imag:$r, Wc:$l), (G_SUBWF_W Wc:$l, Imag:$r)>;
+
+def : Pat<(add Imag:$r, (i8 1)), (G_INCF_F Imag:$r)>;
+def : Pat<(add Imag:$r, (i8 1)), (G_INCF_W Imag:$r)>;
+
+def : Pat<(sub Imag:$r, (i8 1)), (G_DECF_F Imag:$r)>;
+def : Pat<(sub Imag:$r, (i8 1)), (G_DECF_W Imag:$r)>;
 
 // Byte oriented bitwise operations
 
+def G_IORLW : PICMidBinaryInstrWithLiteral<imm8>, PseudoInstExpansion<(IORLW imm8:$r)>;
+def G_IORWF_F : PICMidBinaryInstrResultToF<Imag>, PseudoInstExpansion<(IORWF addr7:$r, (imm1 1))>;
+def G_IORWF_W : PICMidBinaryInstrResultToW<Imag>, PseudoInstExpansion<(IORWF addr7:$r, (imm1 0))>;
+
+def G_ANDLW : PICMidBinaryInstrWithLiteral<imm8>, PseudoInstExpansion<(ANDLW imm8:$r)>;
+def G_ANDWF_F : PICMidBinaryInstrResultToF<Imag>, PseudoInstExpansion<(ANDWF addr7:$r, (imm1 1))>;
+def G_ANDWF_W : PICMidBinaryInstrResultToW<Imag>, PseudoInstExpansion<(ANDWF addr7:$r, (imm1 0))>;
+
+def G_XORLW : PICMidBinaryInstrWithLiteral<imm8>, PseudoInstExpansion<(XORLW imm8:$r)>;
+def G_XORWF_F : PICMidBinaryInstrResultToF<Imag>, PseudoInstExpansion<(XORWF addr7:$r, (imm1 1))>;
+def G_XORWF_W : PICMidBinaryInstrResultToW<Imag>, PseudoInstExpansion<(XORWF addr7:$r, (imm1 0))>;
+
+def G_COMF_F : PICMidUnaryInstrResultToF<Imag>, PseudoInstExpansion<(COMF addr7:$r, (imm1 1))>;
+def G_COMF_W : PICMidUnaryInstrResultToW<Imag>, PseudoInstExpansion<(COMF addr7:$r, (imm1 0))>;
+
+def : Pat<(or Wc:$l, (i8 imm:$imm)), (G_IORLW Wc:$l, imm:$imm)>;
+def : Pat<(or Wc:$l, Imag:$r), (G_IORWF_F Wc:$l, Imag:$r)>;
+def : Pat<(or Wc:$l, Imag:$r), (G_IORWF_W Wc:$l, Imag:$r)>;
+
+def : Pat<(and Wc:$l, (i8 imm:$imm)), (G_ANDLW Wc:$l, imm:$imm)>;
+def : Pat<(and Wc:$l, Imag:$r), (G_ANDWF_F Wc:$l, Imag:$r)>;
+def : Pat<(and Wc:$l, Imag:$r), (G_ANDWF_W Wc:$l, Imag:$r)>;
+
+def : Pat<(xor Wc:$l, (i8 imm:$imm)), (G_XORLW Wc:$l, imm:$imm)>;
+def : Pat<(xor Wc:$l, Imag:$r), (G_XORWF_F Wc:$l, Imag:$r)>;
+def : Pat<(xor Wc:$l, Imag:$r), (G_XORWF_W Wc:$l, Imag:$r)>;
+
+def : Pat<(xor Imag:$r, (i8 -1)), (G_COMF_F Imag:$r)>;
+def : Pat<(xor Imag:$r, (i8 -1)), (G_COMF_W Imag:$r)>;
+
+// Miscellaneous instruction
+
+class PICMidClearF<RegisterClass rc> : PICMidLogicalInstr {
+    dag InOperandList = (ins rc:$r);
+    let hasSideEffects = true;
+}
+
+def G_CLRF : PICMidClearF<Imag>, PseudoInstExpansion<(CLRF addr7:$r)>; // TODO: Figure out how to do this
