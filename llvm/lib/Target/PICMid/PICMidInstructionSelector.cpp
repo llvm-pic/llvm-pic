@@ -87,6 +87,9 @@ PICMidInstructionSelector::PICMidInstructionSelector(
 }
 
 bool PICMidInstructionSelector::select(MachineInstr &I) {
+  if (!I.isPreISelOpcode()) {
+    return true;
+  }
   if (selectImpl(I, *CoverageInfo)) {
     return true;
   }

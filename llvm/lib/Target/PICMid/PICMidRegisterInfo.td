@@ -16,7 +16,7 @@ defvar ImagRegsAddrOffset = 0x70;
 defvar MaxImagRegs = 16;
 
 foreach I = 0...!add(MaxImagRegs, -1) in {
-    def R#I: PICMidReg<!add(ImagRegsAddrOffset, I), "rc"#!cast<string>(I)>;
+    def R#I: PICMidReg<!add(ImagRegsAddrOffset, I), "r"#!cast<string>(I)>;
 }
 
 // Register Class

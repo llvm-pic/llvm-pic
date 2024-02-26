@@ -37,6 +37,9 @@ public:
   InstructionSelector *getInstructionSelector() const override {
     return InstSelector.get();
   }
+  const PICMidRegisterBankInfo *getRegBankInfo() const override {
+    return &RegBankInfo;
+  }
   const PICMidRegisterInfo *getRegisterInfo() const override {
     return &RegisterInfo;
   }
