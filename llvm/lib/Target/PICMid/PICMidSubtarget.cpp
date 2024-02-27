@@ -1,7 +1,7 @@
 #include "PICMidSubtarget.h"
 
+#include "GISel/PICMidInstructionSelector.h"
 #include "MCTargetDesc/PICMidMCTargetDesc.h"
-#include "PICMidInstructionSelector.h"
 
 #include "llvm/BinaryFormat/ELF.h"
 #include "llvm/CodeGen/GlobalISel/CallLowering.h"

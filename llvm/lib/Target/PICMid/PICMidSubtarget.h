@@ -8,9 +8,9 @@
 #include "llvm/CodeGen/TargetSubtargetInfo.h"
 
 #include "GISel/PICMidLegalizerInfo.h"
+#include "GISel/PICMidRegisterBankInfo.h"
 #include "PICMidFrameLowering.h"
 #include "PICMidInstrInfo.h"
-#include "PICMidRegisterBankInfo.h"
 #include "PICMidRegisterInfo.h"
 #include "PICMidTargetLowering.h"
 
