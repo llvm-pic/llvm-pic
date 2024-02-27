@@ -64,13 +64,17 @@ class PICMidUnconditionalBranch : PICMidBranch {
 
 // Return
 
-class PICMidReturn<Instruction Opcode> : PICMidLogicalInstr, PseudoInstExpansion<(Opcode)> {
+class PICMidReturn<dag Opcode> : PICMidLogicalInstr, PseudoInstExpansion<Opcode> {
   let isBarrier = true;
   let isReturn = true;
   let isTerminator = true; 
 }
 
-def G_RETURN : PICMidReturn<RETURN>;
+def G_RETURN : PICMidReturn<(RETURN)>;
+def G_RETFIE : PICMidReturn<(RETFIE)>;
+def G_RETLW : PICMidReturn<(RETLW imm8:$l)> {
+    dag InOperandList = (ins imm8:$l);
+}
 
 // Addition / Subtraction
 
@@ -106,6 +110,15 @@ def : Pat<(sub Imag:$r, (i8 1)), (G_DECF_W Imag:$r)>;
 
 // Byte oriented bitwise operations
 
+class PICMidRotateResultToF<RegisterClass rc, RegisterClass rcCarry> : PICMidUnaryInstrResultToF<rc> {
+    dag InOperandList = (ins rc:$r, rcCarry:$cIn);
+    dag OutOperandList = (outs rc:$dst, rcCarry:$cOut);
+}
+class PICMidRotateResultToW<RegisterClass rc, RegisterClass rcCarry> : PICMidUnaryInstrResultToF<rc> {
+    dag InOperandList = (ins rc:$r, rcCarry:$cIn);
+    dag OutOperandList = (outs Wc:$dst, rcCarry:$cOut);
+}
+
 def G_IORLW : PICMidBinaryInstrWithLiteral<imm8>, PseudoInstExpansion<(IORLW imm8:$r)>;
 def G_IORWF_F : PICMidBinaryInstrResultToF<Imag>, PseudoInstExpansion<(IORWF addr7:$r, (imm1 1))>;
 def G_IORWF_W : PICMidBinaryInstrResultToW<Imag>, PseudoInstExpansion<(IORWF addr7:$r, (imm1 0))>;
@@ -120,6 +133,13 @@ def G_XORWF_W : PICMidBinaryInstrResultToW<Imag>, PseudoInstExpansion<(XORWF add
 
 def G_COMF_F : PICMidUnaryInstrResultToF<Imag>, PseudoInstExpansion<(COMF addr7:$r, (imm1 1))>;
 def G_COMF_W : PICMidUnaryInstrResultToW<Imag>, PseudoInstExpansion<(COMF addr7:$r, (imm1 0))>;
+
+// TODO: Implement instruction selection for rotating through carry
+def G_RLF_F : PICMidRotateResultToF<Imag, Cc>, PseudoInstExpansion<(RLF addr7:$r, (imm1 1))>;
+def G_RLF_W : PICMidRotateResultToW<Imag, Cc>, PseudoInstExpansion<(RLF addr7:$r, (imm1 0))>;
+
+def G_RRF_F : PICMidRotateResultToF<Imag, Cc>, PseudoInstExpansion<(RRF addr7:$r, (imm1 1))>;
+def G_RRF_W : PICMidRotateResultToW<Imag, Cc>, PseudoInstExpansion<(RRF addr7:$r, (imm1 0))>;
 
 def : Pat<(or Wc:$l, (i8 imm:$imm)), (G_IORLW Wc:$l, imm:$imm)>;
 def : Pat<(or Wc:$l, Imag:$r), (G_IORWF_F Wc:$l, Imag:$r)>;
@@ -141,6 +161,14 @@ def : Pat<(xor Imag:$r, (i8 -1)), (G_COMF_W Imag:$r)>;
 class PICMidClearF<RegisterClass rc> : PICMidLogicalInstr {
     dag InOperandList = (ins rc:$r);
     let hasSideEffects = true;
+    let mayStore = true;
 }
 
 def G_CLRF : PICMidClearF<Imag>, PseudoInstExpansion<(CLRF addr7:$r)>; // TODO: Figure out how to do this
+def G_MOVLW : PICMidLogicalInstr, PseudoInstExpansion<(MOVLW imm8:$k)> {
+    dag InOperandList = (ins imm8:$k);
+    dag OutOperandList = (outs Wc:$l);
+}
+
+//def : Pat<(store 0, Imag:$r), (G_CLRF Imag:$r)>;
+def : Pat<(i8 imm:$k), (G_MOVLW imm:$k)>;

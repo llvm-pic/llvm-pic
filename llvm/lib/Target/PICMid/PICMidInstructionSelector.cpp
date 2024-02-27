@@ -56,7 +56,9 @@ private:
 
   /// tblgen-erated 'select' implementation, used as the initial selector for
   /// the patterns that don't require complex C++.
-  bool selectImpl(MachineInstr &MI, CodeGenCoverage &CoverageInfo) const;
+  bool selectImpl(MachineInstr &I, CodeGenCoverage &CoverageInfo) const;
+
+  bool selectShift(MachineInstr &I) const;
 
 #define GET_GLOBALISEL_PREDICATES_DECL
 #include "PICMidGenGlobalISel.inc"
@@ -93,7 +95,41 @@ bool PICMidInstructionSelector::select(MachineInstr &I) {
   if (selectImpl(I, *CoverageInfo)) {
     return true;
   }
-  return false;
+
+  switch (I.getOpcode()) {
+  case PICMid::G_SHLE:
+  case PICMid::G_LSHRE:
+    return selectShift(I);
+  default:
+    return false;
+  }
+}
+
+bool PICMidInstructionSelector::selectShift(MachineInstr &I) const {
+  auto [Dst, CarryOut, Src, CarryIn] = I.getFirst4Regs();
+
+  unsigned RotateOpcode;
+  switch (I.getOpcode()) {
+  case PICMid::G_LSHRE:
+    RotateOpcode = PICMid::G_RRF_F;
+    break;
+  case PICMid::G_SHLE:
+    RotateOpcode = PICMid::G_RLF_F;
+    break;
+  }
+
+  MachineIRBuilder Builder(I);
+
+  auto Asl = Builder.buildInstr(RotateOpcode, {Dst, CarryOut}, {Src, CarryIn});
+
+  // return false;
+
+  if (!constrainSelectedInstRegOperands(*Asl, TII, TRI, RBI)) {
+    return false;
+  }
+
+  I.eraseFromParent();
+  return true;
 }
 
 InstructionSelector *

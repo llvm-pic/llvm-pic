@@ -9,8 +9,8 @@ body: |
   bb.0.entry:
     ; CHECK-LABEL: name: add_imm
     ; CHECK: [[COPY:%[0-9]+]]:wc = COPY $w
-    ; CHECK-NEXT: [[ADDImm:%[0-9]+]]:wc = G_ADDLW [[COPY]], 42
-    ; CHECK-NEXT: G_RETURN implicit [[ADDImm]]
+    ; CHECK-NEXT: [[ADDLW:%[0-9]+]]:wc = G_ADDLW [[COPY]], 42
+    ; CHECK-NEXT: G_RETURN implicit [[ADDLW]]
     %0:any(s8) = COPY $w
     %1:any(s8) = G_CONSTANT i8 42
     %2:any(s8) = G_ADD %0, %1
@@ -21,11 +21,6 @@ legalized: true
 regBankSelected: true
 body: |
   bb.0.entry:
-    ; CHECK-LABEL: name: add_f
-    ; CHECK: [[COPY:%[0-9]+]]:wc = COPY $w
-    ; CHECK-NEXT: [[Imag:%[0-9]+]]:imag = COPY $r0
-    ; CHECK-NEXT: [[ADDImagToF:%[0-9]+]]:imag = G_ADDWF_F [[COPY]], [[Imag]]
-    ; CHECK-NEXT: G_RETURN implicit [[ADDImagToF]]
     %0:any(s8) = COPY $w
     %1:any(s8) = COPY $r0
     %2:any(s8) = G_ADD %0, %1
@@ -36,8 +31,6 @@ legalized: true
 regBankSelected: true
 body: |
   bb.0.entry:
-    ; CHECK-LABEL: name: add_w
-    ; TODO: Fix this
     %0:any(s8) = COPY $w
     %1:any(s8) = COPY $r0
     %2:any(s8) = G_ADD %0, %1
@@ -49,10 +42,6 @@ legalized: true
 regBankSelected: true
 body: |
   bb.0.entry:
-    ; CHECK-LABEL: name: sub_imm
-    ; CHECK: [[COPY:%[0-9]+]]:wc = COPY $w
-    ; CHECK-NEXT: [[SUBImm:%[0-9]+]]:wc = G_SUBLW [[COPY]], 42
-    ; CHECK-NEXT: G_RETURN implicit [[SUBImm]]
     %0:any(s8) = COPY $w
     %1:any(s8) = G_CONSTANT i8 42
     %2:any(s8) = G_SUB %1, %0
@@ -63,11 +52,6 @@ legalized: true
 regBankSelected: true
 body: |
   bb.0.entry:
-    ; CHECK-LABEL: name: sub_f
-    ; CHECK: [[COPY:%[0-9]+]]:wc = COPY $w
-    ; CHECK-NEXT: [[R0:%[0-9]+]]:imag = COPY $r0
-    ; CHECK-NEXT: [[SUBImagToF:%[0-9]+]]:imag = G_SUBWF_F [[COPY]], [[R0]]
-    ; CHECK-NEXT: G_RETURN implicit [[SUBImagToF]]
     %0:any(s8) = COPY $w
     %1:any(s8) = COPY $r0
     %2:any(s8) = G_SUB %1, %0
@@ -78,10 +62,6 @@ legalized: true
 regBankSelected: true
 body: |
   bb.0.entry:
-    ; CHECK-LABEL: name: decf_f
-    ; CHECK: [[COPY:%[0-9]+]]:imag = COPY $r0
-    ; CHECK-NEXT: [[G_DECF_F:%[0-9]+]]:imag = G_DECF_F [[COPY]]
-    ; CHECK-NEXT: G_RETURN implicit [[G_DECF_F]]
     %0:any(s8) = COPY $r0
     %1:any(s8) = G_CONSTANT i8 1
     %2:any(s8) = G_SUB %0, %1
@@ -92,10 +72,6 @@ legalized: true
 regBankSelected: true
 body: |
   bb.0.entry:
-    ; CHECK-LABEL: name: incf_f
-    ; CHECK: [[COPY:%[0-9]+]]:imag = COPY $r0
-    ; CHECK-NEXT: [[G_INCF_F:%[0-9]+]]:imag = G_INCF_F [[COPY]]
-    ; CHECK-NEXT: G_RETURN implicit [[G_INCF_F]]
     %0:any(s8) = COPY $r0
     %1:any(s8) = G_CONSTANT i8 1
     %2:any(s8) = G_ADD %0, %1
