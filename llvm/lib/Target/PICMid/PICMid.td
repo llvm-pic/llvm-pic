@@ -12,6 +12,8 @@ def PICMidInstrInfo : InstrInfo {
     let guessInstructionProperties = 0;
 }
 
+include "PICMidCallingConv.td"
+
 def PICMidAsmWriter : AsmWriter {
     string AsmWriterClassName = "MCInstPrinter";
     bit isMCAsmWriter = 1;

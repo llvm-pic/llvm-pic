@@ -36,7 +36,8 @@ llvm::PICMidRegisterInfo::PICMidRegisterInfo()
 
 const MCPhysReg *
 llvm::PICMidRegisterInfo::getCalleeSavedRegs(const MachineFunction *MF) const {
-  return nullptr;
+  const PICMidFrameLowering &TFI = *getFrameLowering(*MF);
+  return TFI.isISR(*MF) ? PICMid_Interrupt_CSR_SaveList : PICMid_CSR_SaveList;
 }
 
 BitVector

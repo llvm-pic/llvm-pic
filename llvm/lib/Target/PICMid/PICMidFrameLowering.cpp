@@ -16,3 +16,11 @@ void llvm::PICMidFrameLowering::emitEpilogue(MachineFunction &MF,
 bool llvm::PICMidFrameLowering::hasFP(const MachineFunction &MF) const {
   return false;
 }
+
+bool llvm::PICMidFrameLowering::isISR(const MachineFunction &MF) const {
+  const Function &F = MF.getFunction();
+  if (F.hasFnAttribute("no-isr"))
+    return false;
+  return F.hasFnAttribute("interrupt") ||
+         F.hasFnAttribute("interrupt-norecurse");
+}
