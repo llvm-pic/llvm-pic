@@ -1,9 +1,10 @@
-#include "MCTargetDesc/PICMidMCTargetDesc.h"
-#include "TargetInfo/PICMidTargetInfo.h"
-
 #include "llvm/CodeGen/AsmPrinter.h"
 #include "llvm/MC/MCStreamer.h"
 #include "llvm/MC/TargetRegistry.h"
+
+#include "MCTargetDesc/PICMidMCTargetDesc.h"
+#include "PICMidMCInstLower.h"
+#include "TargetInfo/PICMidTargetInfo.h"
 
 #define DEBUG_TYPE "asm-printer"
 
@@ -29,6 +30,7 @@ public:
 
 void PICMidAsmPrinter::lowerOperand(const MachineOperand &MO, MCOperand &MCOp) {
   // TODO: Fill in
+  //   MCContext &
 }
 
 #include "PICMidGenMCPseudoLowering.inc"
