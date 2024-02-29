@@ -55,3 +55,7 @@ Register
 llvm::PICMidRegisterInfo::getFrameRegister(const MachineFunction &MF) const {
   return Register();
 }
+
+uint16_t llvm::PICMidRegisterInfo::getHwEncoding(Register Reg) const {
+  return PICMidRegEncodingTable[Reg.id()];
+}

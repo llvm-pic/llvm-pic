@@ -21,6 +21,11 @@ legalized: true
 regBankSelected: true
 body: |
   bb.0.entry:
+    ; CHECK-LABEL: name: add_f
+    ; CHECK: [[W:%[0-9]+]]:wc = COPY $w
+    ; CHECK: [[R0:%[0-9]+]]:imag = COPY $r0
+    ; CHECK-NEXT: [[ADDWF:%[0-9]+]]:imag = G_ADDWF_F [[W]], [[R0]]
+    ; CHECK-NEXT: G_RETURN implicit [[ADDWF]]
     %0:any(s8) = COPY $w
     %1:any(s8) = COPY $r0
     %2:any(s8) = G_ADD %0, %1

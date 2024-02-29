@@ -21,6 +21,8 @@ public:
                            RegScavenger *RS = nullptr) const override;
   Register getFrameRegister(const MachineFunction &MF) const override;
 
+  uint16_t getHwEncoding(Register Reg) const;
+
 private:
   BitVector Reserved;
 };

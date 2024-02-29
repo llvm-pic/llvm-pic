@@ -28,6 +28,23 @@ bool llvm::PICMidMCInstLower::lowerOperand(const MachineOperand &MO,
                                        ->getMF()
                                        ->getSubtarget<PICMidSubtarget>()
                                        .getRegisterInfo();
+  auto GetTotal = [&]() {
+    size_t Idx = &MO - MO.getParent()->operands_begin();
+    switch (MO.getParent()->getDesc().operands()[Idx].OperandType) {
+    default:
+      llvm_unreachable("Unexpected operand type.");
+    case PICMidOp::OPERAND_IMM1:
+      return 1 << 1;
+    case PICMidOp::OPERAND_IMM3:
+      return 1 << 3;
+    case PICMidOp::OPERAND_ADDR7:
+      return 1 << 7;
+    case PICMidOp::OPERAND_IMM8:
+      return 1 << 8;
+    case PICMidOp::OPERAND_PCABS11:
+      return 1 << 11;
+    }
+  };
 
   switch (MO.getType()) {
   default:
@@ -45,26 +62,15 @@ bool llvm::PICMidMCInstLower::lowerOperand(const MachineOperand &MO,
         lowerSymbolOperand(MO, AP.GetExternalSymbolSymbol(MO.getSymbolName()));
     break;
   case MachineOperand::MO_Immediate:
-    auto GetTotal = [&]() {
-      size_t Idx = &MO - MO.getParent()->operands_begin();
-      switch (MO.getParent()->getDesc().operands()[Idx].OperandType) {
-      default:
-        llvm_unreachable("Unexpected operand type.");
-      case PICMidOp::OPERAND_IMM1:
-        return 1 << 1;
-      case PICMidOp::OPERAND_IMM3:
-        return 1 << 3;
-      case PICMidOp::OPERAND_ADDR7:
-        return 1 << 7;
-      case PICMidOp::OPERAND_IMM8:
-        return 1 << 8;
-      case PICMidOp::OPERAND_PCABS11:
-        return 1 << 11;
-      }
-    };
     MCOp = MCOperand::createImm(MO.getImm() >= 0 ? MO.getImm()
                                                  : MO.getImm() + GetTotal());
     break;
+  case MachineOperand::MO_Register:
+    if (MO.isImplicit() || !PICMid::ImagRegClass.contains(MO.getReg())) {
+      return false;
+    }
+
+    MCOp = MCOperand::createImm(TRI.getHwEncoding(MO.getReg()));
   }
 
   return true;
