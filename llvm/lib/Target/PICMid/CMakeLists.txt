@@ -37,7 +37,7 @@ add_llvm_target(PICMidCodeGen
 #   PICMidLateOptimization.cpp
   GISel/PICMidLegalizerInfo.cpp
 #   PICMidLowerSelect.cpp
-  PICMidMCInstLower.cpp
+  PICMidInstLower.cpp
 #   PICMidMachineFunctionInfo.cpp
 #   PICMidMachineScheduler.cpp
 #   PICMidNonReentrant.cpp

@@ -36,6 +36,15 @@ using namespace llvm;
 
 namespace {
 
+static const TargetRegisterClass getRegClassForType(LLT Ty) {
+  switch (Ty.getSizeInBits()) {
+  default:
+    llvm_unreachable("Invalid type size.");
+  case 8:
+    return PICMid::ImagRegClass;
+  }
+}
+
 #define GET_GLOBALISEL_PREDICATE_BITSET
 #include "PICMidGenGlobalISel.inc"
 #undef GET_GLOBALISEL_PREDICATE_BITSET
@@ -59,6 +68,10 @@ private:
   bool selectImpl(MachineInstr &I, CodeGenCoverage &CoverageInfo) const;
 
   bool selectShift(MachineInstr &I) const;
+
+  void constrainGeneric(MachineInstr &I) const;
+  void constrainOperandRegClass(MachineOperand &RegMO,
+                                const TargetRegisterClass &RegClass) const;
 
 #define GET_GLOBALISEL_PREDICATES_DECL
 #include "PICMidGenGlobalISel.inc"
@@ -90,6 +103,7 @@ PICMidInstructionSelector::PICMidInstructionSelector(
 
 bool PICMidInstructionSelector::select(MachineInstr &I) {
   if (!I.isPreISelOpcode()) {
+    constrainGeneric(I);
     return true;
   }
   if (selectImpl(I, *CoverageInfo)) {
@@ -130,6 +144,27 @@ bool PICMidInstructionSelector::selectShift(MachineInstr &I) const {
 
   I.eraseFromParent();
   return true;
+}
+
+void PICMidInstructionSelector::constrainGeneric(MachineInstr &I) const {
+  MachineRegisterInfo &MRI = I.getMF()->getRegInfo();
+
+  for (MachineOperand &Op : I.all_defs()) {
+    if (Op.getReg().isPhysical() || MRI.getRegClassOrNull(Op.getReg())) {
+      continue;
+    }
+
+    LLT Ty = MRI.getType(Op.getReg());
+    constrainOperandRegClass(Op, getRegClassForType(Ty));
+  }
+}
+
+void PICMidInstructionSelector::constrainOperandRegClass(
+    MachineOperand &RegMO, const TargetRegisterClass &RegClass) const {
+  MachineInstr &MI = *RegMO.getParent();
+  MachineRegisterInfo &MRI = MI.getMF()->getRegInfo();
+  RegMO.setReg(llvm::constrainOperandRegClass(*MF, TRI, MRI, TII, RBI, MI,
+                                              RegClass, RegMO));
 }
 
 InstructionSelector *

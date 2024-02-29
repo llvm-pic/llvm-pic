@@ -13,31 +13,31 @@ class PICMidLogicalInstr : Instruction {
 }
 
 class PICMidBinaryInstrResultToF<RegisterClass rc> : PICMidLogicalInstr {
-  dag InOperandList = (ins Wc:$l, rc:$r);
+  dag InOperandList = (ins Wc:$w, rc:$f);
   dag OutOperandList = (outs rc:$dst);
-  let Constraints = "$dst = $r";
+  let Constraints = "$dst = $f";
 }
 
 class PICMidBinaryInstrResultToW<RegisterClass rc> : PICMidLogicalInstr {
-  dag InOperandList = (ins Wc:$l, rc:$r);
-  dag OutOperandList = (outs rc:$dst);
-  let Constraints = "$dst = $l";
+  dag InOperandList = (ins Wc:$w, rc:$f);
+  dag OutOperandList = (outs Wc:$dst);
+  let Constraints = "$dst = $w";
 }
 
 class PICMidBinaryInstrWithLiteral<Operand op> : PICMidLogicalInstr {
-  dag InOperandList = (ins Wc:$l, op:$r);
+  dag InOperandList = (ins Wc:$w, op:$k);
   dag OutOperandList = (outs Wc:$dst);
-  let Constraints = "$dst = $l";
+  let Constraints = "$dst = $w";
 }
 
 class PICMidUnaryInstrResultToF<RegisterClass rc> : PICMidLogicalInstr {
-  dag InOperandList = (ins rc:$r);
+  dag InOperandList = (ins rc:$f);
   dag OutOperandList = (outs rc:$dst);
-  let Constraints = "$dst = $r";
+  let Constraints = "$dst = $f";
 }
 
 class PICMidUnaryInstrResultToW<RegisterClass rc> : PICMidLogicalInstr {
-  dag InOperandList = (ins rc:$r);
+  dag InOperandList = (ins rc:$f);
   dag OutOperandList = (outs Wc:$dst);
 }
 
@@ -72,35 +72,36 @@ class PICMidReturn<dag Opcode> : PICMidLogicalInstr, PseudoInstExpansion<Opcode>
 
 def G_RETURN : PICMidReturn<(RETURN)>;
 def G_RETFIE : PICMidReturn<(RETFIE)>;
-def G_RETLW : PICMidReturn<(RETLW imm8:$l)> {
-    dag InOperandList = (ins imm8:$l);
+def G_RETLW : PICMidReturn<(RETLW imm8:$k)> {
+    dag InOperandList = (ins imm8:$k);
 }
 
 // Addition / Subtraction
 
 let isAdd = true in {
-    def G_ADDLW : PICMidBinaryInstrWithLiteral<imm8>, PseudoInstExpansion<(ADDLW imm8:$r)>;
-    def G_ADDWF_F : PICMidBinaryInstrResultToF<Imag>, PseudoInstExpansion<(ADDWF addr7:$r, (imm1 1))>;
-    def G_ADDWF_W : PICMidBinaryInstrResultToW<Imag>, PseudoInstExpansion<(ADDWF addr7:$r, (imm1 0))>;
+    def G_ADDLW : PICMidBinaryInstrWithLiteral<imm8>, PseudoInstExpansion<(ADDLW imm8:$k)>;
+    def G_ADDWF_F : PICMidBinaryInstrResultToF<Imag>, PseudoInstExpansion<(ADDWF addr7:$f, (imm1 1))>;
+    def G_ADDWF_W : PICMidBinaryInstrResultToW<Imag>, PseudoInstExpansion<(ADDWF addr7:$f, (imm1 0))>;
+
+    def G_INCF_F : PICMidUnaryInstrResultToF<Imag>, PseudoInstExpansion<(INCF addr7:$f, (imm1 1))>;
+    def G_INCF_W : PICMidUnaryInstrResultToW<Imag>, PseudoInstExpansion<(INCF addr7:$f, (imm1 0))>;
 }
 
-def G_SUBLW : PICMidBinaryInstrWithLiteral<imm8>, PseudoInstExpansion<(SUBLW imm8:$r)>;
-def G_SUBWF_F : PICMidBinaryInstrResultToF<Imag>, PseudoInstExpansion<(SUBWF addr7:$r, (imm1 1))>;
-def G_SUBWF_W : PICMidBinaryInstrResultToW<Imag>, PseudoInstExpansion<(SUBWF addr7:$r, (imm1 0))>;
+def G_SUBLW : PICMidBinaryInstrWithLiteral<imm8>, PseudoInstExpansion<(SUBLW imm8:$k)>;
+def G_SUBWF_F : PICMidBinaryInstrResultToF<Imag>, PseudoInstExpansion<(SUBWF addr7:$f, (imm1 1))>;
+def G_SUBWF_W : PICMidBinaryInstrResultToW<Imag>, PseudoInstExpansion<(SUBWF addr7:$f, (imm1 0))>;
 
-def G_INCF_F : PICMidUnaryInstrResultToF<Imag>, PseudoInstExpansion<(INCF addr7:$r, (imm1 1))>;
-def G_INCF_W : PICMidUnaryInstrResultToW<Imag>, PseudoInstExpansion<(INCF addr7:$r, (imm1 0))>;
+def G_DECF_F : PICMidUnaryInstrResultToF<Imag>, PseudoInstExpansion<(DECF addr7:$f, (imm1 1))>;
+def G_DECF_W : PICMidUnaryInstrResultToW<Imag>, PseudoInstExpansion<(DECF addr7:$f, (imm1 0))>;
 
-def G_DECF_F : PICMidUnaryInstrResultToF<Imag>, PseudoInstExpansion<(DECF addr7:$r, (imm1 1))>;
-def G_DECF_W : PICMidUnaryInstrResultToW<Imag>, PseudoInstExpansion<(DECF addr7:$r, (imm1 0))>;
+def : Pat<(add Wc:$w, (i8 imm:$imm)), (G_ADDLW Wc:$w, imm:$imm)>;
+// def : Pat<(add Wc:$k, (i8 imm:$imm)), (ADDLW Wc:$l, imm:$imm)>;
+def : Pat<(add Wc:$w, Imag:$r), (G_ADDWF_F Wc:$w, Imag:$r)>;
+def : Pat<(add Wc:$w, Imag:$r), (G_ADDWF_W Wc:$w, Imag:$r)>;
 
-def : Pat<(add Wc:$l, (i8 imm:$imm)), (G_ADDLW Wc:$l, imm:$imm)>;
-def : Pat<(add Wc:$l, Imag:$r), (G_ADDWF_F Wc:$l, Imag:$r)>;
-def : Pat<(add Wc:$l, Imag:$r), (G_ADDWF_W Wc:$l, Imag:$r)>;
-
-def : Pat<(sub (i8 imm:$imm), Wc:$l), (G_SUBLW Wc:$l, imm:$imm)>;
-def : Pat<(sub Imag:$r, Wc:$l), (G_SUBWF_F Wc:$l, Imag:$r)>;
-def : Pat<(sub Imag:$r, Wc:$l), (G_SUBWF_W Wc:$l, Imag:$r)>;
+def : Pat<(sub (i8 imm:$imm), Wc:$w), (G_SUBLW Wc:$w, imm:$imm)>;
+def : Pat<(sub Imag:$r, Wc:$w), (G_SUBWF_F Wc:$w, Imag:$r)>;
+def : Pat<(sub Imag:$r, Wc:$w), (G_SUBWF_W Wc:$w, Imag:$r)>;
 
 def : Pat<(add Imag:$r, (i8 1)), (G_INCF_F Imag:$r)>;
 def : Pat<(add Imag:$r, (i8 1)), (G_INCF_W Imag:$r)>;
@@ -111,63 +112,66 @@ def : Pat<(sub Imag:$r, (i8 1)), (G_DECF_W Imag:$r)>;
 // Byte oriented bitwise operations
 
 class PICMidRotateResultToF<RegisterClass rc, RegisterClass rcCarry> : PICMidUnaryInstrResultToF<rc> {
-    dag InOperandList = (ins rc:$r, rcCarry:$cIn);
+    dag InOperandList = (ins rc:$f, rcCarry:$cIn);
     dag OutOperandList = (outs rc:$dst, rcCarry:$cOut);
+    let Constraints = "$f = $dst";
 }
 class PICMidRotateResultToW<RegisterClass rc, RegisterClass rcCarry> : PICMidUnaryInstrResultToF<rc> {
-    dag InOperandList = (ins rc:$r, rcCarry:$cIn);
+    dag InOperandList = (ins rc:$f, rcCarry:$cIn);
     dag OutOperandList = (outs Wc:$dst, rcCarry:$cOut);
 }
 
-def G_IORLW : PICMidBinaryInstrWithLiteral<imm8>, PseudoInstExpansion<(IORLW imm8:$r)>;
-def G_IORWF_F : PICMidBinaryInstrResultToF<Imag>, PseudoInstExpansion<(IORWF addr7:$r, (imm1 1))>;
-def G_IORWF_W : PICMidBinaryInstrResultToW<Imag>, PseudoInstExpansion<(IORWF addr7:$r, (imm1 0))>;
+def G_IORLW : PICMidBinaryInstrWithLiteral<imm8>, PseudoInstExpansion<(IORLW imm8:$k)>;
+def G_IORWF_F : PICMidBinaryInstrResultToF<Imag>, PseudoInstExpansion<(IORWF addr7:$f, (imm1 1))>;
+def G_IORWF_W : PICMidBinaryInstrResultToW<Imag>, PseudoInstExpansion<(IORWF addr7:$f, (imm1 0))>;
 
-def G_ANDLW : PICMidBinaryInstrWithLiteral<imm8>, PseudoInstExpansion<(ANDLW imm8:$r)>;
-def G_ANDWF_F : PICMidBinaryInstrResultToF<Imag>, PseudoInstExpansion<(ANDWF addr7:$r, (imm1 1))>;
-def G_ANDWF_W : PICMidBinaryInstrResultToW<Imag>, PseudoInstExpansion<(ANDWF addr7:$r, (imm1 0))>;
+def G_ANDLW : PICMidBinaryInstrWithLiteral<imm8>, PseudoInstExpansion<(ANDLW imm8:$k)>;
+def G_ANDWF_F : PICMidBinaryInstrResultToF<Imag>, PseudoInstExpansion<(ANDWF addr7:$f, (imm1 1))>;
+def G_ANDWF_W : PICMidBinaryInstrResultToW<Imag>, PseudoInstExpansion<(ANDWF addr7:$f, (imm1 0))>;
 
-def G_XORLW : PICMidBinaryInstrWithLiteral<imm8>, PseudoInstExpansion<(XORLW imm8:$r)>;
-def G_XORWF_F : PICMidBinaryInstrResultToF<Imag>, PseudoInstExpansion<(XORWF addr7:$r, (imm1 1))>;
-def G_XORWF_W : PICMidBinaryInstrResultToW<Imag>, PseudoInstExpansion<(XORWF addr7:$r, (imm1 0))>;
+def G_XORLW : PICMidBinaryInstrWithLiteral<imm8>, PseudoInstExpansion<(XORLW imm8:$k)>;
+def G_XORWF_F : PICMidBinaryInstrResultToF<Imag>, PseudoInstExpansion<(XORWF addr7:$f, (imm1 1))>;
+def G_XORWF_W : PICMidBinaryInstrResultToW<Imag>, PseudoInstExpansion<(XORWF addr7:$f, (imm1 0))>;
 
-def G_COMF_F : PICMidUnaryInstrResultToF<Imag>, PseudoInstExpansion<(COMF addr7:$r, (imm1 1))>;
-def G_COMF_W : PICMidUnaryInstrResultToW<Imag>, PseudoInstExpansion<(COMF addr7:$r, (imm1 0))>;
+def G_COMF_F : PICMidUnaryInstrResultToF<Imag>, PseudoInstExpansion<(COMF addr7:$f, (imm1 1))>;
+def G_COMF_W : PICMidUnaryInstrResultToW<Imag>, PseudoInstExpansion<(COMF addr7:$f, (imm1 0))>;
 
 // TODO: Implement instruction selection for rotating through carry
-def G_RLF_F : PICMidRotateResultToF<Imag, Cc>, PseudoInstExpansion<(RLF addr7:$r, (imm1 1))>;
-def G_RLF_W : PICMidRotateResultToW<Imag, Cc>, PseudoInstExpansion<(RLF addr7:$r, (imm1 0))>;
+def G_RLF_F : PICMidRotateResultToF<Imag, Cc>, PseudoInstExpansion<(RLF addr7:$f, (imm1 1))>;
+def G_RLF_W : PICMidRotateResultToW<Imag, Cc>, PseudoInstExpansion<(RLF addr7:$f, (imm1 0))>;
 
-def G_RRF_F : PICMidRotateResultToF<Imag, Cc>, PseudoInstExpansion<(RRF addr7:$r, (imm1 1))>;
-def G_RRF_W : PICMidRotateResultToW<Imag, Cc>, PseudoInstExpansion<(RRF addr7:$r, (imm1 0))>;
+def G_RRF_F : PICMidRotateResultToF<Imag, Cc>, PseudoInstExpansion<(RRF addr7:$f, (imm1 1))>;
+def G_RRF_W : PICMidRotateResultToW<Imag, Cc>, PseudoInstExpansion<(RRF addr7:$f, (imm1 0))>;
 
-def : Pat<(or Wc:$l, (i8 imm:$imm)), (G_IORLW Wc:$l, imm:$imm)>;
-def : Pat<(or Wc:$l, Imag:$r), (G_IORWF_F Wc:$l, Imag:$r)>;
-def : Pat<(or Wc:$l, Imag:$r), (G_IORWF_W Wc:$l, Imag:$r)>;
+def : Pat<(or Wc:$w, (i8 imm:$imm)), (G_IORLW Wc:$w, imm:$imm)>;
+def : Pat<(or Wc:$w, Imag:$r), (G_IORWF_F Wc:$w, Imag:$r)>;
+def : Pat<(or Wc:$w, Imag:$r), (G_IORWF_W Wc:$w, Imag:$r)>;
 
-def : Pat<(and Wc:$l, (i8 imm:$imm)), (G_ANDLW Wc:$l, imm:$imm)>;
-def : Pat<(and Wc:$l, Imag:$r), (G_ANDWF_F Wc:$l, Imag:$r)>;
-def : Pat<(and Wc:$l, Imag:$r), (G_ANDWF_W Wc:$l, Imag:$r)>;
+def : Pat<(and Wc:$w, (i8 imm:$imm)), (G_ANDLW Wc:$w, imm:$imm)>;
+def : Pat<(and Wc:$w, Imag:$r), (G_ANDWF_F Wc:$w, Imag:$r)>;
+def : Pat<(and Wc:$w, Imag:$r), (G_ANDWF_W Wc:$w, Imag:$r)>;
 
-def : Pat<(xor Wc:$l, (i8 imm:$imm)), (G_XORLW Wc:$l, imm:$imm)>;
-def : Pat<(xor Wc:$l, Imag:$r), (G_XORWF_F Wc:$l, Imag:$r)>;
-def : Pat<(xor Wc:$l, Imag:$r), (G_XORWF_W Wc:$l, Imag:$r)>;
+def : Pat<(xor Wc:$w, (i8 imm:$imm)), (G_XORLW Wc:$w, imm:$imm)>;
+def : Pat<(xor Wc:$w, Imag:$r), (G_XORWF_F Wc:$w, Imag:$r)>;
+def : Pat<(xor Wc:$w, Imag:$r), (G_XORWF_W Wc:$w, Imag:$r)>;
 
 def : Pat<(xor Imag:$r, (i8 -1)), (G_COMF_F Imag:$r)>;
 def : Pat<(xor Imag:$r, (i8 -1)), (G_COMF_W Imag:$r)>;
 
+//def : Pat<(G_LSHRE Imag:$r, Cc:$c), (G_RRF_F Imag:$r, Cc:$c)>;
+
 // Miscellaneous instruction
 
 class PICMidClearF<RegisterClass rc> : PICMidLogicalInstr {
-    dag InOperandList = (ins rc:$r);
+    dag InOperandList = (ins rc:$f);
     let hasSideEffects = true;
     let mayStore = true;
 }
 
-def G_CLRF : PICMidClearF<Imag>, PseudoInstExpansion<(CLRF addr7:$r)>; // TODO: Figure out how to do this
+def G_CLRF : PICMidClearF<Imag>, PseudoInstExpansion<(CLRF addr7:$f)>; // TODO: Figure out how to do this
 def G_MOVLW : PICMidLogicalInstr, PseudoInstExpansion<(MOVLW imm8:$k)> {
     dag InOperandList = (ins imm8:$k);
-    dag OutOperandList = (outs Wc:$l);
+    dag OutOperandList = (outs Wc:$dst);
 }
 
 //def : Pat<(store 0, Imag:$r), (G_CLRF Imag:$r)>;

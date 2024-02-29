@@ -29,7 +29,7 @@ def BTFSC : PICMidBitFileOp<"btfsc", 0b0110>, InstConditionalBranch;
 def BTFSS : PICMidBitFileOp<"btfss", 0b0111>, InstConditionalBranch;
 
 // LITERAL AND CONTROL OPERATIONS
-def ADDLW : PICMidLiteralAndControlOp<"addlw", 0b111110>; 
+def ADDLW : PICMidLiteralAndControlOp<"addlw", 0b111110>;
 def ANDLW : PICMidLiteralAndControlOp<"andlw", 0b111001>; 
 def CALL : PICMidCallOrGotoOp<"call", 0b100>, InstCall; 
 def CLRWDT : PICMidLiteralAndControlOp_Implicit<"clrwdt", 0b01100100>; 
@@ -46,6 +46,6 @@ def XORLW : PICMidLiteralAndControlOp<"xorlw", 0b111010>;
 // Operand type for basic block and function labels.
 def label : Operand<OtherVT>;
 
+include "PICMidInstrGISel.td"
 include "PICMidInstrLogical.td"
 include "PICMidInstrPseudos.td"
-include "PICMidInstrGISel.td"
