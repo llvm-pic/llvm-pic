@@ -1,3 +1,18 @@
+//===- PICMidRegisterBankInfo.cpp - GlobalISel pass -------------*- cpp -*-===//
+//
+// Part of LLVM-PIC, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//
+//===----------------------------------------------------------------------===//
+//
+// This file implements a special GlobalISel pass for performing register bank
+// allocation of PIC mid-range instructions when given gMIR.
+//
+// Because all registers are of the same type, all registers are put into a
+// single register bank "any".
+//
+//===----------------------------------------------------------------------===//
 #include "PICMidRegisterBankInfo.h"
 
 #include "MCTargetDesc/PICMidMCTargetDesc.h"
@@ -13,7 +28,6 @@ using namespace llvm;
 
 const RegisterBankInfo::InstructionMapping &
 llvm::PICMidRegisterBankInfo::getInstrMapping(const MachineInstr &MI) const {
-  // TODO: insert return statement here
   const auto &Mapping = getInstrMappingImpl(MI);
   if (Mapping.isValid()) {
     return Mapping;
