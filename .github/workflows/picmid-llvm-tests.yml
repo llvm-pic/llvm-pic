@@ -27,12 +27,20 @@ concurrency:
   cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 
 jobs:
-  check_all:
+  check_mc:
     if: github.repository_owner == 'llvm-pic'
     name: Test llvm mc
     uses: ./.github/workflows/picmid-llvm-project-tests.yml
     with:
       build_target: check-llvm-mc-picmid
+      projects:
+
+  check_codegen:
+    if: github.repository_owner == 'llvm-pic'
+    name: Test llvm mc
+    uses: ./.github/workflows/picmid-llvm-project-tests.yml
+    with:
+      build_target: check-llvm-codegen-picmid
       projects:
 
   check_lld:
