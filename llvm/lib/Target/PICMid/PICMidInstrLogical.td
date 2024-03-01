@@ -173,6 +173,11 @@ def G_MOVLW : PICMidLogicalInstr, PseudoInstExpansion<(MOVLW imm8:$k)> {
     dag InOperandList = (ins imm8:$k);
     dag OutOperandList = (outs Wc:$dst);
 }
+def G_MOVF_W : PICMidUnaryInstrResultToW<Imag>, PseudoInstExpansion<(MOVF addr7:$f, (imm1 0))>;
+def G_MOVWF : PICMidLogicalInstr, PseudoInstExpansion<(MOVWF addr7:$f)> {
+    dag InOperandList = (ins Wc:$w);
+    dag OutOperandList = (outs Imag:$f);
+}
 
 //def : Pat<(store 0, Imag:$r), (G_CLRF Imag:$r)>;
 def : Pat<(i8 imm:$k), (G_MOVLW imm:$k)>;

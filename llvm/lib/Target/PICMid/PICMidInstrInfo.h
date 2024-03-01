@@ -11,6 +11,15 @@ namespace llvm {
 class PICMidInstrInfo : public PICMidGenInstrInfo {
 public:
   PICMidInstrInfo();
+
+  void copyPhysReg(MachineBasicBlock &MBB, MachineBasicBlock::iterator MI,
+                   const DebugLoc &DL, MCRegister DestReg, MCRegister SrcReg,
+                   bool KillSrc) const override;
+
+private:
+  void copyPhysRegImpl(MachineIRBuilder &Builder, Register DestReg,
+                       Register SrcReg, bool Force = false,
+                       bool KillSrc = false) const;
 };
 } // namespace llvm
 
