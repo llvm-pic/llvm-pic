@@ -1,3 +1,25 @@
+//===- PICMidInstrLogical.td - Describe PICMid Logical Instrs -*- tablegen -*-===//
+//
+// Part of LLVM-PIC, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//
+//===-------------------------------------------------------------------------===//
+//
+// This file describes the logical instruction set for mid-range PIC core
+// devices.
+//
+// Inspired by LLVM-MOS instructions are normalized to reduce copy and pasting
+// of instruction patterns.
+//
+// FIXME: Although for our use case, normalization does not offer any benefits
+//        because PIC's instruction set is simple. Perhaps its better to get
+//        rid of this file.
+// FIXME: We may also look into delegating some of the work done during
+//        instruction selection to the Legalizer.
+//
+//===------------------------------------------------------------------------===//
+
 class PICMidLogicalInstr : Instruction {
   let Namespace = "PICMid";
 

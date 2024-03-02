@@ -1,3 +1,16 @@
+//===- PICMidInstructionSelector.cpp - Last GlobalISel pass -----*- cpp -*-===//
+//
+// Part of LLVM-PIC, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//
+//===----------------------------------------------------------------------===//
+//
+// This file contains a special GlobalISel pass for performing instruction
+// selection of PIC mid-range instructions when given gMIR.
+// It largely relies on tablegen-ed code generated from PICMidInstrLogical.td.
+//
+//===----------------------------------------------------------------------===//
 #include "PICMidInstructionSelector.h"
 
 #include "llvm/ADT/APFloat.h"
