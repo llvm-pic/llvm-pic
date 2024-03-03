@@ -1,7 +1,7 @@
 ; ModuleID = 'main.bc'
 source_filename = "main.c"
 target datalayout = "e-P1-p:16:8-i8:8-i16:8-i32:8-i64:8-f32:8-f64:8-n8-a:8"
-target triple = "avr"
+target triple = "picmid"
 
 ; Function Attrs: noinline nounwind optnone
 define dso_local i16 @foo(i16 noundef %0) addrspace(1) #0 {
