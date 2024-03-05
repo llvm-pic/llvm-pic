@@ -79,10 +79,14 @@ class PICMidUnconditionalBranch : PICMidBranch {
   let isBarrier = true;
 }
 
-//def GOTO_L : PICMidUnconditionalBranch {
-//    let InOperandList = (ins label:$tgt);
-//    let Pattern = [(br bb:$tgt)];
-//}
+def G_GOTO_L : PICMidUnconditionalBranch {
+   let InOperandList = (ins label:$tgt);
+   let Pattern = [(br bb:$tgt)];
+}
+def G_CALL : PICMidLogicalInstr, PseudoInstExpansion<(CALL pcabs11:$k)> {
+    dag InOperandList = (ins label:$k);
+    let isCall = true;
+}
 
 // Return
 

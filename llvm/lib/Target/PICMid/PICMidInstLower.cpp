@@ -76,8 +76,10 @@ bool llvm::PICMidMCInstLower::lowerOperand(const MachineOperand &MO,
   return true;
 }
 
-// TODO:
 MCOperand llvm::PICMidMCInstLower::lowerSymbolOperand(const MachineOperand &MO,
                                                       const MCSymbol *Sym) {
-  return MCOperand();
+  const MachineFrameInfo &MFI = MO.getParent()->getMF()->getFrameInfo();
+
+  const MCExpr *Expr = MCSymbolRefExpr::create(Sym, Ctx);
+  return MCOperand::createExpr(Expr);
 }
