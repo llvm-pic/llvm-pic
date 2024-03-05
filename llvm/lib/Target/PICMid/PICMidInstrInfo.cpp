@@ -94,7 +94,10 @@ void llvm::PICMidInstrInfo::copyPhysRegImpl(MachineIRBuilder &Builder,
     Builder.buildInstr(PICMid::G_MOVF_W).addDef(PICMid::W).addUse(SrcReg);
     Builder.buildInstr(PICMid::G_MOVWF).addDef(DestReg).addUse(PICMid::W);
     Builder.buildInstr(PICMid::G_MOVF_W).addDef(PICMid::W).addUse(PICMid::R8);
-    // No need to do anything
+
+    if (!Builder.getMBB().isLiveIn(PICMid::R8)) {
+      Builder.getMBB().addLiveIn(PICMid::R8);
+    }
     return;
   }
 
