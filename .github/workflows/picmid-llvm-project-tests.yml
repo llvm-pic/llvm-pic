@@ -20,12 +20,16 @@ on:
         required: true
         type: string
 
+      id:
+        required: false
+        type: string
+
 concurrency:
   # Skip intermediate builds: always.
   # Cancel intermediate builds: only if it is a pull request build.
   # If the group name here is the same as the group name in the workflow that includes
   # this one, then the action will try to wait on itself and get stuck.
-  group: llvm-project-${{ github.workflow }}-${{ inputs.projects }}${{ github.ref }}
+  group: llvm-project-${{ github.workflow }}-${{ inputs.projects }}-${{ inputs.id }}-${{ github.ref }}
   cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 
 jobs:

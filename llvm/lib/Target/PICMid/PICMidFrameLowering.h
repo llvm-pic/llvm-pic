@@ -12,6 +12,8 @@ public:
   void emitPrologue(MachineFunction &MF, MachineBasicBlock &MBB) const override;
   void emitEpilogue(MachineFunction &MF, MachineBasicBlock &MBB) const override;
   bool hasFP(const MachineFunction &MF) const override;
+
+  bool isISR(const MachineFunction &MF) const;
 };
 } // namespace llvm
 

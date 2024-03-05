@@ -1,0 +1,1 @@
+def AnyRegBank : RegisterBank<"Any", [Wc, Cc, STATUSc, Imag]>;

@@ -1,4 +1,5 @@
 #include "PICMidTargetMachine.h"
+#include "GISel/PICMidInstructionSelector.h"
 #include "MCTargetDesc/PICMidMCTargetDesc.h"
 #include "TargetInfo/PICMidTargetInfo.h"
 #include "llvm/CodeGen/GlobalISel/IRTranslator.h"
@@ -102,11 +103,6 @@ bool PICMidPassConfig::addGlobalInstructionSelect() {
 TargetPassConfig *
 llvm::PICMidTargetMachine::createPassConfig(PassManagerBase &PM) {
   return new PICMidPassConfig(*this, PM);
-}
-
-const TargetSubtargetInfo *
-llvm::PICMidTargetMachine::getSubtargetImpl(const Function &) const {
-  return &SubTarget;
 }
 
 extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializePICMidTarget() {

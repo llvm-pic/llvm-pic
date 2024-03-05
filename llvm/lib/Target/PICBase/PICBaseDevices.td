@@ -1,6 +1,6 @@
 def FeatureBase
-    : SubtargetFeature<"mid-instrs", "HasBaseInstrs", "true",
-    "Original instructions present on all PIC(r) mid-range core devices">;
+    : SubtargetFeature<"base-instrs", "HasBaseInstrs", "true",
+    "Original instructions present on all PIC(r) base-range core devices">;
 
 // A feature set aggregates features, grouping them. We don't want to create a
 // new member in PICBaseSubtarget (to store a value) for each set because we do not

@@ -1,7 +1,15 @@
+/// Predicates. Useful for limiting instructions to particular hardware modes
+/// or particular hardware implementations.
+def HasMidInstrs : Predicate<"Subtarget->hasMidInstrs()">,
+              AssemblerPredicate<(all_of FeatureMidInstrs), "mid-instrs"> {
+  let PredicateName = "FeatureMidInstrs";
+}
+
 class Inst<string asmstr> : Instruction {
     let Namespace = "PICMid";
 
     let OutOperandList = (outs);
+//    let Predicates = [HasMidInstrs]; // TODO: Figure out why this does not work
 
     let AsmString = asmstr;
 
