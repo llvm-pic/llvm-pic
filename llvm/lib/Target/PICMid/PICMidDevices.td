@@ -26,7 +26,6 @@ def Family16F88x
 
 //===---------------------------------------------------------------------===//
 // PIC Mid-range Families
-//===---------------------------------------------------------------------===//
 
 def PICMidSchedModel : SchedMachineModel {
   // Prevent instructions from being added to the pending queue, since latency

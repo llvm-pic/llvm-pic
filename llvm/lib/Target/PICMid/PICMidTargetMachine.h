@@ -19,7 +19,6 @@
 
 namespace llvm {
 
-/// A generic MOS implementation.
 class PICMidTargetMachine : public LLVMTargetMachine {
 public:
   PICMidTargetMachine(const Target &T, const Triple &TT, StringRef CPU,
@@ -42,4 +41,4 @@ private:
 
 } // end namespace llvm
 
-#endif // LLVM_MOS_TARGET_MACHINE_H
+#endif // LLVM_PIC_TARGET_MACHINE_H

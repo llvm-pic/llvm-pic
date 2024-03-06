@@ -21,13 +21,13 @@ add_public_tablegen_target(PICMidCommonTableGen)
 
 add_llvm_target(PICMidCodeGen
   PICMidAsmPrinter.cpp
-#   PICMidCallLowering.cpp
+  GISel/PICMidCallLowering.cpp
 #   PICMidCallingConv.cpp
 #   PICMidCombiner.cpp
 #   PICMidCopyOpt.cpp
 #   PICMidInstrCost.cpp
   PICMidFrameLowering.cpp
-#   PICMidISelLowering.cpp
+   PICMidISelLowering.cpp
 #   PICMidIndexIV.cpp
 #   PICMidInlineAsmLowering.cpp
 #   PICMidIncDecPhi.cpp
@@ -44,9 +44,9 @@ add_llvm_target(PICMidCodeGen
 #   PICMidPostRAScavenging.cpp
   GISel/PICMidRegisterBankInfo.cpp
   PICMidRegisterInfo.cpp
+  # PICMidISelLowering.cpp
 #   PICMidStaticStackAlloc.cpp
   PICMidSubtarget.cpp
-  PICMidTargetLowering.cpp
   PICMidTargetMachine.cpp
   PICMidTargetObjectFile.cpp
 #   PICMidZeroPageAlloc.cpp

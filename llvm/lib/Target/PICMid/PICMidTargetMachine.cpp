@@ -12,6 +12,7 @@
 #include "llvm/MC/TargetRegistry.h"
 #include "llvm/Pass.h"
 #include "llvm/PassRegistry.h"
+#include "llvm/Support/CodeGen.h"
 #include "llvm/Target/TargetOptions.h"
 #include "llvm/TargetParser/Triple.h"
 
@@ -79,8 +80,8 @@ public:
 };
 
 bool PICMidPassConfig::addIRTranslator() {
-  addPass(new IRTranslator(getOptLevel()));
-  return false;
+  addPass(new IRTranslator());
+  return false; 
 }
 
 bool PICMidPassConfig::addLegalizeMachineIR() {

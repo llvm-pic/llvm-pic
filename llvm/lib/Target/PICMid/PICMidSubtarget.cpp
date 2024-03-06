@@ -1,5 +1,6 @@
 #include "PICMidSubtarget.h"
 
+#include "GISel/PICMidCallLowering.h"
 #include "GISel/PICMidInstructionSelector.h"
 #include "MCTargetDesc/PICMidMCTargetDesc.h"
 
@@ -8,6 +9,7 @@
 #include "llvm/CodeGen/GlobalISel/InstructionSelector.h"
 #include "llvm/CodeGen/GlobalISel/Utils.h"
 #include "llvm/CodeGen/MachineScheduler.h"
+#include "llvm/IR/Constant.h"
 #include "llvm/MC/TargetRegistry.h"
 
 #define DEBUG_TYPE "picmid-subtarget"
@@ -16,9 +18,15 @@
 #define GET_SUBTARGETINFO_CTOR
 #include "PICMidGenSubtargetInfo.inc"
 
-llvm::PICMidSubtarget::PICMidSubtarget(const Triple &TT, const std::string &CPU,
+using namespace llvm;
+
+PICMidSubtarget::PICMidSubtarget(const Triple &TT, const std::string &CPU,
                                        const std::string &FS,
                                        const PICMidTargetMachine &TM)
-    : PICMidGenSubtargetInfo(TT, CPU, CPU, FS), RegBankInfo(), Legalizer(),
-      RegisterInfo(), TargetLoweringInfo(TM, *this),
+    : PICMidGenSubtargetInfo(TT, CPU, CPU, FS), RegBankInfo(),
+      RegisterInfo(), Legalizer(), TargetLoweringInfo(TM, *this),
       InstSelector(createPICMidInstructionSelector(TM, *this, RegBankInfo)) {}
+
+const PICMidCallLowering *PICMidSubtarget::getCallLowering() const{
+  return nullptr;
+}
