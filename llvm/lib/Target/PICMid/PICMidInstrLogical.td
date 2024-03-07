@@ -188,13 +188,12 @@ def : Pat<(xor Imag:$r, (i8 -1)), (G_COMF_W Imag:$r)>;
 
 // Miscellaneous instruction
 
-class PICMidClearF<RegisterClass rc> : PICMidLogicalInstr {
-    dag InOperandList = (ins rc:$f);
-    let hasSideEffects = true;
-    let mayStore = true;
+def G_CLRF : PICMidLogicalInstr, PseudoInstExpansion<(CLRF addr7:$f)> { // TODO: Figure out how to do this
+    dag OutOperandList = (outs Imag:$f);
 }
-
-def G_CLRF : PICMidClearF<Imag>, PseudoInstExpansion<(CLRF addr7:$f)>; // TODO: Figure out how to do this
+def G_CLRW : PICMidLogicalInstr, PseudoInstExpansion<(CLRW)> {
+    dag OutOperandList = (outs Wc:$w);
+}
 def G_MOVLW : PICMidLogicalInstr, PseudoInstExpansion<(MOVLW imm8:$k)> {
     dag InOperandList = (ins imm8:$k);
     dag OutOperandList = (outs Wc:$dst);
@@ -205,5 +204,6 @@ def G_MOVWF : PICMidLogicalInstr, PseudoInstExpansion<(MOVWF addr7:$f)> {
     dag OutOperandList = (outs Imag:$f);
 }
 
-//def : Pat<(store 0, Imag:$r), (G_CLRF Imag:$r)>;
 def : Pat<(i8 imm:$k), (G_MOVLW imm:$k)>;
+def : Pat<(i8 0), (G_CLRF)>;
+def : Pat<(i8 0), (G_CLRW)>;
