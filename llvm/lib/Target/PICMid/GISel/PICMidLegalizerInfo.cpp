@@ -88,4 +88,6 @@ PICMidLegalizerInfo::PICMidLegalizerInfo() {
   // Optimization Hints
 
   // Miscellaneous
+
+  getLegacyLegalizerInfo().computeTables();
 };
