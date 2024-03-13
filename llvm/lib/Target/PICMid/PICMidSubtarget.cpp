@@ -16,9 +16,12 @@
 #define GET_SUBTARGETINFO_CTOR
 #include "PICMidGenSubtargetInfo.inc"
 
-llvm::PICMidSubtarget::PICMidSubtarget(const Triple &TT, const std::string &CPU,
-                                       const std::string &FS,
-                                       const PICMidTargetMachine &TM)
-    : PICMidGenSubtargetInfo(TT, CPU, CPU, FS), RegBankInfo(), Legalizer(),
-      RegisterInfo(), TargetLoweringInfo(TM, *this),
+using namespace llvm;
+
+PICMidSubtarget::PICMidSubtarget(const Triple &TT, const std::string &CPU,
+                                 const std::string &FS,
+                                 const PICMidTargetMachine &TM)
+    : PICMidGenSubtargetInfo(TT, CPU, CPU, FS), RegBankInfo(), RegisterInfo(),
+      TargetLoweringInfo(TM, *this), CallLoweringInfo(&TargetLoweringInfo),
+      Legalizer(),
       InstSelector(createPICMidInstructionSelector(TM, *this, RegBankInfo)) {}
