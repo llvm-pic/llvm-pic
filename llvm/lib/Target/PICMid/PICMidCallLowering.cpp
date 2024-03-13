@@ -27,3 +27,7 @@ using namespace llvm;
 									//MIRBuilder.insertInstr(PICMid::RETURN);
 								return true;	
 								 }
+
+	bool PICMidCallLowering::enableBigEndian() const {
+		return true;
+	}
