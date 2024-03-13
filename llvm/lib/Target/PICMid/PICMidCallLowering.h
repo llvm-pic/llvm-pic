@@ -21,6 +21,8 @@ public:
 
   bool lowerCall(MachineIRBuilder &MIRBuilder,
                  CallLoweringInfo &Info) const override;
+  
+  bool enableBigEndian() const override;
 };
 
 } // namespace llvm
