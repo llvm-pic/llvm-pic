@@ -16,7 +16,7 @@
 #--- link.ld
 MEMORY {
     prog_mem : ORIGIN = 0x0000, LENGTH = 0x2000
-    config_mem : ORIGIN = 0x4000, LENGTH = 0x4000
+    config_mem : ORIGIN = 0x2000, LENGTH = 0x2000
 }
 
 SECTIONS {
@@ -30,10 +30,10 @@ SECTIONS {
         *(.bss)
     } > prog_mem
 
-    .config1 0x4014 : { 
+    .config1 0x2007 : { 
         KEEP(*(.config1))
     } > config_mem
-    .config2 0x4016 : { 
+    .config2 0x2008 : { 
         KEEP(*(.config2)) 
     } > config_mem
 }
