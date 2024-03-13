@@ -21,7 +21,7 @@ add_public_tablegen_target(PICMidCommonTableGen)
 
 add_llvm_target(PICMidCodeGen
   PICMidAsmPrinter.cpp
-#   PICMidCallLowering.cpp
+  PICMidCallLowering.cpp
 #   PICMidCallingConv.cpp
 #   PICMidCombiner.cpp
 #   PICMidCopyOpt.cpp
