@@ -4,14 +4,18 @@
 
 int main() {
   // //declare
-  // int i, j, h;
+  int i, j, h;
 
   // //initialize
-  // i = 2;
-  // j = 3;
+  i = 2;
+  j = i;
+
+  int z = 0;
+  int v = 1;
+  int b = z * v;
 
   // // integer operations
-  // h = i + j;
+  h = i + j;
   // h = i * j;
   // h = i - j;
   // h = i / j;

@@ -23,10 +23,10 @@ PICMidLegalizerInfo::PICMidLegalizerInfo() {
       .widenScalarToNextMultipleOf(0, 8)
       .maxScalar(0, S8)
       .unsupported();
+      
+  getActionDefinitionsBuilder(G_FRAME_INDEX).legalFor({P}).unsupported();
 
   // Integer Extension and Truncations
-
-  getActionDefinitionsBuilder(G_CONSTANT).legalFor({S1, S8}).unsupported();
 
   // Type Conversion
 
@@ -77,6 +77,7 @@ PICMidLegalizerInfo::PICMidLegalizerInfo() {
 
   // Memory operations
 
+  // TODO Cross Bank Load and Store legalisation
   getActionDefinitionsBuilder({G_LOAD, G_STORE}).legalFor({S8}).unsupported();
 
   // Control Flow
