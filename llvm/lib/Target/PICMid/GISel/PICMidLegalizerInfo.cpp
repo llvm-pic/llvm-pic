@@ -1,6 +1,14 @@
 #include "PICMidLegalizerInfo.h"
+#include "MCTargetDesc/PICMidFixupKinds.h"
+#include "PICMidRegisterInfo.h"
 #include "PICMidSubtarget.h"
 #include "llvm/CodeGen/GlobalISel/LegalizerHelper.h"
+#include "llvm/CodeGen/GlobalISel/MachineIRBuilder.h"
+#include "llvm/CodeGen/MachineFunction.h"
+#include "llvm/CodeGen/MachineInstr.h"
+#include "llvm/CodeGen/MachineInstrBuilder.h"
+#include "llvm/CodeGen/MachineRegisterInfo.h"
+#include "llvm/CodeGen/RDFGraph.h"
 #include "llvm/CodeGen/TargetOpcodes.h"
 #include "llvm/CodeGen/ValueTypes.h"
 #include "llvm/IR/DerivedTypes.h"
@@ -13,50 +21,64 @@ using namespace TargetOpcode;
 
 PICMidLegalizerInfo::PICMidLegalizerInfo() {
 
-  LLT S1 = LLT::scalar(1);
-  LLT S8 = LLT::scalar(8);
-  LLT P = LLT::pointer(0, 8);
-
   // Constants
+  getActionDefinitionsBuilder(G_IMPLICIT_DEF).legalFor({S8}).unsupported();
+
   getActionDefinitionsBuilder(G_CONSTANT)
       .legalFor({S1, S8, P})
       .widenScalarToNextMultipleOf(0, 8)
       .maxScalar(0, S8)
       .unsupported();
-      
-  getActionDefinitionsBuilder(G_FRAME_INDEX).legalFor({P}).unsupported();
+
+  getActionDefinitionsBuilder({G_FRAME_INDEX, G_BLOCK_ADDR}).legalFor({P}).unsupported();
 
   // Integer Extension and Truncations
 
+  getActionDefinitionsBuilder({
+                                  G_SEXT,
+                                  G_ZEXT,
+                              })
+      .widenScalarToNextMultipleOf(1, 8)
+      .maxScalar(1, S8)
+      .unsupported();
+  
+  
+  getActionDefinitionsBuilder({G_TRUNC}).maxScalar(0, S8).unsupported();
+
   // Type Conversion
 
-  // Scalar Operations
+  // INFO this should only effect memory operations is therefor correct
+  getActionDefinitionsBuilder({G_INTTOPTR}).legalFor({P, S8}).unsupported();
+
+  getActionDefinitionsBuilder({G_PTRTOINT}).legalFor({S8, P}).unsupported();
 
   // Integer Operations
 
   getActionDefinitionsBuilder({G_ADD, G_SUB})
-      .legalFor({S8})
-      .widenScalarToNextMultipleOf(0, 8)
-      .unsupported();
-
-  getActionDefinitionsBuilder({G_AND, G_OR})
-      .legalFor({S8})
+      .legalFor({S8, S1})
       .widenScalarToNextMultipleOf(0, 8)
       .maxScalar(0, S8)
       .unsupported();
 
-  getActionDefinitionsBuilder(G_MUL)
-      .legalFor({S8})
-      .widenScalarToNextPow2(0)
-      .unsupported();
-
-  getActionDefinitionsBuilder(G_XOR)
-      .legalFor({S8})
+  getActionDefinitionsBuilder({G_AND, G_OR, G_XOR})
+      .legalFor({S8, S1})
       .widenScalarToNextMultipleOf(0, 8)
       .maxScalar(0, S8)
       .unsupported();
+      
+  // TODO implement libcalls or another form of custom call
+  getActionDefinitionsBuilder({G_MUL, G_SDIV, G_UDIV, G_SREM, G_UREM}).unsupported();
+  
+  getActionDefinitionsBuilder({G_SELECT}).legalFor({S1});
+  
+  getActionDefinitionsBuilder({G_SHL, G_LSHR}).legalFor({S8}).unsupported();
 
   getActionDefinitionsBuilder(G_ICMP).legalFor({S8}).unsupported();
+
+  getActionDefinitionsBuilder(G_PTR_ADD).legalForCartesianProduct({P, S8}).unsupported();
+
+  // TODO support by implementing a virtual "carryadd" instruction
+  getActionDefinitionsBuilder({G_UADDE, G_SADDE, G_USUBE, G_SSUBE}).unsupported();
 
   // unsupport all float, as well as G_FCONSTANT
   getActionDefinitionsBuilder(
@@ -80,7 +102,14 @@ PICMidLegalizerInfo::PICMidLegalizerInfo() {
   // TODO Cross Bank Load and Store legalisation
   getActionDefinitionsBuilder({G_LOAD, G_STORE}).legalFor({S8}).unsupported();
 
+  // Fence will never appear as PIC is single thread
+  getActionDefinitionsBuilder({G_FENCE}).unsupported();
+
   // Control Flow
+
+  getActionDefinitionsBuilder({G_PHI}).alwaysLegal();
+
+  getActionDefinitionsBuilder(G_BR).alwaysLegal();
 
   // Variadic Arguments
 
@@ -90,3 +119,11 @@ PICMidLegalizerInfo::PICMidLegalizerInfo() {
 
   // Miscellaneous
 };
+
+bool PICMidLegalizerInfo::legalizeCustom(LegalizerHelper &Helper,
+                                         MachineInstr &MI) const {
+                                          switch (MI.getOpcode()) {
+                                            default:
+                                              return false;
+                                          }
+}

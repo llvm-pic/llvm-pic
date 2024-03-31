@@ -26,6 +26,7 @@
 #include "llvm/CodeGen/LowLevelType.h"
 #include "llvm/CodeGen/MachineBasicBlock.h"
 #include "llvm/CodeGen/MachineFrameInfo.h"
+#include "llvm/CodeGen/MachineFunction.h"
 #include "llvm/CodeGen/MachineInstr.h"
 #include "llvm/CodeGen/MachineInstrBuilder.h"
 #include "llvm/CodeGen/MachineMemOperand.h"
@@ -91,6 +92,8 @@ private:
   bool selectShift(MachineInstr &I) const;
   bool selectAddSub(MachineInstr &I) const;
   bool selectLogical(MachineInstr &I) const;
+  bool selectLoadStore(MachineInstr &I) const;
+  bool selectFrameIndex(MachineInstr &I) const;
 
   void constrainGeneric(MachineInstr &I) const;
   void constrainOperandRegClass(MachineOperand &RegMO,
@@ -132,18 +135,15 @@ bool PICMidInstructionSelector::select(MachineInstr &I) {
   if (selectImpl(I, *CoverageInfo)) {
     return true;
   }
-
   switch (I.getOpcode()) {
-  case PICMid::G_ADD:
-  case PICMid::G_SUB:
-    return selectAddSub(I);
-  case PICMid::G_AND:
-  case PICMid::G_OR:
-  case PICMid::G_XOR:
+  case PICMid::G_STORE:
+  case PICMid::G_LOAD:
     return selectLogical(I);
   case PICMid::G_SHLE:
   case PICMid::G_LSHRE:
     return selectShift(I);
+  case PICMid::G_FRAME_INDEX:
+    return selectFrameIndex(I);
   // TODO other instructions
   default:
     return true;
@@ -151,7 +151,6 @@ bool PICMidInstructionSelector::select(MachineInstr &I) {
 }
 
 bool PICMidInstructionSelector::selectAddSub(MachineInstr &I) const {
-  auto [dest, arg1, arg2] = I.getFirst3Regs();
   MachineIRBuilder Builder(I);
   MachineRegisterInfo *MRI = Builder.getMRI();
   auto s8 = LLT::scalar(8);
@@ -160,17 +159,55 @@ bool PICMidInstructionSelector::selectAddSub(MachineInstr &I) const {
   // TODO::identify constant values
   // It has to be Arg2 because of Subtraction
   // Subtract W from f
-  Builder.buildInstr(PICMid::MOVW).addUse(Arg2);
-  unsigned Opcode;
+  Builder.buildInstrNoInsert(PICMid::G_MOVF_W).addDef(MRI->createGenericVirtualRegister(s8)).addUse(Arg2);
+  unsigned Opcode = -1;
   switch (I.getOpcode()) {
   case PICMid::G_ADD:
-    Opcode = PICMid::ADDWF_F;
-  case PICMid::G_SUB:
-    Opcode = PICMid::SUBWF_F;
+    Opcode = PICMid::G_ADDWF_F;
     break;
-  Builder.buildInstr(Opcode).addUse(Arg1);
+  case PICMid::G_SUB:
+    Opcode = PICMid::G_SUBWF_F;
+    break;
+  default:
+    break;
   }
+  Builder.buildInstr(Opcode).addUse(Arg1);
+  return false;
+}
+
+bool PICMidInstructionSelector::selectFrameIndex(MachineInstr &I) const {
+  // do not use a stack, convert to a VReg instead
+  MachineIRBuilder Builder(I);
+  MachineFunction *MF = I.getMF();
+  MachineRegisterInfo *MRI = Builder.getMRI();
+  Register stack = I.getOperand(0).getReg();
+  return true; 
+}
+
+bool PICMidInstructionSelector::selectLoadStore(MachineInstr &I) const {
+  MachineIRBuilder Builder(I);
+  MachineRegisterInfo *MRI = Builder.getMRI();
+  auto s8 = LLT::scalar(8);
+
+  auto [Arg1, Arg2] = I.getFirst2Regs();
+  unsigned Opcode = -1;
+  switch (I.getOpcode()) {
+  case PICMid::G_LOAD:
+    Opcode = PICMid::G_MOVF_W;
+    break;
+  case PICMid::G_STORE:
+    Opcode = PICMid::G_MOVWF;
+    break;
+  }
+  Builder.buildInstr(Opcode).addUse(Arg1).addUse(Arg2);
+  I.eraseFromParent();
+
   return true;
+}
+
+bool PICMidInstructionSelector::selectLogical(MachineInstr &I) const {
+  // TODO
+  return false;
 }
 
 bool PICMidInstructionSelector::selectShift(MachineInstr &I) const {
@@ -178,7 +215,6 @@ bool PICMidInstructionSelector::selectShift(MachineInstr &I) const {
 
   unsigned RotateOpcode;
   switch (I.getOpcode()) {
-  case PICMid::G_RETURN:
   case PICMid::G_LSHRE:
     RotateOpcode = PICMid::G_RRF_F;
     break;

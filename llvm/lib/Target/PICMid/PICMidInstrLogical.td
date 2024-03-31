@@ -97,7 +97,6 @@ class PICMidReturn<dag Opcode> : PICMidLogicalInstr, PseudoInstExpansion<Opcode>
 }
 
 def G_RETURN : PICMidReturn<(RETURN)>;
-def G_RETURNA : PICMidReturn<(RETURN)>;
 def G_RETFIE : PICMidReturn<(RETFIE)>;
 def G_RETLW : PICMidReturn<(RETLW imm8:$k)> {
     dag InOperandList = (ins imm8:$k);
