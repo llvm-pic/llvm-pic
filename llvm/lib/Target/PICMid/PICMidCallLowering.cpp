@@ -2,7 +2,6 @@
 #include "MCTargetDesc/PICMidMCTargetDesc.h"
 #include "llvm/CodeGen/FunctionLoweringInfo.h"
 #include "llvm/CodeGen/GlobalISel/MachineIRBuilder.h"
-#include <zconf.h>
 
 using namespace llvm;
 

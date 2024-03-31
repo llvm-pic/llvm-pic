@@ -83,15 +83,13 @@ private:
   const PICMidRegisterInfo &TRI;
   const PICMidRegisterBankInfo &RBI;
 
-  // TODO Frame to adress conversion 
+  // TODO Frame to adress conversion
 
   /// tblgen-erated 'select' implementation, used as the initial selector for
   /// the patterns that don't require complex C++.
   bool selectImpl(MachineInstr &I, CodeGenCoverage &CoverageInfo) const;
 
   bool selectShift(MachineInstr &I) const;
-  bool selectAddSub(MachineInstr &I) const;
-  bool selectLogical(MachineInstr &I) const;
   bool selectLoadStore(MachineInstr &I) const;
   bool selectFrameIndex(MachineInstr &I) const;
 
@@ -138,7 +136,7 @@ bool PICMidInstructionSelector::select(MachineInstr &I) {
   switch (I.getOpcode()) {
   case PICMid::G_STORE:
   case PICMid::G_LOAD:
-    return selectLogical(I);
+    return selectLoadStore(I);
   case PICMid::G_SHLE:
   case PICMid::G_LSHRE:
     return selectShift(I);
@@ -150,38 +148,14 @@ bool PICMidInstructionSelector::select(MachineInstr &I) {
   }
 }
 
-bool PICMidInstructionSelector::selectAddSub(MachineInstr &I) const {
-  MachineIRBuilder Builder(I);
-  MachineRegisterInfo *MRI = Builder.getMRI();
-  auto s8 = LLT::scalar(8);
-
-  auto [Dst, Arg1, Arg2] = I.getFirst3Regs();
-  // TODO::identify constant values
-  // It has to be Arg2 because of Subtraction
-  // Subtract W from f
-  Builder.buildInstrNoInsert(PICMid::G_MOVF_W).addDef(MRI->createGenericVirtualRegister(s8)).addUse(Arg2);
-  unsigned Opcode = -1;
-  switch (I.getOpcode()) {
-  case PICMid::G_ADD:
-    Opcode = PICMid::G_ADDWF_F;
-    break;
-  case PICMid::G_SUB:
-    Opcode = PICMid::G_SUBWF_F;
-    break;
-  default:
-    break;
-  }
-  Builder.buildInstr(Opcode).addUse(Arg1);
-  return false;
-}
-
 bool PICMidInstructionSelector::selectFrameIndex(MachineInstr &I) const {
+  // TODO
   // do not use a stack, convert to a VReg instead
   MachineIRBuilder Builder(I);
   MachineFunction *MF = I.getMF();
   MachineRegisterInfo *MRI = Builder.getMRI();
   Register stack = I.getOperand(0).getReg();
-  return true; 
+  return false;
 }
 
 bool PICMidInstructionSelector::selectLoadStore(MachineInstr &I) const {
@@ -203,11 +177,6 @@ bool PICMidInstructionSelector::selectLoadStore(MachineInstr &I) const {
   I.eraseFromParent();
 
   return true;
-}
-
-bool PICMidInstructionSelector::selectLogical(MachineInstr &I) const {
-  // TODO
-  return false;
 }
 
 bool PICMidInstructionSelector::selectShift(MachineInstr &I) const {

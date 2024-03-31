@@ -30,7 +30,9 @@ PICMidLegalizerInfo::PICMidLegalizerInfo() {
       .maxScalar(0, S8)
       .unsupported();
 
-  getActionDefinitionsBuilder({G_FRAME_INDEX, G_BLOCK_ADDR}).legalFor({P}).unsupported();
+  getActionDefinitionsBuilder({G_FRAME_INDEX, G_BLOCK_ADDR})
+      .legalFor({P})
+      .unsupported();
 
   // Integer Extension and Truncations
 
@@ -41,8 +43,7 @@ PICMidLegalizerInfo::PICMidLegalizerInfo() {
       .widenScalarToNextMultipleOf(1, 8)
       .maxScalar(1, S8)
       .unsupported();
-  
-  
+
   getActionDefinitionsBuilder({G_TRUNC}).maxScalar(0, S8).unsupported();
 
   // Type Conversion
@@ -65,20 +66,24 @@ PICMidLegalizerInfo::PICMidLegalizerInfo() {
       .widenScalarToNextMultipleOf(0, 8)
       .maxScalar(0, S8)
       .unsupported();
-      
+
   // TODO implement libcalls or another form of custom call
-  getActionDefinitionsBuilder({G_MUL, G_SDIV, G_UDIV, G_SREM, G_UREM}).unsupported();
-  
+  getActionDefinitionsBuilder({G_MUL, G_SDIV, G_UDIV, G_SREM, G_UREM})
+      .unsupported();
+
   getActionDefinitionsBuilder({G_SELECT}).legalFor({S1});
-  
+
   getActionDefinitionsBuilder({G_SHL, G_LSHR}).legalFor({S8}).unsupported();
 
   getActionDefinitionsBuilder(G_ICMP).legalFor({S8}).unsupported();
 
-  getActionDefinitionsBuilder(G_PTR_ADD).legalForCartesianProduct({P, S8}).unsupported();
+  getActionDefinitionsBuilder(G_PTR_ADD)
+      .legalForCartesianProduct({P, S8})
+      .unsupported();
 
   // TODO support by implementing a virtual "carryadd" instruction
-  getActionDefinitionsBuilder({G_UADDE, G_SADDE, G_USUBE, G_SSUBE}).unsupported();
+  getActionDefinitionsBuilder({G_UADDE, G_SADDE, G_USUBE, G_SSUBE})
+      .unsupported();
 
   // unsupport all float, as well as G_FCONSTANT
   getActionDefinitionsBuilder(
@@ -122,8 +127,8 @@ PICMidLegalizerInfo::PICMidLegalizerInfo() {
 
 bool PICMidLegalizerInfo::legalizeCustom(LegalizerHelper &Helper,
                                          MachineInstr &MI) const {
-                                          switch (MI.getOpcode()) {
-                                            default:
-                                              return false;
-                                          }
+  switch (MI.getOpcode()) {
+  default:
+    return false;
+  }
 }
