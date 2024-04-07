@@ -65,9 +65,9 @@ public:
 
 private:
     // Link Time Optimization
-    void AddLTOOptions(const toolchains::PICmidToolChain &TC, const llvm::opt::ArgList &Args,
-        const InputInfo &Output, const InputInfoList &Inputs,
-        llvm::opt::ArgStringList &CmdArgs) const;
+    // void AddLTOOptions(const toolchains::PICmidToolChain &TC, const llvm::opt::ArgList &Args,
+    //     const InputInfo &Output, const InputInfoList &Inputs,
+    //     llvm::opt::ArgStringList &CmdArgs) const;
 };
 
 } // namespace picmid

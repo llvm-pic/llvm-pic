@@ -130,10 +130,10 @@ void picmid::Linker::ConstructJob(Compilation &C, const JobAction &JA,
 //   }
 }
 
-void picmid::Linker::AddLTOOptions(const toolchains::PICmidToolChain &TC, const ArgList &Args,
-                                const InputInfo &Output,
-                                const InputInfoList &Inputs,
-                                ArgStringList &CmdArgs) const {
+// void picmid::Linker::AddLTOOptions(const toolchains::PICmidToolChain &TC, const ArgList &Args,
+//                                 const InputInfo &Output,
+//                                 const InputInfoList &Inputs,
+//                                 ArgStringList &CmdArgs) const {
 //   assert(!Inputs.empty() && "Must have at least one input.");
 //   addLTOOptions(TC, Args, CmdArgs, Output, Inputs[0],
 //                 TC.getDriver().getLTOMode() == LTOK_Thin);
@@ -163,4 +163,4 @@ void picmid::Linker::AddLTOOptions(const toolchains::PICmidToolChain &TC, const 
 //     CmdArgs.push_back("-mllvm");
 //     CmdArgs.push_back(Args.MakeArgString("-zp-avail=" + Twine(ZPBytes)));
 //   }
-}
+// }
