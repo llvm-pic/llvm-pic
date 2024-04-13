@@ -43,7 +43,7 @@
 #include "ToolChains/NetBSD.h"
 #include "ToolChains/OHOS.h"
 #include "ToolChains/OpenBSD.h"
-#include "ToolChains/PICmid.h"
+#include "ToolChains/PICMid.h"
 #include "ToolChains/PPCFreeBSD.h"
 #include "ToolChains/PPCLinux.h"
 #include "ToolChains/PS4CPU.h"
@@ -6339,7 +6339,7 @@ const ToolChain &Driver::getToolChain(const ArgList &Args,
         TC = std::make_unique<toolchains::CSKYToolChain>(*this, Target, Args);
         break;
       case llvm::Triple::picmid:
-        TC = std::make_unique<toolchains::PICmidToolChain>(*this, Target, Args);
+        TC = std::make_unique<toolchains::PICMidToolChain>(*this, Target, Args);
         break;
       default:
         if (Target.getVendor() == llvm::Triple::Myriad)

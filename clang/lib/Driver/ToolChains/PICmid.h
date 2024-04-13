@@ -1,5 +1,14 @@
-// part of PICmid
-// author: hd
+//===-- PICmid.h - Define ToolChain for PICMid -------*- C++ -*-===//
+//
+// Part of LLVM-PICMid, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//
+//===----------------------------------------------------------------------===//
+//
+// This file declares the clang compiler driver toolchain for PICMid.
+//
+//===----------------------------------------------------------------------===//
 
 #ifndef CLANG_LIB_DRIVER_TOOLCHAINS_PICMID_H_
 #define CLANG_LIB_DRIVER_TOOLCHAINS_PICMID_H_
@@ -41,11 +50,6 @@ public:
 
     bool SupportsProfiling() const override { return false; }
 
-    void AddClangSystemIncludeArgs(const llvm::opt::ArgList &DriverArgs,
-        llvm::opt::ArgStringList &CC1Args) const override;
-    void addClangTargetOptions(const llvm::opt::ArgList &DriverArgs,
-        llvm::opt::ArgStringList &CC1Args,
-        Action::OffloadKind DeviceOffloadKind) const override;
 };
 
 } // namespace toolchains
@@ -62,12 +66,6 @@ public:
     const InputInfo &Output, const InputInfoList &Inputs,
     const llvm::opt::ArgList &TCArgs,
     const char *LinkingOutput) const override;
-
-private:
-    // Link Time Optimization
-    // void AddLTOOptions(const toolchains::PICmidToolChain &TC, const llvm::opt::ArgList &Args,
-    //     const InputInfo &Output, const InputInfoList &Inputs,
-    //     llvm::opt::ArgStringList &CmdArgs) const;
 };
 
 } // namespace picmid
