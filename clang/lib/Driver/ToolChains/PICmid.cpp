@@ -21,6 +21,14 @@ PICMidToolChain::PICMidToolChain(const Driver &D, const llvm::Triple &Triple,
     getProgramPaths().push_back(getDriver().Dir);
 }
 
+void PICMidToolChain::addClangTargetOptions(const ArgList &DriverArgs,
+                                ArgStringList &CC1Args,
+                                Action::OffloadKind) const {
+  CC1Args.push_back("-nostdsysteminc");
+  // set to freestanding environment (main return type void)
+  CC1Args.push_back("-ffreestanding");
+}
+
 void picmid::Linker::ConstructJob(Compilation &C, const JobAction &JA,
                                const InputInfo &Output,
                                const InputInfoList &Inputs, const ArgList &Args,
