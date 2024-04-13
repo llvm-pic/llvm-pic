@@ -1,4 +1,4 @@
-#include "PICmid.h"
+#include "PICMid.h"
 
 // #include "CommonArgs.h"
 
@@ -12,7 +12,7 @@ using namespace clang::driver;
 using namespace clang::driver::tools;
 using namespace clang::driver::toolchains;
 
-PICmidToolChain::PICmidToolChain(const Driver &D, const llvm::Triple &Triple,
+PICMidToolChain::PICMidToolChain(const Driver &D, const llvm::Triple &Triple,
          const llvm::opt::ArgList &Args)
     : ToolChain(D, Triple, Args) {
   // Look for binaries in both the installation and driver directory.
@@ -28,4 +28,4 @@ void picmid::Linker::ConstructJob(Compilation &C, const JobAction &JA,
   // TODO: implement
 }
 
-Tool *PICmidToolChain::buildLinker() const { return new tools::picmid::Linker(*this); }
+Tool *PICMidToolChain::buildLinker() const { return new tools::picmid::Linker(*this); }

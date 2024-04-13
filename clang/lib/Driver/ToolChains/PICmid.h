@@ -1,4 +1,4 @@
-//===-- PICmid.h - Define ToolChain for PICMid -------*- C++ -*-===//
+//===-- PICMid.h - Define ToolChain for PICMid -------*- C++ -*-===//
 //
 // Part of LLVM-PICMid, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -23,9 +23,9 @@ namespace driver {
 
 namespace toolchains {
 
-class LLVM_LIBRARY_VISIBILITY PICmidToolChain : public ToolChain {
+class LLVM_LIBRARY_VISIBILITY PICMidToolChain : public ToolChain {
 public:
-  PICmidToolChain(const Driver &D, const llvm::Triple &Triple,
+  PICMidToolChain(const Driver &D, const llvm::Triple &Triple,
       const llvm::opt::ArgList &Args);
 
 protected:
@@ -59,7 +59,7 @@ namespace picmid {
 
 class LLVM_LIBRARY_VISIBILITY Linker : public Tool {
 public:
-  Linker(const ToolChain &TC) : Tool("PICmid::Linker", "ld.lld", TC) {}
+  Linker(const ToolChain &TC) : Tool("PICMid::Linker", "ld.lld", TC) {}
   bool isLinkJob() const override { return true; }
   bool hasIntegratedCPP() const override { return false; }
   void ConstructJob(Compilation &C, const JobAction &JA,
