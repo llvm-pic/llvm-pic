@@ -25,7 +25,6 @@ static StringRef getCPU(StringRef CPU) {
 // TODO: Add Data Layout
 static const char *PICMidDataLayout = "E-p:8:8-i:8:8";
 
-
 PICMidTargetMachine::PICMidTargetMachine(const Target &T, const Triple &TT,
                                          StringRef CPU, StringRef FS,
                                          const TargetOptions &Options,

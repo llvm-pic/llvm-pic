@@ -1,7 +1,6 @@
 #ifndef __PROJECTS_LLVM_LLVM_PIC_LLVM_LIB_TARGET_PICMID_PICMIDSUBTARGET_H_
 #define __PROJECTS_LLVM_LLVM_PIC_LLVM_LIB_TARGET_PICMID_PICMIDSUBTARGET_H_
 
-#include "llvm/CodeGen/GlobalISel/CallLowering.h"
 #include "llvm/CodeGen/GlobalISel/InlineAsmLowering.h"
 #include "llvm/CodeGen/GlobalISel/InstructionSelector.h"
 #include "llvm/CodeGen/GlobalISel/Utils.h"
@@ -14,7 +13,6 @@
 #include "PICMidInstrInfo.h"
 #include "PICMidRegisterInfo.h"
 #include "PICMidTargetLowering.h"
-#include "PICMidCallLowering.h"
 
 #define GET_SUBTARGETINFO_HEADER
 #include "PICMidGenSubtargetInfo.inc"
@@ -30,11 +28,6 @@ public:
                   const std::string &FS, const PICMidTargetMachine &TM);
 
   const LegalizerInfo *getLegalizerInfo() const override { return &Legalizer; }
-
-  const CallLowering *getCallLowering() const override {
-    return &CallLoweringInfo;
-  }
-
   const PICMidTargetLowering *getTargetLowering() const override {
     return &TargetLoweringInfo;
   }
@@ -64,7 +57,6 @@ private:
   bool StaticStack = false;
 
   PICMidRegisterBankInfo RegBankInfo;
-  PICMidCallLowering CallLoweringInfo;
   PICMidRegisterInfo RegisterInfo;
   PICMidInstrInfo InstrInfo;
   PICMidLegalizerInfo Legalizer;
