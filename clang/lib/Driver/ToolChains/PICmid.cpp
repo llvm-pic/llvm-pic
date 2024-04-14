@@ -27,6 +27,8 @@ void PICMidToolChain::addClangTargetOptions(const ArgList &DriverArgs,
   CC1Args.push_back("-nostdsysteminc");
   // set to freestanding environment (main return type void)
   CC1Args.push_back("-ffreestanding");
+  // set language Standard to C17
+  CC1Args.push_back("-std=c17");
 }
 
 void picmid::Linker::ConstructJob(Compilation &C, const JobAction &JA,
