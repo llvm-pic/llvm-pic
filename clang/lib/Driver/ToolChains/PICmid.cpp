@@ -37,6 +37,9 @@ void PICMidToolChain::addClangTargetOptions(const ArgList &DriverArgs,
   CC1Args.push_back("-ffreestanding");
   // set language Standard to C17
   CC1Args.push_back("-std=c17");
+  // omit frame pointers because we don't use frame pointers for our simulated stack
+  CC1Args.push_back("-mframe-pointer=none");
+  // CC1Args.push_back("-stack-protector-buffer-size 0");
 }
 
 void picmid::Linker::ConstructJob(Compilation &C, const JobAction &JA,
