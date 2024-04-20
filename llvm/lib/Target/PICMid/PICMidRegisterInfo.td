@@ -16,6 +16,7 @@ class PICMidReg<bits<16> num, string name> : Register<!strconcat("llvm_pic_mid_"
 
 // Accumulator Register
 
+// Dwarf Number, register string
 def W : PICMidReg<0, "w">;
 def C : PICMidReg<1, "C">;
 def DC : PICMidReg<2, "DC">;
