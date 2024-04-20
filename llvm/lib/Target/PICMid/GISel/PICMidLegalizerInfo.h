@@ -6,6 +6,7 @@
 #include "llvm/CodeGen/GlobalISel/LegalizerInfo.h"
 #include "llvm/CodeGen/MachineInstr.h"
 #include "llvm/CodeGen/MachineModuleInfoImpls.h"
+#include "llvm/CodeGen/MachineRegisterInfo.h"
 
 namespace llvm {
 
@@ -18,6 +19,9 @@ public:
   PICMidLegalizerInfo();
   bool legalizeCustom(LegalizerHelper &Helper,
                               MachineInstr &MI) const override;
+  bool legalizeBrCond(LegalizerHelper &Helper, MachineInstr &MI, MachineRegisterInfo &MRI) const;
+  bool legalizeICmp(LegalizerHelper &Helper, MachineInstr &MI, MachineRegisterInfo &MRI) const;
+  bool legalizeSelect(LegalizerHelper &Helper, MachineInstr &MI) const;
 };
 
 } // namespace llvm
