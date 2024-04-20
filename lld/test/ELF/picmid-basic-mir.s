@@ -15,7 +15,7 @@
 
 #--- link.ld
 MEMORY {
-    prog_mem : ORIGIN = 0x0000, LENGTH = 0x2000
+    prog_mem : ORIGIN = 0x0000, LENGTH = 0x4000
     config_mem : ORIGIN = 0x4000, LENGTH = 0x4000
 }
 
