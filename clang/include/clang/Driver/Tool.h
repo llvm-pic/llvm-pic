@@ -29,7 +29,7 @@ namespace driver {
   typedef SmallVector<InputInfo, 4> InputInfoList;
 
 /// Tool - Information on a specific compilation tool.
-class yTool {
+class Tool {
   /// The tool name (for debugging).
   const char *Name;
 
