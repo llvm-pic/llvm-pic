@@ -3515,7 +3515,7 @@ bool IRTranslator::runOnMachineFunction(MachineFunction &CurMF) {
   LibInfo = &getAnalysis<TargetLibraryInfoWrapperPass>().getTLI(F);
   FuncInfo.CanLowerReturn = CLI->checkReturnTypeForCallConv(*MF);
 
-  const auto &TLIfalse = *MF->getSubtarget().getTargetLowering();
+  const auto &TLI = *MF->getSubtarget().getTargetLowering();
 
   SL = std::make_unique<GISelSwitchLowering>(this, FuncInfo);
   SL->init(TLI, TM, *DL);

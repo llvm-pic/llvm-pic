@@ -50,6 +50,9 @@ public:
 
     bool SupportsProfiling() const override { return false; }
 
+    void AddClangSystemIncludeArgs(const llvm::opt::ArgList &DriverArgs,
+                        llvm::opt::ArgStringList &CC1Args) const override;
+
     void addClangTargetOptions(const llvm::opt::ArgList &DriverArgs,
                         llvm::opt::ArgStringList &CC1Args,
                         Action::OffloadKind DeviceOffloadKind) const override;
