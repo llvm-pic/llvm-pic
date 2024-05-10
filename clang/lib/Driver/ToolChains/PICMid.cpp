@@ -94,7 +94,7 @@ void picmid::Linker::ConstructJob(Compilation &C, const JobAction &JA,
                             options::OPT_Z_Flag, options::OPT_r});
 
   // c runtime startup files
-  // if (!Args.hasArg(options::OPT_nostartfiles, options::OPT_nostdlib)) {
+  if (!Args.hasArg(options::OPT_nostartfiles, options::OPT_nostdlib)) {
     // Prefixing a colon causes GNU LD-like linkers to search for this filename
     // as-is. This contains the minimum necessary startup library.
     // CmdArgs.push_back("-l:crt0.o");
@@ -102,7 +102,7 @@ void picmid::Linker::ConstructJob(Compilation &C, const JobAction &JA,
     // config memory
     // CmdArgs.push_back("-l:config.o");
     CmdArgs.push_back("config.o");
-  // }
+  }
 
   // libcrt0.a contains optional startup objects that are only pulled in if
   // referenced.

@@ -331,6 +331,8 @@ class LLVMConfig(object):
         return False
 
     def make_itanium_abi_triple(self, triple):
+        if triple == "picmid":
+            return triple
         m = re.match(r"(\w+)-(\w+)-(\w+)", triple)
         if not m:
             self.lit_config.fatal(
@@ -342,6 +344,8 @@ class LLVMConfig(object):
         return m.group(1) + "-" + m.group(2) + "-" + m.group(3) + "-gnu"
 
     def make_msabi_triple(self, triple):
+        if triple == "picmid":
+            return triple
         m = re.match(r"(\w+)-(\w+)-(\w+)", triple)
         if not m:
             self.lit_config.fatal("Could not turn '%s' into MS ABI triple" % triple)
