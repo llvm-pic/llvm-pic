@@ -160,7 +160,7 @@ bool PICMidLegalizerInfo::legalizeBrCond(LegalizerHelper &Helper,
   auto CondOpc = DefMI->getOpcode();
   auto CondInstr = MIRBuilder.buildInstr(PICMid::BTFSS);
   switch (CondOpc) {
-  case G_ICMP:
+  case G_ICMP: {
     // not sure if this is correct because z is a subregister, and if this
     // should be done here get icmp type
     Register Z =
@@ -168,6 +168,7 @@ bool PICMidLegalizerInfo::legalizeBrCond(LegalizerHelper &Helper,
     CondInstr.addReg(Z);
     // build a pseudo instruction that selects through z
     break;
+    }
   case G_TRUNC:
   case G_EXTRACT:
     // no code selection for trunc or extraction, instead determine bit of trunc
