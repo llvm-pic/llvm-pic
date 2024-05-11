@@ -32,14 +32,15 @@ PICMidToolChain::PICMidToolChain(const Driver &D, const llvm::Triple &Triple,
 void PICMidToolChain::addClangTargetOptions(const ArgList &DriverArgs,
                                 ArgStringList &CC1Args,
                                 Action::OffloadKind) const {
-  // CC1Args.push_back("-nostdsysteminc");
+  CC1Args.push_back("-nobuiltininc");
   // set to freestanding environment (main return type void)
   CC1Args.push_back("-ffreestanding");
   // set language Standard to C17
   CC1Args.push_back("-std=c17");
   // omit frame pointers because we don't use frame pointers for our simulated stack
   CC1Args.push_back("-mframe-pointer=none");
-  // CC1Args.push_back("-stack-protector-buffer-size 0");
+  // disable gnu extensions
+  CC1Args.push_back("-pedantic"); // not shure, if necessary
 }
 
 void PICMidToolChain::AddClangSystemIncludeArgs(const ArgList &DriverArgs,
@@ -91,18 +92,16 @@ void picmid::Linker::ConstructJob(Compilation &C, const JobAction &JA,
   TC.AddFilePathLibArgs(Args, CmdArgs);
   Args.AddAllArgs(CmdArgs, {options::OPT_L, options::OPT_T_Group,
                             options::OPT_e, options::OPT_s, options::OPT_t,
-                            options::OPT_Z_Flag, options::OPT_r});
+                            options::OPT_Z_Flag, options::OPT_r,});
 
   // c runtime startup files
-  if (!Args.hasArg(options::OPT_nostartfiles, options::OPT_nostdlib)) {
+  // if (!Args.hasArg(options::OPT_nostartfiles, options::OPT_nostdlib)) {
     // Prefixing a colon causes GNU LD-like linkers to search for this filename
     // as-is. This contains the minimum necessary startup library.
-    // CmdArgs.push_back("-l:crt0.o");
-    CmdArgs.push_back("crt0.o");
+    // CmdArgs.push_back("crt0.o");
     // config memory
-    // CmdArgs.push_back("-l:config.o");
-    CmdArgs.push_back("config.o");
-  }
+    // CmdArgs.push_back("config.o");
+  // }
 
   // libcrt0.a contains optional startup objects that are only pulled in if
   // referenced.
@@ -121,8 +120,8 @@ void picmid::Linker::ConstructJob(Compilation &C, const JobAction &JA,
   // No matter what's included in the link, the default linker script is
   // nonsense for the pic. Accordingly, use one named "link.ld" if none is
   // specified.
-  if (!Args.hasArg(options::OPT_T))
-   CmdArgs.push_back("-Tlink.ld");
+  // if (!Args.hasArg(options::OPT_T)) 
+  //   CmdArgs.push_back("-Tlink.ld");
 
   CmdArgs.push_back("-o");
   CmdArgs.push_back(Output.getFilename());
