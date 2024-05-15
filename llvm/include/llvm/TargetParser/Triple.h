@@ -885,6 +885,8 @@ public:
   }
 
   /// Tests whether the target is MIPS (little and big endian, 32- or 64-bit).
+  bool isMIPS() const { return isMIPS32() || isMIPS64(); }
+
   /// Tests whether the target is a PIC baseline core device
   bool isPICBase() const { return getArch() == Triple::picbase; }
 
