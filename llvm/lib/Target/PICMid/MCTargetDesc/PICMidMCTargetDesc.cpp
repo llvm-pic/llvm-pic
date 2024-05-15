@@ -3,6 +3,7 @@
 #include "PICMidMCAsmInfo.h"
 #include "PICMidMCCodeEmitter.h"
 #include "PICMidMCInstPrinter.h"
+#include "PICMidMCObjectFileInfo.h"
 #include "TargetInfo/PICMidTargetInfo.h"
 
 #include "llvm/ADT/ArrayRef.h"
@@ -58,6 +59,14 @@ static MCInstPrinter *createPICMCInstPrinter(const Triple &T,
   }
 }
 
+static MCObjectFileInfo *
+createPICMidMCObjectFileInfo(MCContext &Ctx, bool PIC,
+                             bool LargeCodeModel = false) {
+  MCObjectFileInfo *MOFI = new PICMidMCObjectFileInfo();
+  MOFI->initMCObjectFileInfo(Ctx, PIC, LargeCodeModel);
+  return MOFI;
+}
+
 extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializePICMidTargetMC() {
   RegisterMCAsmInfo<PICMidMCAsmInfo> X(getThePICMidTarget());
 
@@ -73,6 +82,8 @@ extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializePICMidTargetMC() {
                                         createPICMidMCCodeEmitter);
   TargetRegistry::RegisterMCAsmBackend(getThePICMidTarget(),
                                        createPICMidAsmBackend);
+  TargetRegistry::RegisterMCObjectFileInfo(getThePICMidTarget(),
+                                           createPICMidMCObjectFileInfo);
 }
 
 } // namespace llvm
