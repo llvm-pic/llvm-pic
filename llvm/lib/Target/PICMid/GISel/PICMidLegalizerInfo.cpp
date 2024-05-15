@@ -24,10 +24,6 @@
 #include "llvm/IR/Type.h"
 #include "llvm/Support/Debug.h"
 #include "llvm/Transforms/Utils/BasicBlockUtils.h"
-#include <cassert>
-#include <cstddef>
-#include <netinet/in.h>
-#include <tuple>
 
 using namespace llvm;
 using namespace TargetOpcode;
@@ -101,7 +97,7 @@ PICMidLegalizerInfo::PICMidLegalizerInfo() {
   getActionDefinitionsBuilder({G_UADDO, G_SADDO, G_USUBO, G_SSUBO})
       .legalFor({S8, S1, S8, S8})
       .unsupported();
-      
+
   getActionDefinitionsBuilder({G_UADDE, G_SADDE, G_USUBE, G_SSUBE})
       .legalFor({S8, S1, S8, S8, S1})
       .unsupported();

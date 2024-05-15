@@ -106,3 +106,4 @@ body: |
     %1:any(s8) = G_CONSTANT i8 1
     %2:any(s8) = G_ADD %0, %1
     G_RETURN implicit %2
+
