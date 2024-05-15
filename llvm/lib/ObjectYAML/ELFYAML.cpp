@@ -19,8 +19,8 @@
 #include "llvm/Support/Casting.h"
 #include "llvm/Support/ErrorHandling.h"
 #include "llvm/Support/MipsABIFlags.h"
-#include "llvm/Support/YAMLTraits.h"
 #include "llvm/Support/WithColor.h"
+#include "llvm/Support/YAMLTraits.h"
 #include <cassert>
 #include <cstdint>
 #include <optional>
@@ -207,6 +207,7 @@ void ScalarEnumerationTraits<ELFYAML::ELF_EM>::enumeration(
   ECase(EM_VPP500);
   ECase(EM_SPARC32PLUS);
   ECase(EM_960);
+  ECase(EM_MCHP_PIC);
   ECase(EM_PPC);
   ECase(EM_PPC64);
   ECase(EM_S390);
@@ -621,20 +622,14 @@ void ScalarBitSetTraits<ELFYAML::ELF_EF>::bitset(IO &IO,
     case ELF::ELFABIVERSION_AMDGPU_HSA_V5:
       BCaseMask(EF_AMDGPU_FEATURE_XNACK_UNSUPPORTED_V4,
                 EF_AMDGPU_FEATURE_XNACK_V4);
-      BCaseMask(EF_AMDGPU_FEATURE_XNACK_ANY_V4,
-                EF_AMDGPU_FEATURE_XNACK_V4);
-      BCaseMask(EF_AMDGPU_FEATURE_XNACK_OFF_V4,
-                EF_AMDGPU_FEATURE_XNACK_V4);
-      BCaseMask(EF_AMDGPU_FEATURE_XNACK_ON_V4,
-                EF_AMDGPU_FEATURE_XNACK_V4);
+      BCaseMask(EF_AMDGPU_FEATURE_XNACK_ANY_V4, EF_AMDGPU_FEATURE_XNACK_V4);
+      BCaseMask(EF_AMDGPU_FEATURE_XNACK_OFF_V4, EF_AMDGPU_FEATURE_XNACK_V4);
+      BCaseMask(EF_AMDGPU_FEATURE_XNACK_ON_V4, EF_AMDGPU_FEATURE_XNACK_V4);
       BCaseMask(EF_AMDGPU_FEATURE_SRAMECC_UNSUPPORTED_V4,
                 EF_AMDGPU_FEATURE_SRAMECC_V4);
-      BCaseMask(EF_AMDGPU_FEATURE_SRAMECC_ANY_V4,
-                EF_AMDGPU_FEATURE_SRAMECC_V4);
-      BCaseMask(EF_AMDGPU_FEATURE_SRAMECC_OFF_V4,
-                EF_AMDGPU_FEATURE_SRAMECC_V4);
-      BCaseMask(EF_AMDGPU_FEATURE_SRAMECC_ON_V4,
-                EF_AMDGPU_FEATURE_SRAMECC_V4);
+      BCaseMask(EF_AMDGPU_FEATURE_SRAMECC_ANY_V4, EF_AMDGPU_FEATURE_SRAMECC_V4);
+      BCaseMask(EF_AMDGPU_FEATURE_SRAMECC_OFF_V4, EF_AMDGPU_FEATURE_SRAMECC_V4);
+      BCaseMask(EF_AMDGPU_FEATURE_SRAMECC_ON_V4, EF_AMDGPU_FEATURE_SRAMECC_V4);
       break;
     }
     break;
@@ -846,7 +841,6 @@ void ScalarEnumerationTraits<ELFYAML::ELF_STT>::enumeration(
   IO.enumFallback<Hex8>(Value);
 }
 
-
 void ScalarEnumerationTraits<ELFYAML::ELF_RSS>::enumeration(
     IO &IO, ELFYAML::ELF_RSS &Value) {
 #define ECase(X) IO.enumCase(Value, #X, ELF::X)
@@ -902,6 +896,9 @@ void ScalarEnumerationTraits<ELFYAML::ELF_REL>::enumeration(
     break;
   case ELF::EM_CSKY:
 #include "llvm/BinaryFormat/ELFRelocs/CSKY.def"
+    break;
+  case ELF::EM_MCHP_PIC:
+#include "llvm/BinaryFormat/ELFRelocs/PICMid.def"
     break;
   case ELF::EM_PPC:
 #include "llvm/BinaryFormat/ELFRelocs/PowerPC.def"
@@ -1410,7 +1407,6 @@ static void sectionMapping(IO &IO, ELFYAML::NoteSection &Section) {
   IO.mapOptional("Notes", Section.Notes);
 }
 
-
 static void sectionMapping(IO &IO, ELFYAML::GnuHashSection &Section) {
   commonSectionMapping(IO, Section);
   IO.mapOptional("Header", Section.Header);
@@ -1629,7 +1625,7 @@ void MappingTraits<std::unique_ptr<ELFYAML::Chunk>>::mapping(
       Section.reset(new ELFYAML::NoteSection());
     sectionMapping(IO, *cast<ELFYAML::NoteSection>(Section.get()));
     break;
- case ELF::SHT_GNU_HASH:
+  case ELF::SHT_GNU_HASH:
     if (!IO.outputting())
       Section.reset(new ELFYAML::GnuHashSection());
     sectionMapping(IO, *cast<ELFYAML::GnuHashSection>(Section.get()));
