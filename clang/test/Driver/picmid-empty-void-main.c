@@ -4,7 +4,7 @@
 
 #--- void.c
 
-void main() {
+void main(void) {
 }
 
 
