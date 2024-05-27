@@ -57,6 +57,11 @@ public:
                         llvm::opt::ArgStringList &CC1Args,
                         Action::OffloadKind DeviceOffloadKind) const override;
 
+
+    virtual bool isThreadModelSupported(const StringRef Model) const { return false; };
+
+    virtual std::string getThreadModel() const { return "single"; }
+
 };
 
 } // namespace toolchains
