@@ -59,4 +59,4 @@ jobs:
     uses: ./.github/workflows/picmid-llvm-project-tests.yml
     with:
       build_target: check-clang-driver-picmid
-      projects: clang;lld
+      projects: lld;clang
