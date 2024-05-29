@@ -36,7 +36,7 @@ void PICMidToolChain::addClangTargetOptions(const ArgList &DriverArgs,
   // set to freestanding environment (main return type void)
   CC1Args.push_back("-ffreestanding");
   // omit frame pointers because we don't use frame pointers for our simulated stack
-  CC1Args.push_back("-mframe-pointer=none");
+  // CC1Args.push_back("-mframe-pointer=none");
 }
 
 void PICMidToolChain::AddClangSystemIncludeArgs(const ArgList &DriverArgs,
