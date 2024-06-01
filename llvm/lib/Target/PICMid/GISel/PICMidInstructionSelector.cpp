@@ -15,16 +15,20 @@
 
 #include "llvm/ADT/APFloat.h"
 #include "llvm/Analysis/AliasAnalysis.h"
+#include "llvm/CodeGen/AsmPrinter.h"
 #include "llvm/CodeGen/GlobalISel/GIMatchTableExecutorImpl.h"
 #include "llvm/CodeGen/GlobalISel/GenericMachineInstrs.h"
 #include "llvm/CodeGen/GlobalISel/InstructionSelector.h"
+#include "llvm/CodeGen/GlobalISel/LoadStoreOpt.h"
 #include "llvm/CodeGen/GlobalISel/MIPatternMatch.h"
 #include "llvm/CodeGen/GlobalISel/MachineIRBuilder.h"
 #include "llvm/CodeGen/GlobalISel/Utils.h"
 #include "llvm/CodeGen/LowLevelType.h"
 #include "llvm/CodeGen/MachineBasicBlock.h"
 #include "llvm/CodeGen/MachineFrameInfo.h"
+#include "llvm/CodeGen/MachineFunction.h"
 #include "llvm/CodeGen/MachineInstr.h"
+#include "llvm/CodeGen/MachineInstrBuilder.h"
 #include "llvm/CodeGen/MachineMemOperand.h"
 #include "llvm/CodeGen/MachineOperand.h"
 #include "llvm/CodeGen/MachineRegisterInfo.h"
@@ -34,11 +38,14 @@
 #include "llvm/CodeGen/TargetRegisterInfo.h"
 #include "llvm/CodeGen/TargetSubtargetInfo.h"
 #include "llvm/IR/Constants.h"
+#include "llvm/IR/IRPrintingPasses.h"
 #include "llvm/IR/InstrTypes.h"
 #include "llvm/IR/Instruction.h"
 #include "llvm/ObjectYAML/MachOYAML.h"
+#include "llvm/Support/Debug.h"
 #include "llvm/Support/ErrorHandling.h"
 
+#include "MCTargetDesc/PICMidFixupKinds.h"
 #include "MCTargetDesc/PICMidMCTargetDesc.h"
 #include "PICMidInstrInfo.h"
 #include "PICMidRegisterInfo.h"
@@ -76,11 +83,15 @@ private:
   const PICMidRegisterInfo &TRI;
   const PICMidRegisterBankInfo &RBI;
 
+  // TODO Frame to adress conversion
+
   /// tblgen-erated 'select' implementation, used as the initial selector for
   /// the patterns that don't require complex C++.
   bool selectImpl(MachineInstr &I, CodeGenCoverage &CoverageInfo) const;
 
   bool selectShift(MachineInstr &I) const;
+  bool selectLoadStore(MachineInstr &I) const;
+  bool selectFrameIndex(MachineInstr &I) const;
 
   void constrainGeneric(MachineInstr &I) const;
   void constrainOperandRegClass(MachineOperand &RegMO,
@@ -122,14 +133,50 @@ bool PICMidInstructionSelector::select(MachineInstr &I) {
   if (selectImpl(I, *CoverageInfo)) {
     return true;
   }
-
   switch (I.getOpcode()) {
+  case PICMid::G_STORE:
+  case PICMid::G_LOAD:
+    return selectLoadStore(I);
   case PICMid::G_SHLE:
   case PICMid::G_LSHRE:
     return selectShift(I);
+  case PICMid::G_FRAME_INDEX:
+    return selectFrameIndex(I);
+  // TODO other instructions
   default:
-    return false;
+    return true;
   }
+}
+
+bool PICMidInstructionSelector::selectFrameIndex(MachineInstr &I) const {
+  // TODO
+  // do not use a stack, convert to a VReg instead
+  MachineIRBuilder Builder(I);
+  MachineFunction *MF = I.getMF();
+  MachineRegisterInfo *MRI = Builder.getMRI();
+  Register stack = I.getOperand(0).getReg();
+  return false;
+}
+
+bool PICMidInstructionSelector::selectLoadStore(MachineInstr &I) const {
+  MachineIRBuilder Builder(I);
+  MachineRegisterInfo *MRI = Builder.getMRI();
+  auto s8 = LLT::scalar(8);
+
+  auto [Arg1, Arg2] = I.getFirst2Regs();
+  unsigned Opcode = -1;
+  switch (I.getOpcode()) {
+  case PICMid::G_LOAD:
+    Opcode = PICMid::G_MOVF_W;
+    break;
+  case PICMid::G_STORE:
+    Opcode = PICMid::G_MOVWF;
+    break;
+  }
+  Builder.buildInstr(Opcode).addUse(Arg1).addUse(Arg2);
+  I.eraseFromParent();
+
+  return true;
 }
 
 bool PICMidInstructionSelector::selectShift(MachineInstr &I) const {

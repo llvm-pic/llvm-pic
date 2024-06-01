@@ -20,6 +20,9 @@
 //
 //===------------------------------------------------------------------------===//
 
+
+// TODO add the affected register classes
+
 class PICMidLogicalInstr : Instruction {
   let Namespace = "PICMid";
 
@@ -204,6 +207,17 @@ def G_MOVWF : PICMidLogicalInstr, PseudoInstExpansion<(MOVWF addr7:$f)> {
     dag InOperandList = (ins Wc:$w);
     dag OutOperandList = (outs Imag:$f);
 }
+
+// Integer Comparison
+
+class PICMidIntegerComparison<RegisterClass rc> : PICMidLogicalInstr {
+  dag InOperandList = (ins Wc:$w, rc:$f);
+  dag OutOperandList = (outs Wc:$w, Zc:$z);
+}
+
+def G_ICMP_LW : PICMidBinaryInstrWithLiteral<imm8>, PseudoInstExpansion<(SUBLW imm8:$k)>;
+def G_ICMP_W : PICMidBinaryInstrResultToW<Imag>, PseudoInstExpansion<(SUBWF addr7:$f, (imm1 0))>;
+
 
 //def : Pat<(store 0, Imag:$r), (G_CLRF Imag:$r)>;
 def : Pat<(i8 imm:$k), (G_MOVLW imm:$k)>;
