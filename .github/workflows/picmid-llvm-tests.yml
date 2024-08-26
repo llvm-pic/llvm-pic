@@ -52,3 +52,11 @@ jobs:
     with:
       build_target: check-lld-elf
       projects: lld
+
+  check_clang_driver:
+    if: github.repository_owner == 'llvm-pic'
+    name: Test clang driver
+    uses: ./.github/workflows/picmid-llvm-project-tests.yml
+    with:
+      build_target: lld check-clang-driver-picmid
+      projects: lld;clang

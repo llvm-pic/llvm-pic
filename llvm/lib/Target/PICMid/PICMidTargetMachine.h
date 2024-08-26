@@ -1,12 +1,12 @@
-//===-- MOSTargetMachine.h - Define TargetMachine for MOS -------*- C++ -*-===//
+//===-- PICMidTargetMachine.h - Define TargetMachine for PICMid -------*- C++ -*-===//
 //
-// Part of LLVM-MOS, under the Apache License v2.0 with LLVM Exceptions.
+// Part of LLVM-PIC, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 //
 //===----------------------------------------------------------------------===//
 //
-// This file declares the MOS specific subclass of TargetMachine.
+// This file declares the PICMid specific subclass of TargetMachine.
 //
 //===----------------------------------------------------------------------===//
 
@@ -42,4 +42,4 @@ private:
 
 } // end namespace llvm
 
-#endif // LLVM_MOS_TARGET_MACHINE_H
+#endif // LLVM_PICMid_TARGET_MACHINE_H

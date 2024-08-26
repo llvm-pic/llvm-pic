@@ -19,6 +19,8 @@ static cl::opt<unsigned> SSThreshold(
 void PICMidTargetObjectFile::Initialize(MCContext &Ctx,
                                         const TargetMachine &TM) {
   TargetLoweringObjectFileELF::Initialize(Ctx, TM);
+  this->TM = &static_cast<const PICMidTargetMachine &>(TM);
+
   InitializeELF(TM.Options.UseInitArray);
 
   SmallDataSection = getContext().getELFSection(
@@ -26,7 +28,6 @@ void PICMidTargetObjectFile::Initialize(MCContext &Ctx,
 
   SmallBSSSection = getContext().getELFSection(".sbss", ELF::SHT_NOBITS,
                                                ELF::SHF_WRITE | ELF::SHF_ALLOC);
-  this->TM = &static_cast<const PICMidTargetMachine &>(TM);
 }
 
 } // namespace llvm

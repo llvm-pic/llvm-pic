@@ -147,6 +147,7 @@ PICMidLegalizerInfo::PICMidLegalizerInfo() {
   // Optimization Hints
 
   // Miscellaneous
+  getLegacyLegalizerInfo().computeTables();
 };
 
 bool PICMidLegalizerInfo::legalizeCustom(LegalizerHelper &Helper,
