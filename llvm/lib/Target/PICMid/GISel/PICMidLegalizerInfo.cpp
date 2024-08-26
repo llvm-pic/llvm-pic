@@ -104,7 +104,7 @@ PICMidLegalizerInfo::PICMidLegalizerInfo() {
 
   // We can absolutely select this, by checking the first bit, and then
   // optionally perfoming a bit flip.
-  getActionDefinitionsBuilder({G_ABS}).legalFor({S8}).unsupported();
+  getActionDefinitionsBuilder(G_ABS).legalFor({S8}).unsupported();
 
   // unsupport all float, as well as G_FCONSTANT
   getActionDefinitionsBuilder(

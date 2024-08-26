@@ -228,17 +228,3 @@ def G_ICMP_W : PICMidBinaryInstrResultToW<Imag>, PseudoInstExpansion<(SUBWF addr
 
 //def : Pat<(store 0, Imag:$r), (G_CLRF Imag:$r)>;
 def : Pat<(i8 imm:$k), (G_MOVLW imm:$k)>;
-
- // TODO pseudo expansion, how to turn register class into a BTFxx instruction
-def G_CBISZ : PICMidConditionalBranch {
-  dag InOperandList = (ins Zc:$z, label:$tgt);
-}
-def G_CBICZ : PICMidConditionalBranch {
-  dag InOperandList = (ins Zc:$z, label:$tgt);
-}
-def G_CBISC : PICMidConditionalBranch {
-  dag InOperandList = (ins Cc:$z, label:$tgt);
-}
-def G_CBICC : PICMidConditionalBranch {
-  dag InOperandList = (ins Cc:$z, label:$tgt);
-}

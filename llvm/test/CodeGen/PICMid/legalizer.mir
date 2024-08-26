@@ -1,11 +1,12 @@
 # RUN: llc -mtriple=picmid -start-before=legalizer -stop-after=legalizer -verify-machineinstrs -o - %s | FileCheck %s
+
 ---
 name: add_s8
 body: |
   bb.0.entry:
     %0:_(s8) = COPY $r0
     %1:_(s8) = COPY $r1
-	%2:_(s8) = G_ADD %0, %1
+    %2:_(s8) = G_ADD %0, %1
     RETURN implicit %2
 ---
 name: sub_s8
@@ -13,7 +14,7 @@ body: |
   bb.0.entry:
     %0:_(s8) = COPY $r0
     %1:_(s8) = COPY $r1
-	%2:_(s8) = G_SUB %0, %1
+    %2:_(s8) = G_SUB %0, %1
     RETURN implicit %2
 ---
 name: icmp_ugt
@@ -21,7 +22,7 @@ body: |
   bb.0.entry:
     %0:_(s8) = COPY $r0
     %1:_(s8) = COPY $r1
-	%2:_(s1) = G_ICMP intpred(ult) %0, %1
+    %2:_(s1) = G_ICMP intpred(ult), %0, %1
     RETURN implicit %2
 ---
 name: icmp_uge
@@ -29,7 +30,7 @@ body: |
   bb.0.entry:
     %0:_(s8) = COPY $r0
     %1:_(s8) = COPY $r1
-	%2:_(s1) = G_ICMP intpred(uge) %0, %1
+    %2:_(s1) = G_ICMP intpred(uge), %0, %1
     RETURN implicit %2
 ---
 name: icmp_sgt
@@ -37,7 +38,7 @@ body: |
   bb.0.entry:
     %0:_(s8) = COPY $r0
     %1:_(s8) = COPY $r1
-	%2:_(s1) = G_ICMP intpred(sgt) %0, %1
+    %2:_(s1) = G_ICMP intpred(sgt), %0, %1
     RETURN implicit %2
 ---
 name: icmp_sge
@@ -45,27 +46,29 @@ body: |
   bb.0.entry:
     %0:_(s8) = COPY $r0
     %1:_(s8) = COPY $r1
-	%2:_(s1) = G_ICMP intpred(sge) %0, %1
+    %2:_(s1) = G_ICMP intpred(sge), %0, %1
     RETURN implicit %2
+
 ---
-;; unknown if this is even valid
+name: idk
 body: |
-  bb.1.entry:
+  bb.0.entry:
+    ;; unknown if this is even valid
     successors: %bb.2(0x40000000), %bb.3(0x40000000)
-  
+
     %1:_(s8) = COPY $r0
     %2:_(s8) = COPY $r1
     %5:_(s1) = G_ICMP intpred(eq), %1, %2
     G_BRCOND %5(s1), %bb.2
     G_BR %bb.3
-  
-  bb.2.if.then:
+
+  bb.2:
     successors: %bb.4(0x80000000)
-  
+
     G_BR %bb.4
-  
-  bb.3.if.else:
+
+  bb.3:
     successors: %bb.4(0x80000000)
-  
-  bb.4.if.end:
+
+  bb.4:
     RETURN implicit %5
