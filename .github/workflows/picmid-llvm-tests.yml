@@ -58,5 +58,5 @@ jobs:
     name: Test clang driver
     uses: ./.github/workflows/picmid-llvm-project-tests.yml
     with:
-      build_target: lld check-clang-driver-picmid
+      build_target: check-clang-driver-picmid
       projects: lld;clang
