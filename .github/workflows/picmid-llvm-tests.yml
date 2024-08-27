@@ -58,4 +58,4 @@ jobs:
     with:
       build_target: check-clang-driver-picmid
       projects: lld;clang
-      extra-cmake-arguments: "-DCLANG_TEST_DEPS=lld"
+      extra_cmake_args: "-DCLANG_TEST_DEPS=lld"
