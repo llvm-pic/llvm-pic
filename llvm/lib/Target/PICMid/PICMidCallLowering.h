@@ -1,3 +1,15 @@
+//===- llvm/lib/Target/PICMid/PICMidCallLowering.h - Call Lowering -*-C++-*-==//
+//
+// Part of LLVM-PIC, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//
+//===----------------------------------------------------------------------===//
+//
+/// \file
+/// This file describes how to lower LLVM calls to machine code calls.
+//
+//===----------------------------------------------------------------------===//
 #ifndef LLVM_LIB_TARGET_PICMID_PICMIDCALLLOWERING_H
 #define LLVM_LIB_TARGET_PICMID_PICMIDCALLLOWERING_H
 
@@ -7,7 +19,7 @@ namespace llvm {
 
 class PICMidTargetLowering;
 
-class PICMidCallLowering: public CallLowering {
+class PICMidCallLowering : public CallLowering {
 public:
   PICMidCallLowering(const llvm::TargetLowering *TL) : CallLowering(TL) {}
 
@@ -21,7 +33,7 @@ public:
 
   bool lowerCall(MachineIRBuilder &MIRBuilder,
                  CallLoweringInfo &Info) const override;
-  
+
   bool enableBigEndian() const override;
 };
 
