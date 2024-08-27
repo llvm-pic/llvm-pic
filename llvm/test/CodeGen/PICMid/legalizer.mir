@@ -54,6 +54,12 @@ name: idk
 body: |
   bb.0.entry:
     ;; unknown if this is even valid
+    ; CHECK-LABEL: name: idk
+    ; CHECK: [[COPY0:%[0-9]+]]:_(s8) = COPY $r0
+    ; CHECK: [[COPY1:%[0-9]+]]:_(s8) = COPY $r1
+    ; CHECK: [[ICMP:%[0-9]+]]:_(s1) = G_ICMP intpred(eq), [[COPY0]](s8), [[COPY1]]
+    ; CHECK: G_CBISZ [[ICMP]](s1), %bb.1
+    ; CHECK: G_BR %bb.2
     successors: %bb.2(0x40000000), %bb.3(0x40000000)
 
     %1:_(s8) = COPY $r0
