@@ -1,3 +1,17 @@
+//===-- PICMidTargetMachine.cpp - Instruction class definition -------*- C++ -*-===//
+//
+// Part of the LLVM-PIC Project, a fork of the LLVM Project,
+// by Hannes Diener, Lennart Schuster, Quang Thanh Ta, ${year),
+// under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//
+//===----------------------------------------------------------------------===//
+///
+/// \file
+/// TODO write a description
+///
+//===----------------------------------------------------------------------===//
 #include "PICMidTargetMachine.h"
 #include "GISel/PICMidInstructionSelector.h"
 #include "MCTargetDesc/PICMidMCTargetDesc.h"

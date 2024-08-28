@@ -34,7 +34,6 @@ jobs:
     with:
       build_target: check-llvm-mc-picmid
       projects:
-      id: mc
 
   check_codegen:
     if: github.repository_owner == 'llvm-pic'
@@ -43,7 +42,6 @@ jobs:
     with:
       build_target: check-llvm-codegen-picmid
       projects:
-      id: codegen
 
   check_lld:
     if: github.repository_owner == 'llvm-pic'
@@ -58,5 +56,6 @@ jobs:
     name: Test clang driver
     uses: ./.github/workflows/picmid-llvm-project-tests.yml
     with:
-      build_target: lld check-clang-driver-picmid
+      build_target: check-clang-driver-picmid
       projects: lld;clang
+      extra_cmake_args: "-DCLANG_TEST_DEPS=lld"

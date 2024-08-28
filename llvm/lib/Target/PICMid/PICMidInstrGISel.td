@@ -20,3 +20,29 @@ def G_LSHRE : PICMidGenericInstruction {
   let OutOperandList = (outs type0:$dst, type1:$carry_out);
   let InOperandList = (ins type0:$src, type1:$carry_in);
 }
+
+ // TODO pseudo expansion, how to turn register class into a BTFxx instruction
+def G_CBISZ : PICMidGenericInstruction {
+  dag InOperandList = (ins type0:$z, label:$tgt);
+  dag OutOperandList = (outs);
+  bit isBranch = true;
+  let isTerminator = true;
+}
+def G_CBICZ : PICMidGenericInstruction {
+  dag InOperandList = (ins type0:$z, label:$tgt);
+  dag OutOperandList = (outs);
+  bit isBranch = true;
+  let isTerminator = true;
+}
+def G_CBISC : PICMidGenericInstruction {
+  dag InOperandList = (ins type0:$z, label:$tgt);
+  dag OutOperandList = (outs);
+  bit isBranch = true;
+  let isTerminator = true;
+}
+def G_CBICC : PICMidGenericInstruction {
+  dag InOperandList = (ins type0:$z, label:$tgt);
+  dag OutOperandList = (outs);
+  bit isBranch = true;
+  let isTerminator = true;
+}

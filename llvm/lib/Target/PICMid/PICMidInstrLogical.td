@@ -82,10 +82,16 @@ class PICMidUnconditionalBranch : PICMidBranch {
   let isBarrier = true;
 }
 
+// consume 
+class PICMidConditionalBranch : PICMidBranch {
+  let isBarrier = true;
+}
+
 def G_GOTO_L : PICMidUnconditionalBranch {
    let InOperandList = (ins label:$tgt);
    let Pattern = [(br bb:$tgt)];
 }
+
 def G_CALL : PICMidLogicalInstr, PseudoInstExpansion<(CALL pcabs11:$k)> {
     dag InOperandList = (ins label:$k);
     let isCall = true;
@@ -215,6 +221,7 @@ class PICMidIntegerComparison<RegisterClass rc> : PICMidLogicalInstr {
   dag OutOperandList = (outs Wc:$w, Zc:$z);
 }
 
+// TODO
 def G_ICMP_LW : PICMidBinaryInstrWithLiteral<imm8>, PseudoInstExpansion<(SUBLW imm8:$k)>;
 def G_ICMP_W : PICMidBinaryInstrResultToW<Imag>, PseudoInstExpansion<(SUBWF addr7:$f, (imm1 0))>;
 
