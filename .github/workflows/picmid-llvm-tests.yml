@@ -50,7 +50,6 @@ jobs:
     with:
       build_target: check-lld-elf
       projects: lld
-      extra_cmake_args: -DLLVM_DISABLE_ASSEMBLY_FILES=ON
 
   check_clang_driver:
     if: github.repository_owner == 'llvm-pic'
