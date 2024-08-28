@@ -129,7 +129,6 @@ jobs:
                 -S llvm \
                 -DLLVM_ENABLE_PROJECTS="${{ inputs.projects }}" \
                 -DCMAKE_BUILD_TYPE=Release \
-                -DLLVM_ENABLE_ASSERTIONS=ON \
                 -DLLDB_INCLUDE_TESTS=OFF \
                 -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD="PICMid" \
                 -DLLVM_DEFAULT_TARGET_TRIPLE=picmid-unknown-none \
