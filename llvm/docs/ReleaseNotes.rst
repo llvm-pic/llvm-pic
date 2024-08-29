@@ -110,7 +110,7 @@ Changes to TableGen
 
 - We can define type aliases via new keyword ``deftype``.
 
-Changes to Interprocedural Optimizations
+Changes to Optimizations
 ----------------------------------------
 
 * Hot cold region splitting analysis improvements for overlapping cold regions.
@@ -160,6 +160,9 @@ Changes to the AMDGPU Backend
   pipeline. It is expected to run as part of the middle end
   optimizations.
 
+* Deprecate `llvm.amdgcn.ldexp` intrinsic. :ref:`llvm.ldexp <int_ldexp>`
+  should be used instead.
+
 Changes to the ARM Backend
 --------------------------
 
@@ -205,6 +208,23 @@ Changes to the PowerPC Backend
 * Add support for the per global code model attribute on AIX.
 * Support spilling non-volatile registers for traceback table accuracy on AIX.
 * Codegen improvements and bug fixes.
+
+* Integrated assembler is enabled by default on AIX.
+* System assembler is always used to compile assembly files on AIX.
+* Added support for local-exec TLS.
+* Added a new option, ``--traceback-table``, to ``llvm-objdump`` to print out
+  the traceback table information for XCOFF object files.
+* Added ``llvm-ar`` object mode options ``-X32``, ``-X64``, ``-X32-64``,
+  and ``-Xany``.
+* Changed the default name of the text-section csect to be an empty string
+  instead of ``.text``. This change does not affect the behaviour
+  of the program.
+* Fixed a problem when the personality routine for the legacy AIX ``xlclang++``
+  compiler uses the stack slot to pass the exception object to the landing pad.
+  Runtime routine ``__xlc_exception_handle()`` invoked by the landing pad to
+  retrieve the exception object now skips frames not associated with functions
+  that are C++ EH-aware because the compiler sometimes generates a wrapper of
+  ``__xlc_exception_handle()`` for optimization purposes.
 
 Changes to the RISC-V Backend
 -----------------------------
@@ -473,8 +493,22 @@ Changes to BOLT
   binary functions with exact hash, allowing for the matching of renamed but
   identical functions.
 
+* AArch64 Linux targets now provide access to the Thread Local Storage
+  register ``tpidr``.
+
 Changes to Sanitizers
 ---------------------
+
+Changes to BOLT
+---------------
+* Initial RISC-V (RV64GC) target support was added.
+* DWARFRewriter got new mechanism for more flexible handling of debug
+  information. It raises debug information to IR level before performing
+  updates, and IR is written out to the binary after updates are applied.
+* Stale profile matching was added under a flag `--infer-stale-profile`.
+  It requires the use of a YAML profile, produced by perf2bolt using `-w`
+  flag, or with `--profile-format=yaml`.
+
 
 Other Changes
 -------------

@@ -32,8 +32,8 @@ body: |
   ; EXPANDED-LABEL: name: spill_restore_sgpr224
   ; EXPANDED: bb.0:
   ; EXPANDED-NEXT:   successors: %bb.1(0x80000000)
+  ; EXPANDED-NEXT:   liveins: $vgpr0
   ; EXPANDED-NEXT: {{  $}}
-  ; EXPANDED-NEXT:   [[DEF:%[0-9]+]]:vgpr_32 = IMPLICIT_DEF
   ; EXPANDED-NEXT:   S_NOP 0, implicit-def renamable $sgpr4_sgpr5_sgpr6_sgpr7_sgpr8_sgpr9_sgpr10
   ; EXPANDED-NEXT:   [[DEF:%[0-9]+]]:vgpr_32 = SI_SPILL_S32_TO_VGPR $sgpr4, 0, [[DEF]], implicit-def $sgpr4_sgpr5_sgpr6_sgpr7_sgpr8_sgpr9_sgpr10, implicit $sgpr4_sgpr5_sgpr6_sgpr7_sgpr8_sgpr9_sgpr10
   ; EXPANDED-NEXT:   [[DEF:%[0-9]+]]:vgpr_32 = SI_SPILL_S32_TO_VGPR $sgpr5, 1, [[DEF]]
@@ -46,6 +46,7 @@ body: |
   ; EXPANDED-NEXT: {{  $}}
   ; EXPANDED-NEXT: bb.1:
   ; EXPANDED-NEXT:   successors: %bb.2(0x80000000)
+  ; EXPANDED-NEXT:   liveins: $vgpr0
   ; EXPANDED-NEXT: {{  $}}
   ; EXPANDED-NEXT:   S_NOP 1
   ; EXPANDED-NEXT: {{  $}}

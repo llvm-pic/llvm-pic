@@ -21512,6 +21512,22 @@ SDValue X86TargetLowering::LowerFP_EXTEND(SDValue Op, SelectionDAG &DAG) const {
   if (!SVT.isVector() || SVT.getVectorElementType() == MVT::bf16)
     return Op;
 
+  if (SVT.getVectorElementType() == MVT::bf16) {
+    // FIXME: Do we need to support strict FP?
+    assert(!IsStrict && "Strict FP doesn't support BF16");
+    if (VT.getVectorElementType() == MVT::f64) {
+      MVT TmpVT = VT.changeVectorElementType(MVT::f32);
+      return DAG.getNode(ISD::FP_EXTEND, DL, VT,
+                         DAG.getNode(ISD::FP_EXTEND, DL, TmpVT, In));
+    }
+    assert(VT.getVectorElementType() == MVT::f32 && "Unexpected fpext");
+    MVT NVT = SVT.changeVectorElementType(MVT::i32);
+    In = DAG.getBitcast(SVT.changeTypeToInteger(), In);
+    In = DAG.getNode(ISD::ZERO_EXTEND, DL, NVT, In);
+    In = DAG.getNode(ISD::SHL, DL, NVT, In, DAG.getConstant(16, DL, NVT));
+    return DAG.getBitcast(VT, In);
+  }
+
   if (SVT.getVectorElementType() == MVT::f16) {
     if (Subtarget.hasFP16() && isTypeLegal(SVT))
       return Op;

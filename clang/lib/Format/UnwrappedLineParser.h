@@ -57,6 +57,9 @@ struct UnwrappedLine {
   /// Whether the parser has seen \c decltype(auto) in this line.
   bool SeenDecltypeAuto = false;
 
+  /// Whether the parser has seen \c decltype(auto) in this line.
+  bool SeenDecltypeAuto = false;
+
   /// \c True if this line should be indented by ContinuationIndent in
   /// addition to the normal indention level.
   bool IsContinuation = false;

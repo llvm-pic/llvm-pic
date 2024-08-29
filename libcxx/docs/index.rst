@@ -41,7 +41,6 @@ Getting Started with libc++
    Contributing
    ImplementationDefinedBehavior
    Modules
-   Hardening
    ReleaseProcedure
    Status/Cxx14
    Status/Cxx17

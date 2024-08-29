@@ -79,6 +79,18 @@ std::string solaris::Linker::getLinkerPath(const ArgList &Args) const {
   return ToolChain.getDefaultLinker();
 }
 
+static bool getPIE(const ArgList &Args, const ToolChain &TC) {
+  if (Args.hasArg(options::OPT_shared) || Args.hasArg(options::OPT_static) ||
+      Args.hasArg(options::OPT_r))
+    return false;
+
+  Arg *A = Args.getLastArg(options::OPT_pie, options::OPT_no_pie,
+                           options::OPT_nopie);
+  if (!A)
+    return TC.isPIEDefault(Args);
+  return A->getOption().matches(options::OPT_pie);
+}
+
 void solaris::Linker::ConstructJob(Compilation &C, const JobAction &JA,
                                    const InputInfo &Output,
                                    const InputInfoList &Inputs,
@@ -270,6 +282,10 @@ void solaris::Linker::ConstructJob(Compilation &C, const JobAction &JA,
       CmdArgs.push_back("-z");
       CmdArgs.push_back("now");
     }
+    // Avoid AsanInitInternal cycle, Issue #64126.
+    if (getToolChain().getTriple().isX86() && SA.needsSharedRt() &&
+        SA.needsAsanRt())
+      CmdArgs.push_back("-znow");
   }
 
   if (!Args.hasArg(options::OPT_nostdlib, options::OPT_nostartfiles,

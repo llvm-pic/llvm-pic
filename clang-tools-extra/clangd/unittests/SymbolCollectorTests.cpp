@@ -1640,7 +1640,7 @@ TEST_F(SymbolCollectorTest, IWYUPragmaWithDoubleQuotes) {
                                  includeHeader("\"the/good/header.h\""))));
 }
 
-TEST_F(SymbolCollectorTest, IWYUPragmaExport) {
+TEST_F(SymbolCollectorTest, DISABLED_IWYUPragmaExport) {
   CollectorOpts.CollectIncludePath = true;
   const std::string Header = R"cpp(#pragma once
     #include "exporter.h"

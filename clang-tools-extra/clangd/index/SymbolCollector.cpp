@@ -878,7 +878,6 @@ void SymbolCollector::finish() {
     }
   }
   llvm::DenseMap<FileID, bool> FileToContainsImportsOrObjC;
-  llvm::DenseMap<include_cleaner::Header, std::string> HeaderSpelling;
   // Fill in IncludeHeaders.
   // We delay this until end of TU so header guards are all resolved.
   for (const auto &[SID, Providers] : SymbolProviders) {
@@ -971,14 +970,13 @@ void SymbolCollector::finish() {
 
     if (!SpellingIt->second.empty()) {
       auto NewSym = *S;
-      NewSym.IncludeHeaders.push_back({SpellingIt->second, 1, Directives});
+      NewSym.IncludeHeaders.push_back({IncludeHeader, 1, Directives});
       Symbols.insert(NewSym);
     }
   }
 
   ReferencedSymbols.clear();
   IncludeFiles.clear();
-  SymbolProviders.clear();
   FilesWithObjCConstructs.clear();
 }
 

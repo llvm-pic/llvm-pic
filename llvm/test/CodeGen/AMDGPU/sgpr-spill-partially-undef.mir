@@ -20,7 +20,7 @@ body:             |
     liveins: $sgpr4
 
     ; CHECK-LABEL: name: sgpr_spill_s64_undef_high32
-    ; CHECK: liveins: $sgpr4
+    ; CHECK: liveins: $sgpr4, $vgpr0
     ; CHECK-NEXT: {{  $}}
     ; CHECK-NEXT: [[DEF:%[0-9]+]]:vgpr_32 = IMPLICIT_DEF
     ; CHECK-NEXT: [[DEF:%[0-9]+]]:vgpr_32 = SI_SPILL_S32_TO_VGPR $sgpr4, 0, [[DEF]], implicit-def $sgpr4_sgpr5, implicit $sgpr4_sgpr5
@@ -46,7 +46,7 @@ body:             |
     liveins: $sgpr5
 
     ; CHECK-LABEL: name: sgpr_spill_s64_undef_low32
-    ; CHECK: liveins: $sgpr5
+    ; CHECK: liveins: $sgpr5, $vgpr0
     ; CHECK-NEXT: {{  $}}
     ; CHECK-NEXT: [[DEF:%[0-9]+]]:vgpr_32 = IMPLICIT_DEF
     ; CHECK-NEXT: [[DEF:%[0-9]+]]:vgpr_32 = SI_SPILL_S32_TO_VGPR $sgpr4, 0, [[DEF]], implicit-def $sgpr4_sgpr5, implicit $sgpr4_sgpr5

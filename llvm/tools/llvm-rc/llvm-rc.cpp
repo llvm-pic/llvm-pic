@@ -474,6 +474,8 @@ RcOptions parseWindresOptions(ArrayRef<const char *> ArgsArr,
       break;
     }
   }
+  // TODO: If --use-temp-file is set, we shouldn't be unescaping
+  // the --preprocessor argument either, only splitting it.
   if (InputArgs.hasArg(WINDRES_preprocessor))
     Opts.Preprocessor = InputArgs.getLastArgValue(WINDRES_preprocessor);
 

@@ -352,8 +352,19 @@ bool SIMachineFunctionInfo::allocateVirtualVGPRForSGPRSpills(
   MachineRegisterInfo &MRI = MF.getRegInfo();
   Register LaneVGPR;
   if (!LaneIndex) {
-    LaneVGPR = MRI.createVirtualRegister(&AMDGPU::VGPR_32RegClass);
+    LaneVGPR = TRI->findUnusedRegister(MRI, &AMDGPU::VGPR_32RegClass, MF);
+    if (LaneVGPR == AMDGPU::NoRegister) {
+      // We have no VGPRs left for spilling SGPRs. Reset because we will not
+      // partially spill the SGPR to VGPRs.
+      SGPRSpillToVGPRLanes.erase(FI);
+      return false;
+    }
+
     SpillVGPRs.push_back(LaneVGPR);
+    // Add this register as live-in to all blocks to avoid machine verifier
+    // complaining about use of an undefined physical register.
+    for (MachineBasicBlock &BB : MF)
+      BB.addLiveIn(LaneVGPR);
   } else {
     LaneVGPR = SpillVGPRs.back();
   }
@@ -377,7 +388,7 @@ bool SIMachineFunctionInfo::allocatePhysicalVGPRForSGPRSpills(
     if (LaneVGPR == AMDGPU::NoRegister) {
       // We have no VGPRs left for spilling SGPRs. Reset because we will not
       // partially spill the SGPR to VGPRs.
-      SGPRSpillsToPhysicalVGPRLanes.erase(FI);
+      PrologEpilogSGPRSpillToVGPRLanes.erase(FI);
       return false;
     }
 
@@ -511,25 +522,16 @@ bool SIMachineFunctionInfo::allocateVGPRSpillToAGPR(MachineFunction &MF,
 
 bool SIMachineFunctionInfo::removeDeadFrameIndices(
     MachineFrameInfo &MFI, bool ResetSGPRSpillStackIDs) {
-  // Remove dead frame indices from function frame, however keep FP & BP since
-  // spills for them haven't been inserted yet. And also make sure to remove the
-  // frame indices from `SGPRSpillsToVirtualVGPRLanes` data structure,
-  // otherwise, it could result in an unexpected side effect and bug, in case of
-  // any re-mapping of freed frame indices by later pass(es) like "stack slot
+  // Remove dead frame indices from function frame. And also make sure to remove
+  // the frame indices from `SGPRSpillToVGPRLanes` data structure, otherwise, it
+  // could result in an unexpected side effect and bug, in case of any
+  // re-mapping of freed frame indices by later pass(es) like "stack slot
   // coloring".
-  for (auto &R : make_early_inc_range(SGPRSpillsToVirtualVGPRLanes)) {
+  for (auto &R : make_early_inc_range(SGPRSpillToVGPRLanes)) {
     MFI.RemoveStackObject(R.first);
-    SGPRSpillsToVirtualVGPRLanes.erase(R.first);
+    SGPRSpillToVGPRLanes.erase(R.first);
   }
 
-  // Remove the dead frame indices of CSR SGPRs which are spilled to physical
-  // VGPR lanes during SILowerSGPRSpills pass.
-  if (!ResetSGPRSpillStackIDs) {
-    for (auto &R : make_early_inc_range(SGPRSpillsToPhysicalVGPRLanes)) {
-      MFI.RemoveStackObject(R.first);
-      SGPRSpillsToPhysicalVGPRLanes.erase(R.first);
-    }
-  }
   bool HaveSGPRToMemory = false;
 
   if (ResetSGPRSpillStackIDs) {

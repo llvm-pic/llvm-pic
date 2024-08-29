@@ -2301,7 +2301,6 @@ bool AArch64InstrInfo::hasUnscaledLdStOffset(unsigned Opc) {
   case AArch64::LDRWpre:
   case AArch64::LDURXi:
   case AArch64::LDRXpre:
-  case AArch64::LDRSWpre:
   case AArch64::LDURSWi:
   case AArch64::LDURHHi:
   case AArch64::LDURBBi:
@@ -2511,7 +2510,6 @@ bool AArch64InstrInfo::isPairableLdStInst(const MachineInstr &MI) {
   case AArch64::LDURXi:
   case AArch64::LDRXpre:
   case AArch64::LDURSWi:
-  case AArch64::LDRSWpre:
     return true;
   }
 }
@@ -2650,8 +2648,7 @@ bool AArch64InstrInfo::isCandidateToMergeOrPair(const MachineInstr &MI) const {
   // Can't merge/pair if the instruction modifies the base register.
   // e.g., ldr x0, [x0]
   // This case will never occur with an FI base.
-  // However, if the instruction is an LDR<S,D,Q,W,X,SW>pre or
-  // STR<S,D,Q,W,X>pre, it can be merged.
+  // However, if the instruction is an LDR/STR<S,D,Q,W,X>pre, it can be merged.
   // For example:
   //   ldr q0, [x11, #32]!
   //   ldr q1, [x11, #16]
@@ -4010,7 +4007,6 @@ int AArch64InstrInfo::getMemScale(unsigned Opc) {
   case AArch64::LDRSpre:
   case AArch64::LDRSWui:
   case AArch64::LDURSWi:
-  case AArch64::LDRSWpre:
   case AArch64::LDRWpre:
   case AArch64::LDRWui:
   case AArch64::LDURWi:
@@ -4066,7 +4062,6 @@ bool AArch64InstrInfo::isPreLd(const MachineInstr &MI) {
     return false;
   case AArch64::LDRWpre:
   case AArch64::LDRXpre:
-  case AArch64::LDRSWpre:
   case AArch64::LDRSpre:
   case AArch64::LDRDpre:
   case AArch64::LDRQpre:

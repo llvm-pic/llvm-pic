@@ -972,6 +972,12 @@ Status NativeRegisterContextLinux_arm64::WriteAllRegisterValues(
       return error;
   }
 
+  // There is always a TLS set. It changes size based on system properties, it's
+  // not something an expression can change.
+  ::memcpy(GetTLSTPIDR(), src, GetTLSTPIDRSize());
+  m_tls_tpidr_is_valid = true;
+  error = WriteTLSTPIDR();
+
   return error;
 }
 

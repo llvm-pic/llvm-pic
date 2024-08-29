@@ -5671,9 +5671,10 @@ define void @vec512_i8_widen_to_i16_factor2_broadcast_to_v32i16_factor32(ptr %in
 ;
 ; AVX512BW-LABEL: vec512_i8_widen_to_i16_factor2_broadcast_to_v32i16_factor32:
 ; AVX512BW:       # %bb.0:
-; AVX512BW-NEXT:    vmovdqa64 (%rdi), %zmm0
-; AVX512BW-NEXT:    vpaddb (%rsi), %zmm0, %zmm0
-; AVX512BW-NEXT:    vshufi64x2 {{.*#+}} zmm0 = zmm0[0,1,0,1,0,1,0,1]
+; AVX512BW-NEXT:    vmovdqa (%rdi), %ymm0
+; AVX512BW-NEXT:    vpaddb (%rsi), %ymm0, %ymm0
+; AVX512BW-NEXT:    vpermq {{.*#+}} ymm0 = ymm0[0,1,0,1]
+; AVX512BW-NEXT:    vinserti64x4 $1, %ymm0, %zmm0, %zmm0
 ; AVX512BW-NEXT:    vpshufb {{.*#+}} zmm0 = zmm0[0],zero,zmm0[0],zero,zmm0[0],zero,zmm0[0],zero,zmm0[0],zero,zmm0[0],zero,zmm0[0],zero,zmm0[0],zero,zmm0[16],zero,zmm0[16],zero,zmm0[16],zero,zmm0[16],zero,zmm0[16],zero,zmm0[16],zero,zmm0[16],zero,zmm0[16],zero,zmm0[32],zero,zmm0[32],zero,zmm0[32],zero,zmm0[32],zero,zmm0[32],zero,zmm0[32],zero,zmm0[32],zero,zmm0[32],zero,zmm0[48],zero,zmm0[48],zero,zmm0[48],zero,zmm0[48],zero,zmm0[48],zero,zmm0[48],zero,zmm0[48],zero,zmm0[48],zero
 ; AVX512BW-NEXT:    vpaddb (%rdx), %zmm0, %zmm0
 ; AVX512BW-NEXT:    vmovdqa64 %zmm0, (%rcx)
@@ -5783,9 +5784,10 @@ define void @vec512_i8_widen_to_i32_factor4_broadcast_to_v16i32_factor16(ptr %in
 ;
 ; AVX512BW-LABEL: vec512_i8_widen_to_i32_factor4_broadcast_to_v16i32_factor16:
 ; AVX512BW:       # %bb.0:
-; AVX512BW-NEXT:    vmovdqa64 (%rdi), %zmm0
-; AVX512BW-NEXT:    vpaddb (%rsi), %zmm0, %zmm0
-; AVX512BW-NEXT:    vshufi64x2 {{.*#+}} zmm0 = zmm0[0,1,0,1,0,1,0,1]
+; AVX512BW-NEXT:    vmovdqa (%rdi), %ymm0
+; AVX512BW-NEXT:    vpaddb (%rsi), %ymm0, %ymm0
+; AVX512BW-NEXT:    vpermq {{.*#+}} ymm0 = ymm0[0,1,0,1]
+; AVX512BW-NEXT:    vinserti64x4 $1, %ymm0, %zmm0, %zmm0
 ; AVX512BW-NEXT:    vpshufb {{.*#+}} zmm0 = zmm0[0],zero,zero,zero,zmm0[0],zero,zero,zero,zmm0[0],zero,zero,zero,zmm0[0],zero,zero,zero,zmm0[16],zero,zero,zero,zmm0[16],zero,zero,zero,zmm0[16],zero,zero,zero,zmm0[16],zero,zero,zero,zmm0[32],zero,zero,zero,zmm0[32],zero,zero,zero,zmm0[32],zero,zero,zero,zmm0[32],zero,zero,zero,zmm0[48],zero,zero,zero,zmm0[48],zero,zero,zero,zmm0[48],zero,zero,zero,zmm0[48],zero,zero,zero
 ; AVX512BW-NEXT:    vpaddb (%rdx), %zmm0, %zmm0
 ; AVX512BW-NEXT:    vmovdqa64 %zmm0, (%rcx)
@@ -5895,9 +5897,10 @@ define void @vec512_i8_widen_to_i64_factor8_broadcast_to_v8i64_factor8(ptr %in.v
 ;
 ; AVX512BW-LABEL: vec512_i8_widen_to_i64_factor8_broadcast_to_v8i64_factor8:
 ; AVX512BW:       # %bb.0:
-; AVX512BW-NEXT:    vmovdqa64 (%rdi), %zmm0
-; AVX512BW-NEXT:    vpaddb (%rsi), %zmm0, %zmm0
-; AVX512BW-NEXT:    vshufi64x2 {{.*#+}} zmm0 = zmm0[0,1,0,1,0,1,0,1]
+; AVX512BW-NEXT:    vmovdqa (%rdi), %ymm0
+; AVX512BW-NEXT:    vpaddb (%rsi), %ymm0, %ymm0
+; AVX512BW-NEXT:    vpermq {{.*#+}} ymm0 = ymm0[0,1,0,1]
+; AVX512BW-NEXT:    vinserti64x4 $1, %ymm0, %zmm0, %zmm0
 ; AVX512BW-NEXT:    vpshufb {{.*#+}} zmm0 = zmm0[0],zero,zero,zero,zero,zero,zero,zero,zmm0[0],zero,zero,zero,zero,zero,zero,zero,zmm0[16],zero,zero,zero,zero,zero,zero,zero,zmm0[16],zero,zero,zero,zero,zero,zero,zero,zmm0[32],zero,zero,zero,zero,zero,zero,zero,zmm0[32],zero,zero,zero,zero,zero,zero,zero,zmm0[48],zero,zero,zero,zero,zero,zero,zero,zmm0[48],zero,zero,zero,zero,zero,zero,zero
 ; AVX512BW-NEXT:    vpaddb (%rdx), %zmm0, %zmm0
 ; AVX512BW-NEXT:    vmovdqa64 %zmm0, (%rcx)
@@ -5988,9 +5991,10 @@ define void @vec512_i8_widen_to_i128_factor16_broadcast_to_v4i128_factor4(ptr %i
 ;
 ; AVX512BW-LABEL: vec512_i8_widen_to_i128_factor16_broadcast_to_v4i128_factor4:
 ; AVX512BW:       # %bb.0:
-; AVX512BW-NEXT:    vmovdqa64 (%rdi), %zmm0
-; AVX512BW-NEXT:    vpaddb (%rsi), %zmm0, %zmm0
-; AVX512BW-NEXT:    vshufi64x2 {{.*#+}} zmm0 = zmm0[0,1,0,1,0,1,0,1]
+; AVX512BW-NEXT:    vmovdqa (%rdi), %ymm0
+; AVX512BW-NEXT:    vpaddb (%rsi), %ymm0, %ymm0
+; AVX512BW-NEXT:    vpermq {{.*#+}} ymm0 = ymm0[0,1,0,1]
+; AVX512BW-NEXT:    vinserti64x4 $1, %ymm0, %zmm0, %zmm0
 ; AVX512BW-NEXT:    vpandq {{\.?LCPI[0-9]+_[0-9]+}}(%rip), %zmm0, %zmm0
 ; AVX512BW-NEXT:    vpaddb (%rdx), %zmm0, %zmm0
 ; AVX512BW-NEXT:    vmovdqa64 %zmm0, (%rcx)

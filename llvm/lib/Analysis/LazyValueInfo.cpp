@@ -1983,6 +1983,11 @@ void LazyValueInfo::forgetValue(Value *V) {
     Impl->forgetValue(V);
 }
 
+void LazyValueInfo::forgetValue(Value *V) {
+  if (PImpl)
+    getImpl(PImpl, AC, nullptr).forgetValue(V);
+}
+
 void LazyValueInfo::eraseBlock(BasicBlock *BB) {
   if (auto *Impl = getImpl())
     Impl->eraseBlock(BB);

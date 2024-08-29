@@ -30,6 +30,7 @@
 #include "Targets/Mips.h"
 #include "Targets/NVPTX.h"
 #include "Targets/OSTargets.h"
+#include "Targets/PICMid.h"
 #include "Targets/PNaCl.h"
 #include "Targets/PPC.h"
 #include "Targets/RISCV.h"
@@ -354,6 +355,9 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
 
   case llvm::Triple::le64:
     return std::make_unique<Le64TargetInfo>(Triple, Opts);
+  
+  case llvm::Triple::picmid:
+    return std::make_unique<PICMidTargetInfo>(Triple, Opts);
 
   case llvm::Triple::ppc:
     switch (os) {

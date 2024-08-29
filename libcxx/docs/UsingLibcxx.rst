@@ -150,7 +150,7 @@ Libc++ Configuration Macros
 ===========================
 
 Libc++ provides a number of configuration macros which can be used to enable
-or disable extended libc++ behavior, including enabling hardening or thread
+or disable extended libc++ behavior, including enabling the safe mode or thread
 safety annotations.
 
 **_LIBCPP_ENABLE_THREAD_SAFETY_ANNOTATIONS**:

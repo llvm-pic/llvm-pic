@@ -470,7 +470,7 @@ static void createProfileDir(const char *Filename) {
  * its instrumented shared libraries dump profile data into their own data file.
 */
 static FILE *openFileForMerging(const char *ProfileFileName, int *MergeDone) {
-  FILE *ProfileFile = getProfileFile();
+  FILE *ProfileFile = NULL;
   int rc;
   // initializeProfileForContinuousMode will lock the profile, but if
   // ProfileFile is set by user via __llvm_profile_set_file_object, it's assumed

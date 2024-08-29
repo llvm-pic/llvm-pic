@@ -531,3 +531,54 @@ void TestRecursiveAliasType::print(AsmPrinter &printer) const {
   }
   printer << ">";
 }
+
+Type TestRecursiveAliasType::getBody() const { return getImpl()->body; }
+
+void TestRecursiveAliasType::setBody(Type type) { (void)Base::mutate(type); }
+
+StringRef TestRecursiveAliasType::getName() const { return getImpl()->name; }
+
+Type TestRecursiveAliasType::parse(AsmParser &parser) {
+  thread_local static SetVector<Type> stack;
+
+  StringRef name;
+  if (parser.parseLess() || parser.parseKeyword(&name))
+    return Type();
+  auto rec = TestRecursiveAliasType::get(parser.getContext(), name);
+
+  // If this type already has been parsed above in the stack, expect just the
+  // name.
+  if (stack.contains(rec)) {
+    if (failed(parser.parseGreater()))
+      return Type();
+    return rec;
+  }
+
+  // Otherwise, parse the body and update the type.
+  if (failed(parser.parseComma()))
+    return Type();
+  stack.insert(rec);
+  Type subtype;
+  if (parser.parseType(subtype))
+    return nullptr;
+  stack.pop_back();
+  if (!subtype || failed(parser.parseGreater()))
+    return Type();
+
+  rec.setBody(subtype);
+
+  return rec;
+}
+
+void TestRecursiveAliasType::print(AsmPrinter &printer) const {
+  thread_local static SetVector<Type> stack;
+
+  printer << "<" << getName();
+  if (!stack.contains(*this)) {
+    printer << ", ";
+    stack.insert(*this);
+    printer << getBody();
+    stack.pop_back();
+  }
+  printer << ">";
+}

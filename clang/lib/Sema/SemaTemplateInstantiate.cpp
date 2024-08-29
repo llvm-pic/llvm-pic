@@ -2596,6 +2596,19 @@ concepts::createSubstDiagAt(Sema &S, SourceLocation Location,
       /*DiagLoc=*/Location, /*DiagMessage=*/StringRef()};
 }
 
+concepts::Requirement::SubstitutionDiagnostic *
+concepts::createSubstDiagAt(Sema &S, SourceLocation Location,
+                            EntityPrinter Printer) {
+  SmallString<128> Entity;
+  llvm::raw_svector_ostream OS(Entity);
+  Printer(OS);
+  char *EntityBuf = new (S.Context) char[Entity.size()];
+  llvm::copy(Entity, EntityBuf);
+  return new (S.Context) concepts::Requirement::SubstitutionDiagnostic{
+      /*SubstitutedEntity=*/StringRef(EntityBuf, Entity.size()),
+      /*DiagLoc=*/Location, /*DiagMessage=*/StringRef()};
+}
+
 ExprResult TemplateInstantiator::TransformRequiresTypeParams(
     SourceLocation KWLoc, SourceLocation RBraceLoc, const RequiresExpr *RE,
     RequiresExprBodyDecl *Body, ArrayRef<ParmVarDecl *> Params,

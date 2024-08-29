@@ -50,22 +50,13 @@ public:
   SILowerSGPRSpills() : MachineFunctionPass(ID) {}
 
   void calculateSaveRestoreBlocks(MachineFunction &MF);
-  bool spillCalleeSavedRegs(MachineFunction &MF,
-                            SmallVectorImpl<int> &CalleeSavedFIs);
-  void extendWWMVirtRegLiveness(MachineFunction &MF, LiveIntervals *LIS);
+  bool spillCalleeSavedRegs(MachineFunction &MF);
 
   bool runOnMachineFunction(MachineFunction &MF) override;
 
   void getAnalysisUsage(AnalysisUsage &AU) const override {
     AU.setPreservesAll();
     MachineFunctionPass::getAnalysisUsage(AU);
-  }
-
-  MachineFunctionProperties getClearedProperties() const override {
-    // SILowerSGPRSpills introduces new Virtual VGPRs for spilling SGPRs.
-    return MachineFunctionProperties()
-        .set(MachineFunctionProperties::Property::IsSSA)
-        .set(MachineFunctionProperties::Property::NoVRegs);
   }
 };
 
@@ -206,8 +197,7 @@ static void updateLiveness(MachineFunction &MF, ArrayRef<CalleeSavedInfo> CSI) {
   EntryBB.sortUniqueLiveIns();
 }
 
-bool SILowerSGPRSpills::spillCalleeSavedRegs(
-    MachineFunction &MF, SmallVectorImpl<int> &CalleeSavedFIs) {
+bool SILowerSGPRSpills::spillCalleeSavedRegs(MachineFunction &MF) {
   MachineRegisterInfo &MRI = MF.getRegInfo();
   const Function &F = MF.getFunction();
   const GCNSubtarget &ST = MF.getSubtarget<GCNSubtarget>();
@@ -321,8 +311,7 @@ bool SILowerSGPRSpills::runOnMachineFunction(MachineFunction &MF) {
   // First, expose any CSR SGPR spills. This is mostly the same as what PEI
   // does, but somewhat simpler.
   calculateSaveRestoreBlocks(MF);
-  SmallVector<int> CalleeSavedFIs;
-  bool HasCSRs = spillCalleeSavedRegs(MF, CalleeSavedFIs);
+  bool HasCSRs = spillCalleeSavedRegs(MF);
 
   MachineFrameInfo &MFI = MF.getFrameInfo();
   MachineRegisterInfo &MRI = MF.getRegInfo();
@@ -393,16 +382,12 @@ bool SILowerSGPRSpills::runOnMachineFunction(MachineFunction &MF) {
       }
     }
 
-    if (SpilledToVirtVGPRLanes) {
-      extendWWMVirtRegLiveness(MF, LIS);
-      if (LIS) {
-        // Compute the LiveInterval for the newly created virtual registers.
-        for (auto Reg : FuncInfo->getSGPRSpillVGPRs())
-          LIS->createAndComputeVirtRegInterval(Reg);
-      }
-    }
-
+    // FIXME: Adding to live-ins redundant with reserving registers.
     for (MachineBasicBlock &MBB : MF) {
+      for (auto Reg : FuncInfo->getSGPRSpillVGPRs())
+        MBB.addLiveIn(Reg);
+      MBB.sortUniqueLiveIns();
+
       // FIXME: The dead frame indices are replaced with a null register from
       // the debug value instructions. We should instead, update it with the
       // correct register value. But not sure the register value alone is
@@ -423,10 +408,6 @@ bool SILowerSGPRSpills::runOnMachineFunction(MachineFunction &MF) {
     // lane".
     FuncInfo->removeDeadFrameIndices(MFI, /*ResetSGPRSpillStackIDs*/ false);
 
-    MadeChange = true;
-  }
-
-  if (SpilledToVirtVGPRLanes) {
     const TargetRegisterClass *RC = TRI->getWaveMaskRegClass();
     // Shift back the reserved SGPR for EXEC copy into the lowest range.
     // This SGPR is reserved to handle the whole-wave spill/copy operations
@@ -435,9 +416,11 @@ bool SILowerSGPRSpills::runOnMachineFunction(MachineFunction &MF) {
     if (UnusedLowSGPR && TRI->getHWRegIndex(UnusedLowSGPR) <
                              TRI->getHWRegIndex(FuncInfo->getSGPRForEXECCopy()))
       FuncInfo->setSGPRForEXECCopy(UnusedLowSGPR);
+
+    MadeChange = true;
   } else {
-    // No SGPR spills to virtual VGPR lanes and hence there won't be any WWM
-    // spills/copies. Reset the SGPR reserved for EXEC copy.
+    // No SGPR spills and hence there won't be any WWM spills/copies. Reset the
+    // SGPR reserved for EXEC copy.
     FuncInfo->setSGPRForEXECCopy(AMDGPU::NoRegister);
   }
 

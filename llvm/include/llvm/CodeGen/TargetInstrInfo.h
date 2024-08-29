@@ -2056,13 +2056,6 @@ public:
     return false;
   }
 
-  /// Allows targets to use appropriate copy instruction while spilitting live
-  /// range of a register in register allocation.
-  virtual unsigned getLiveRangeSplitOpcode(Register Reg,
-                                           const MachineFunction &MF) const {
-    return TargetOpcode::COPY;
-  }
-
   /// During PHI eleimination lets target to make necessary checks and
   /// insert the copy to the PHI destination register in a target specific
   /// manner.

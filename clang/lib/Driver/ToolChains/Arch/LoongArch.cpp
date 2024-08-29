@@ -278,3 +278,25 @@ std::string loongarch::getLoongArchTargetCPU(const llvm::opt::ArgList &Args,
   }
   return postProcessTargetCPUString(CPU, Triple);
 }
+
+std::string loongarch::postProcessTargetCPUString(const std::string &CPU,
+                                                  const llvm::Triple &Triple) {
+  std::string CPUString = CPU;
+  if (CPUString == "native") {
+    CPUString = llvm::sys::getHostCPUName();
+    if (CPUString == "generic")
+      CPUString = llvm::LoongArch::getDefaultArch(Triple.isLoongArch64());
+  }
+  if (CPUString.empty())
+    CPUString = llvm::LoongArch::getDefaultArch(Triple.isLoongArch64());
+  return CPUString;
+}
+
+std::string loongarch::getLoongArchTargetCPU(const llvm::opt::ArgList &Args,
+                                             const llvm::Triple &Triple) {
+  std::string CPU;
+  // If we have -march, use that.
+  if (const Arg *A = Args.getLastArg(options::OPT_march_EQ))
+    CPU = A->getValue();
+  return postProcessTargetCPUString(CPU, Triple);
+}

@@ -224,7 +224,10 @@ define amdgpu_kernel void @test(ptr addrspace(1) %out, i32 %in) {
 ; FLAT_SCR_OPT-NEXT:    s_mov_b32 s0, 0
 ; FLAT_SCR_OPT-NEXT:    scratch_load_dword v1, off, s0 ; 4-byte Folded Reload
 ; FLAT_SCR_OPT-NEXT:    s_waitcnt_depctr 0xffe3
-; FLAT_SCR_OPT-NEXT:    s_mov_b32 exec_lo, s105
+; FLAT_SCR_OPT-NEXT:    s_mov_b32 s3, 4
+; FLAT_SCR_OPT-NEXT:    scratch_load_dword v1, off, s3 ; 4-byte Folded Reload
+; FLAT_SCR_OPT-NEXT:    s_waitcnt_depctr 0xffe3
+; FLAT_SCR_OPT-NEXT:    s_mov_b32 s3, 0
 ; FLAT_SCR_OPT-NEXT:    s_waitcnt vmcnt(0)
 ; FLAT_SCR_OPT-NEXT:    v_readlane_b32 s0, v1, 0
 ; FLAT_SCR_OPT-NEXT:    v_readlane_b32 s1, v1, 1
@@ -347,7 +350,10 @@ define amdgpu_kernel void @test(ptr addrspace(1) %out, i32 %in) {
 ; FLAT_SCR_ARCH-NEXT:    s_mov_b32 s0, 0
 ; FLAT_SCR_ARCH-NEXT:    scratch_load_dword v1, off, s0 ; 4-byte Folded Reload
 ; FLAT_SCR_ARCH-NEXT:    s_waitcnt_depctr 0xffe3
-; FLAT_SCR_ARCH-NEXT:    s_mov_b32 exec_lo, s105
+; FLAT_SCR_ARCH-NEXT:    s_mov_b32 s3, 4
+; FLAT_SCR_ARCH-NEXT:    scratch_load_dword v1, off, s3 ; 4-byte Folded Reload
+; FLAT_SCR_ARCH-NEXT:    s_waitcnt_depctr 0xffe3
+; FLAT_SCR_ARCH-NEXT:    s_mov_b32 s3, 0
 ; FLAT_SCR_ARCH-NEXT:    s_waitcnt vmcnt(0)
 ; FLAT_SCR_ARCH-NEXT:    v_readlane_b32 s0, v1, 0
 ; FLAT_SCR_ARCH-NEXT:    v_readlane_b32 s1, v1, 1

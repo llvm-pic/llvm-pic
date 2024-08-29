@@ -47,6 +47,10 @@ C/C++ Language Potentially Breaking Changes
   C99 and later. This behaviour can also be overridden using ``-f[no-]raw-string-literals``.
   Support of raw string literals in C++ is not affected. Fixes (#GH85703).
 
+- Fixed a bug in finding matching `operator!=` while adding reversed `operator==` as
+  outlined in "The Equality Operator You Are Looking For" (`P2468 <http://wg21.link/p2468r2>`_).
+  Fixes (`#68901: <https://github.com/llvm/llvm-project/issues/68901>`_).
+
 C++ Specific Potentially Breaking Changes
 -----------------------------------------
 - Clang now diagnoses function/variable templates that shadow their own template parameters, e.g. ``template<class T> void T();``.
@@ -1122,6 +1126,13 @@ Bug Fixes to C++ Support
 - Fixed a crash-on-invalid bug involving extraneous template parameter with concept substitution. (#GH73885)
 - Fixed assertion failure by skipping the analysis of an invalid field declaration. (#GH99868)
 
+- Update ``FunctionDeclBitfields.NumFunctionDeclBits``. This fixes:
+  (`#64171 <https://github.com/llvm/llvm-project/issues/64171>`_).
+
+- Fix a crash caused by substitution failure in expression requirements.
+  (`#64172 <https://github.com/llvm/llvm-project/issues/64172>`_) and
+  (`#64723 <https://github.com/llvm/llvm-project/issues/64723>`_).
+
 Bug Fixes to AST Handling
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 - Clang now properly preserves ``FoundDecls`` within a ``ConceptReference``. (#GH82628)
@@ -1224,6 +1235,9 @@ Arm and AArch64 Support
 Android Support
 ^^^^^^^^^^^^^^^
 
+- Clang now warns if invalid target triples ``--target=aarch64-*-eabi`` or
+  ``--target=arm-*-elf`` are specified.
+
 Windows Support
 ^^^^^^^^^^^^^^^
 
@@ -1316,6 +1330,14 @@ NetBSD Support
 
 - Removed support for building NetBSD/i386 6.x or older binaries.
 
+- Implemented the ``-frecord-command-line`` option on AIX, which saves the
+  command-line options used from compiling a source file to the corresponding
+  object file or binary file.
+
+- Added a new linker option, ``-K``, that is used to align the header, text,
+  data, and loader sections of the output file so that each section begins on
+  a page boundary.
+
 WebAssembly Support
 ^^^^^^^^^^^^^^^^^^^
 
@@ -1326,6 +1348,11 @@ multivalue ABI (this enables non-ABI uses of multivalue, like exnref).
 
 AVR Support
 ^^^^^^^^^^^
+
+PowerPC Support
+^^^^^^^^^^^^^^^
+- Clang now emits errors when it detects incompatible target features for
+  PowerPC builtins.
 
 DWARF Support in Clang
 ----------------------
@@ -1468,6 +1495,12 @@ OpenMP Support
 
 - Added support for the `[[omp::assume]]` attribute.
 - AIX added an include directory for ``omp.h`` at ``/opt/IBM/openxlCSDK/include/openmp``.
+
+Configurable Multilib
+---------------------
+The BareMetal toolchain for AArch64 & ARM now supports multilib, configurable
+via ``multilib.yaml``. See `the multilib docs <https://clang.llvm.org/docs/Multilib.html>`_
+for more details.
 
 Additional Information
 ======================

@@ -1661,6 +1661,8 @@ static uint16_t getBitcodeMachineKind(StringRef path, const Triple &t) {
     return EM_MIPS;
   case Triple::msp430:
     return EM_MSP430;
+  case Triple::picmid: // TODO: Insert more PIC families
+    return EM_MCHP_PIC;
   case Triple::ppc:
   case Triple::ppcle:
     return EM_PPC;
@@ -1740,9 +1742,10 @@ static uint8_t mapVisibility(GlobalValue::VisibilityTypes gvVisibility) {
   llvm_unreachable("unknown visibility");
 }
 
-static void
-createBitcodeSymbol(Symbol *&sym, const std::vector<bool> &keptComdats,
-                    const lto::InputFile::Symbol &objSym, BitcodeFile &f) {
+static void createBitcodeSymbol(Symbol *&sym,
+                                const std::vector<bool> &keptComdats,
+                                const lto::InputFile::Symbol &objSym,
+                                BitcodeFile &f) {
   uint8_t binding = objSym.isWeak() ? STB_WEAK : STB_GLOBAL;
   uint8_t type = objSym.isTLS() ? STT_TLS : STT_NOTYPE;
   uint8_t visibility = mapVisibility(objSym.getVisibility());

@@ -22,7 +22,6 @@
 ; DEFAULT-NEXT: Live Register Matrix
 ; DEFAULT-NEXT: SI Pre-allocate WWM Registers
 ; DEFAULT-NEXT: Greedy Register Allocator
-; DEFAULT-NEXT: SI Lower WWM Copies
 ; DEFAULT-NEXT: GCN NSA Reassign
 ; DEFAULT-NEXT: Virtual Register Rewriter
 ; DEFAULT-NEXT: AMDGPU Mark Last Scratch Load
@@ -36,7 +35,6 @@
 ; O0-NEXT: Live Register Matrix
 ; O0-NEXT: SI Pre-allocate WWM Registers
 ; O0-NEXT: Fast Register Allocator
-; O0-NEXT: SI Lower WWM Copies
 ; O0-NEXT: SI Fix VGPR copies
 
 
@@ -59,7 +57,6 @@
 ; BASIC-DEFAULT-NEXT: Lazy Machine Block Frequency Analysis
 ; BASIC-DEFAULT-NEXT: Machine Optimization Remark Emitter
 ; BASIC-DEFAULT-NEXT: Greedy Register Allocator
-; BASIC-DEFAULT-NEXT: SI Lower WWM Copies
 ; BASIC-DEFAULT-NEXT: GCN NSA Reassign
 ; BASIC-DEFAULT-NEXT: Virtual Register Rewriter
 ; BASIC-DEFAULT-NEXT: AMDGPU Mark Last Scratch Load
@@ -74,7 +71,6 @@
 ; DEFAULT-BASIC-NEXT: Live Register Matrix
 ; DEFAULT-BASIC-NEXT: SI Pre-allocate WWM Registers
 ; DEFAULT-BASIC-NEXT: Basic Register Allocator
-; DEFAULT-BASIC-NEXT: SI Lower WWM Copies
 ; DEFAULT-BASIC-NEXT: GCN NSA Reassign
 ; DEFAULT-BASIC-NEXT: Virtual Register Rewriter
 ; DEFAULT-BASIC-NEXT: AMDGPU Mark Last Scratch Load
@@ -95,7 +91,6 @@
 ; BASIC-BASIC-NEXT: Live Register Matrix
 ; BASIC-BASIC-NEXT: SI Pre-allocate WWM Registers
 ; BASIC-BASIC-NEXT: Basic Register Allocator
-; BASIC-BASIC-NEXT: SI Lower WWM Copies
 ; BASIC-BASIC-NEXT: GCN NSA Reassign
 ; BASIC-BASIC-NEXT: Virtual Register Rewriter
 ; BASIC-BASIC-NEXT: AMDGPU Mark Last Scratch Load

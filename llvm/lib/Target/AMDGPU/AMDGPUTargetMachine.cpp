@@ -1367,7 +1367,6 @@ void GCNPassConfig::addOptimizedRegAlloc() {
 }
 
 bool GCNPassConfig::addPreRewrite() {
-  addPass(&SILowerWWMCopiesID);
   if (EnableRegReassign)
     addPass(&GCNNSAReassignID);
   return true;
@@ -1423,8 +1422,6 @@ bool GCNPassConfig::addRegAssignAndRewriteFast() {
   addPass(&SIPreAllocateWWMRegsID);
 
   addPass(createVGPRAllocPass(false));
-
-  addPass(&SILowerWWMCopiesID);
   return true;
 }
 

@@ -507,6 +507,32 @@ enum {
 #include "ELFRelocs/AVR.def"
 };
 
+// PIC specific e_flags across all PIC device types
+enum : unsigned {
+  EF_PIC_ARCH = 0x0000F000,
+};
+
+// PICMid specific e_flags
+enum : unsigned {
+  EF_PICMID_ARCH_MID = 0x00000000,
+  EF_PICMID_ARCH_MID_ENHANCED = 0x00001000,
+};
+
+// ELF Relocation types for PICMid
+enum {
+#include "ELFRelocs/PICMid.def"
+};
+
+// PICBase specific e_flags
+enum : unsigned {
+  EF_PICBASE_ARCH_BASE = 0x00002000,
+};
+
+// ELF Relocation types for PICBase
+// enum {
+// #include "ELFRelocs/PICBase.def" // TODO: Make it work
+// };
+
 // Mips Specific e_flags
 enum : unsigned {
   EF_MIPS_NOREORDER = 0x00000001, // Don't reorder instructions
@@ -987,14 +1013,14 @@ enum : unsigned {
   // (commit hash 296de4def055c871809068e0816325a4ac04eb12)
 
   // Base ABI Modifiers
-  EF_LOONGARCH_ABI_SOFT_FLOAT    = 0x1,
-  EF_LOONGARCH_ABI_SINGLE_FLOAT  = 0x2,
-  EF_LOONGARCH_ABI_DOUBLE_FLOAT  = 0x3,
+  EF_LOONGARCH_ABI_SOFT_FLOAT = 0x1,
+  EF_LOONGARCH_ABI_SINGLE_FLOAT = 0x2,
+  EF_LOONGARCH_ABI_DOUBLE_FLOAT = 0x3,
   EF_LOONGARCH_ABI_MODIFIER_MASK = 0x7,
 
   // Object file ABI versions
-  EF_LOONGARCH_OBJABI_V0   = 0x0,
-  EF_LOONGARCH_OBJABI_V1   = 0x40,
+  EF_LOONGARCH_OBJABI_V0 = 0x0,
+  EF_LOONGARCH_OBJABI_V1 = 0x40,
   EF_LOONGARCH_OBJABI_MASK = 0xC0,
 };
 

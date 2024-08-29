@@ -31,61 +31,60 @@ define amdgpu_kernel void @partial_no_vgprs_last_sgpr_spill(ptr addrspace(1) %ou
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; def s[8:23]
 ; GCN-NEXT:    ;;#ASMEND
-; GCN-NEXT:    s_waitcnt vmcnt(1)
-; GCN-NEXT:    v_writelane_b32 v1, s8, 0
-; GCN-NEXT:    v_writelane_b32 v1, s9, 1
-; GCN-NEXT:    v_writelane_b32 v1, s10, 2
-; GCN-NEXT:    v_writelane_b32 v1, s11, 3
-; GCN-NEXT:    v_writelane_b32 v1, s12, 4
-; GCN-NEXT:    v_writelane_b32 v1, s13, 5
-; GCN-NEXT:    v_writelane_b32 v1, s14, 6
-; GCN-NEXT:    v_writelane_b32 v1, s15, 7
-; GCN-NEXT:    v_writelane_b32 v1, s16, 8
-; GCN-NEXT:    v_writelane_b32 v1, s17, 9
-; GCN-NEXT:    v_writelane_b32 v1, s18, 10
-; GCN-NEXT:    v_writelane_b32 v1, s19, 11
-; GCN-NEXT:    v_writelane_b32 v1, s20, 12
-; GCN-NEXT:    v_writelane_b32 v1, s21, 13
-; GCN-NEXT:    v_writelane_b32 v1, s22, 14
-; GCN-NEXT:    v_writelane_b32 v1, s23, 15
+; GCN-NEXT:    v_writelane_b32 v23, s8, 0
+; GCN-NEXT:    v_writelane_b32 v23, s9, 1
+; GCN-NEXT:    v_writelane_b32 v23, s10, 2
+; GCN-NEXT:    v_writelane_b32 v23, s11, 3
+; GCN-NEXT:    v_writelane_b32 v23, s12, 4
+; GCN-NEXT:    v_writelane_b32 v23, s13, 5
+; GCN-NEXT:    v_writelane_b32 v23, s14, 6
+; GCN-NEXT:    v_writelane_b32 v23, s15, 7
+; GCN-NEXT:    v_writelane_b32 v23, s16, 8
+; GCN-NEXT:    v_writelane_b32 v23, s17, 9
+; GCN-NEXT:    v_writelane_b32 v23, s18, 10
+; GCN-NEXT:    v_writelane_b32 v23, s19, 11
+; GCN-NEXT:    v_writelane_b32 v23, s20, 12
+; GCN-NEXT:    v_writelane_b32 v23, s21, 13
+; GCN-NEXT:    v_writelane_b32 v23, s22, 14
+; GCN-NEXT:    v_writelane_b32 v23, s23, 15
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; def s[8:23]
 ; GCN-NEXT:    ;;#ASMEND
-; GCN-NEXT:    v_writelane_b32 v1, s8, 16
-; GCN-NEXT:    v_writelane_b32 v1, s9, 17
-; GCN-NEXT:    v_writelane_b32 v1, s10, 18
-; GCN-NEXT:    v_writelane_b32 v1, s11, 19
-; GCN-NEXT:    v_writelane_b32 v1, s12, 20
-; GCN-NEXT:    v_writelane_b32 v1, s13, 21
-; GCN-NEXT:    v_writelane_b32 v1, s14, 22
-; GCN-NEXT:    v_writelane_b32 v1, s15, 23
-; GCN-NEXT:    v_writelane_b32 v1, s16, 24
-; GCN-NEXT:    v_writelane_b32 v1, s17, 25
-; GCN-NEXT:    v_writelane_b32 v1, s18, 26
-; GCN-NEXT:    v_writelane_b32 v1, s19, 27
-; GCN-NEXT:    v_writelane_b32 v1, s20, 28
-; GCN-NEXT:    v_writelane_b32 v1, s21, 29
-; GCN-NEXT:    v_writelane_b32 v1, s22, 30
-; GCN-NEXT:    v_writelane_b32 v1, s23, 31
+; GCN-NEXT:    v_writelane_b32 v23, s8, 16
+; GCN-NEXT:    v_writelane_b32 v23, s9, 17
+; GCN-NEXT:    v_writelane_b32 v23, s10, 18
+; GCN-NEXT:    v_writelane_b32 v23, s11, 19
+; GCN-NEXT:    v_writelane_b32 v23, s12, 20
+; GCN-NEXT:    v_writelane_b32 v23, s13, 21
+; GCN-NEXT:    v_writelane_b32 v23, s14, 22
+; GCN-NEXT:    v_writelane_b32 v23, s15, 23
+; GCN-NEXT:    v_writelane_b32 v23, s16, 24
+; GCN-NEXT:    v_writelane_b32 v23, s17, 25
+; GCN-NEXT:    v_writelane_b32 v23, s18, 26
+; GCN-NEXT:    v_writelane_b32 v23, s19, 27
+; GCN-NEXT:    v_writelane_b32 v23, s20, 28
+; GCN-NEXT:    v_writelane_b32 v23, s21, 29
+; GCN-NEXT:    v_writelane_b32 v23, s22, 30
+; GCN-NEXT:    v_writelane_b32 v23, s23, 31
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; def s[8:23]
 ; GCN-NEXT:    ;;#ASMEND
-; GCN-NEXT:    v_writelane_b32 v1, s8, 32
-; GCN-NEXT:    v_writelane_b32 v1, s9, 33
-; GCN-NEXT:    v_writelane_b32 v1, s10, 34
-; GCN-NEXT:    v_writelane_b32 v1, s11, 35
-; GCN-NEXT:    v_writelane_b32 v1, s12, 36
-; GCN-NEXT:    v_writelane_b32 v1, s13, 37
-; GCN-NEXT:    v_writelane_b32 v1, s14, 38
-; GCN-NEXT:    v_writelane_b32 v1, s15, 39
-; GCN-NEXT:    v_writelane_b32 v1, s16, 40
-; GCN-NEXT:    v_writelane_b32 v1, s17, 41
-; GCN-NEXT:    v_writelane_b32 v1, s18, 42
-; GCN-NEXT:    v_writelane_b32 v1, s19, 43
-; GCN-NEXT:    v_writelane_b32 v1, s20, 44
-; GCN-NEXT:    v_writelane_b32 v1, s21, 45
-; GCN-NEXT:    v_writelane_b32 v1, s22, 46
-; GCN-NEXT:    v_writelane_b32 v1, s23, 47
+; GCN-NEXT:    v_writelane_b32 v23, s8, 32
+; GCN-NEXT:    v_writelane_b32 v23, s9, 33
+; GCN-NEXT:    v_writelane_b32 v23, s10, 34
+; GCN-NEXT:    v_writelane_b32 v23, s11, 35
+; GCN-NEXT:    v_writelane_b32 v23, s12, 36
+; GCN-NEXT:    v_writelane_b32 v23, s13, 37
+; GCN-NEXT:    v_writelane_b32 v23, s14, 38
+; GCN-NEXT:    v_writelane_b32 v23, s15, 39
+; GCN-NEXT:    v_writelane_b32 v23, s16, 40
+; GCN-NEXT:    v_writelane_b32 v23, s17, 41
+; GCN-NEXT:    v_writelane_b32 v23, s18, 42
+; GCN-NEXT:    v_writelane_b32 v23, s19, 43
+; GCN-NEXT:    v_writelane_b32 v23, s20, 44
+; GCN-NEXT:    v_writelane_b32 v23, s21, 45
+; GCN-NEXT:    v_writelane_b32 v23, s22, 46
+; GCN-NEXT:    v_writelane_b32 v23, s23, 47
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; def s[8:23]
 ; GCN-NEXT:    ;;#ASMEND
@@ -111,7 +110,9 @@ define amdgpu_kernel void @partial_no_vgprs_last_sgpr_spill(ptr addrspace(1) %ou
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; def s[6:7]
 ; GCN-NEXT:    ;;#ASMEND
-; GCN-NEXT:    s_waitcnt vmcnt(1)
+; GCN-NEXT:    s_mov_b64 s[8:9], exec
+; GCN-NEXT:    s_mov_b64 exec, 3
+; GCN-NEXT:    buffer_store_dword v0, off, s[0:3], 0
 ; GCN-NEXT:    v_writelane_b32 v0, s6, 0
 ; GCN-NEXT:    v_writelane_b32 v0, s7, 1
 ; GCN-NEXT:    s_or_saveexec_b64 s[24:25], -1
@@ -205,6 +206,9 @@ define amdgpu_kernel void @partial_no_vgprs_last_sgpr_spill(ptr addrspace(1) %ou
 ; GCN-NEXT:    s_waitcnt vmcnt(0)
 ; GCN-NEXT:    v_readlane_b32 s4, v0, 0
 ; GCN-NEXT:    v_readlane_b32 s5, v0, 1
+; GCN-NEXT:    buffer_load_dword v0, off, s[0:3], 0
+; GCN-NEXT:    s_waitcnt vmcnt(0)
+; GCN-NEXT:    s_mov_b64 exec, s[6:7]
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; use s[8:23]
 ; GCN-NEXT:    ;;#ASMEND

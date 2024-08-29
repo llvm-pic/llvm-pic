@@ -1192,6 +1192,14 @@ class __expected_void_base {
         __expected_construct_unexpected_from_invoke_tag, _Func&& __f, _Args&&... __args)
         : __unex_(std::invoke(std::forward<_Func>(__f), std::forward<_Args>(__args)...)) {}
 
+    template <class _Union>
+    _LIBCPP_HIDE_FROM_ABI constexpr explicit __union_t(bool __has_val, _Union&& __other) {
+      if (__has_val)
+        std::construct_at(std::addressof(__val_), std::forward<_Union>(__other).__val_);
+      else
+        std::construct_at(std::addressof(__unex_), std::forward<_Union>(__other).__unex_);
+    }
+
     _LIBCPP_HIDE_FROM_ABI constexpr ~__union_t()
       requires(is_trivially_destructible_v<_Err>)
     = default;

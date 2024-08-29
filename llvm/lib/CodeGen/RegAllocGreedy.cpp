@@ -1446,14 +1446,14 @@ unsigned RAGreedy::tryInstructionSplit(const LiveInterval &VirtReg,
   // the allocation.
   for (const SlotIndex Use : Uses) {
     if (const MachineInstr *MI = Indexes->getInstructionFromIndex(Use)) {
-      if (TII->isFullCopyInstr(*MI) ||
+      if (MI->isFullCopy() ||
           (SplitSubClass &&
            SuperRCNumAllocatableRegs ==
                getNumAllocatableRegsForConstraints(MI, VirtReg.reg(), SuperRC,
                                                    TII, TRI, RegClassInfo)) ||
           // TODO: Handle split for subranges with subclass constraints?
           (!SplitSubClass && VirtReg.hasSubRanges() &&
-           !readsLaneSubset(*MRI, MI, VirtReg, TRI, Use, TII))) {
+           !readsLaneSubset(*MRI, MI, VirtReg, TRI, Use))) {
         LLVM_DEBUG(dbgs() << "    skip:\t" << Use << '\t' << *MI);
         continue;
       }
@@ -2241,7 +2241,7 @@ void RAGreedy::initializeCSRCost() {
 /// \p Out is not cleared before being populated.
 void RAGreedy::collectHintInfo(Register Reg, HintsInfo &Out) {
   for (const MachineInstr &Instr : MRI->reg_nodbg_instructions(Reg)) {
-    if (!TII->isFullCopyInstr(Instr))
+    if (!Instr.isFullCopy())
       continue;
     // Look for the other end of the copy.
     Register OtherReg = Instr.getOperand(0).getReg();
@@ -2559,10 +2559,9 @@ RAGreedy::RAGreedyStats RAGreedy::computeStats(MachineBasicBlock &MBB) {
            MI.getOpcode() == TargetOpcode::STATEPOINT;
   };
   for (MachineInstr &MI : MBB) {
-    auto DestSrc = TII->isCopyInstr(MI);
-    if (DestSrc) {
-      const MachineOperand &Dest = *DestSrc->Destination;
-      const MachineOperand &Src = *DestSrc->Source;
+    if (MI.isCopy()) {
+      const MachineOperand &Dest = MI.getOperand(0);
+      const MachineOperand &Src = MI.getOperand(1);
       Register SrcReg = Src.getReg();
       Register DestReg = Dest.getReg();
       // Only count `COPY`s with a virtual register as source or destination.

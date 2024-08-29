@@ -32,6 +32,10 @@
 using namespace llvm::omp::target::ompt;
 #endif
 
+#ifdef OMPT_SUPPORT
+using namespace llvm::omp::target::ompt;
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
 /// adds requires flags
 EXTERN void __tgt_register_requires(int64_t Flags) {

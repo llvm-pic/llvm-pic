@@ -27,7 +27,7 @@ define amdgpu_kernel void @__omp_offloading_16_dd2df_main_l9()  {
 ; CHECK-NEXT:    v_cmp_eq_u32_e64 s[6:7], v2, s4
 ; CHECK-NEXT:    s_mov_b32 s4, 0
 ; CHECK-NEXT:    v_mov_b32_e32 v2, s4
-; CHECK-NEXT:    ds_write_b8 v1, v2
+; CHECK-NEXT:    ds_write_b8 v0, v2
 ; CHECK-NEXT:    s_mov_b64 s[4:5], exec
 ; CHECK-NEXT:    v_writelane_b32 v0, s4, 0
 ; CHECK-NEXT:    v_writelane_b32 v0, s5, 1
@@ -59,7 +59,7 @@ define amdgpu_kernel void @__omp_offloading_16_dd2df_main_l9()  {
 ; CHECK-NEXT:    s_addc_u32 s5, s5, V2@rel32@hi+12
 ; CHECK-NEXT:    v_mov_b32_e32 v0, 0
 ; CHECK-NEXT:    s_waitcnt vmcnt(0)
-; CHECK-NEXT:    global_store_short v0, v1, s[4:5]
+; CHECK-NEXT:    global_store_short v0, v2, s[4:5]
 ; CHECK-NEXT:    s_waitcnt vmcnt(0) lgkmcnt(0)
 ; CHECK-NEXT:    s_barrier
 ; CHECK-NEXT:    s_trap 2

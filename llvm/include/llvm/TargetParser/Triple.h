@@ -66,6 +66,8 @@ public:
     mips64,         // MIPS64: mips64, mips64r6, mipsn32, mipsn32r6
     mips64el,       // MIPS64EL: mips64el, mips64r6el, mipsn32el, mipsn32r6el
     msp430,         // MSP430: msp430
+    picbase,        // PICBase: PIC(c) Baseline core devices
+    picmid,         // PICMid: PIC(c) Mid-range core devices
     ppc,            // PPC: powerpc
     ppcle,          // PPCLE: powerpc (little endian)
     ppc64,          // PPC64: powerpc64, ppu
@@ -947,9 +949,13 @@ public:
   }
 
   /// Tests whether the target is MIPS (little and big endian, 32- or 64-bit).
-  bool isMIPS() const {
-    return isMIPS32() || isMIPS64();
-  }
+  bool isMIPS() const { return isMIPS32() || isMIPS64(); }
+
+  /// Tests whether the target is a PIC baseline core device
+  bool isPICBase() const { return getArch() == Triple::picbase; }
+
+  /// Tests whether the target is a PIC Mid-range core device
+  bool isPICMid() const { return getArch() == Triple::picmid; }
 
   /// Tests whether the target is PowerPC (32- or 64-bit LE or BE).
   bool isPPC() const {

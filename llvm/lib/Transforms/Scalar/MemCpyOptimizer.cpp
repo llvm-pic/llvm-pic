@@ -737,23 +737,6 @@ bool MemCpyOptPass::processStoreOfLoad(StoreInst *SI, LoadInst *LI,
     return true;
   }
 
-  // If this is a load-store pair from a stack slot to a stack slot, we
-  // might be able to perform the stack-move optimization just as we do for
-  // memcpys from an alloca to an alloca.
-  if (auto *DestAlloca = dyn_cast<AllocaInst>(SI->getPointerOperand())) {
-    if (auto *SrcAlloca = dyn_cast<AllocaInst>(LI->getPointerOperand())) {
-      if (performStackMoveOptzn(LI, SI, DestAlloca, SrcAlloca,
-                                DL.getTypeStoreSize(T), BAA)) {
-        // Avoid invalidating the iterator.
-        BBI = SI->getNextNonDebugInstruction()->getIterator();
-        eraseInstruction(SI);
-        eraseInstruction(LI);
-        ++NumMemCpyInstr;
-        return true;
-      }
-    }
-  }
-
   return false;
 }
 
@@ -1784,14 +1767,13 @@ bool MemCpyOptPass::processMemCpy(MemCpyInst *M, BasicBlock::iterator &BBI) {
   MemoryAccess *SrcClobber = MSSA->getWalker()->getClobberingMemoryAccess(
       AnyClobber, MemoryLocation::getForSource(M), BAA);
 
-  // There are five possible optimizations we can do for memcpy:
+  // There are four possible optimizations we can do for memcpy:
   //   a) memcpy-memcpy xform which exposes redundance for DSE.
   //   b) call-memcpy xform for return slot optimization.
   //   c) memcpy from freshly alloca'd space or space that has just started
   //      its lifetime copies undefined data, and we can therefore eliminate
   //      the memcpy in favor of the data that was already at the destination.
   //   d) memcpy from a just-memset'd source can be turned into memset.
-  //   e) elimination of memcpy via stack-move optimization.
   if (auto *MD = dyn_cast<MemoryDef>(SrcClobber)) {
     if (Instruction *MI = MD->getMemoryInst()) {
       if (auto *CopySize = dyn_cast<ConstantInt>(M->getLength())) {
@@ -1810,8 +1792,7 @@ bool MemCpyOptPass::processMemCpy(MemCpyInst *M, BasicBlock::iterator &BBI) {
         }
       }
       if (auto *MDep = dyn_cast<MemCpyInst>(MI))
-        if (processMemCpyMemCpyDependence(M, MDep, BAA))
-          return true;
+        return processMemCpyMemCpyDependence(M, MDep, BAA);
       if (auto *MDep = dyn_cast<MemSetInst>(MI)) {
         if (performMemCpyToMemSetOptzn(M, MDep, BAA)) {
           LLVM_DEBUG(dbgs() << "Converted memcpy to memset\n");
