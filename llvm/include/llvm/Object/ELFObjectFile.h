@@ -271,8 +271,8 @@ private:
 protected:
   ELFFile<ELFT> EF;
 
-  const Elf_Shdr *DotDynSymSec = nullptr;      // Dynamic symbol table section.
-  const Elf_Shdr *DotSymtabSec = nullptr;      // Symbol table section.
+  const Elf_Shdr *DotDynSymSec = nullptr; // Dynamic symbol table section.
+  const Elf_Shdr *DotSymtabSec = nullptr; // Symbol table section.
   const Elf_Shdr *DotSymtabShndxSec = nullptr; // SHT_SYMTAB_SHNDX section.
 
   Error initContent() override;
@@ -629,7 +629,8 @@ uint32_t ELFObjectFile<ELFT>::getSymbolAlignment(DataRefImpl Symb) const {
   return 0;
 }
 
-template <class ELFT> uint16_t ELFObjectFile<ELFT>::getEMachine() const {
+template <class ELFT>
+uint16_t ELFObjectFile<ELFT>::getEMachine() const {
   return EF.getHeader().e_machine;
 }
 
@@ -1178,11 +1179,13 @@ section_iterator ELFObjectFile<ELFT>::section_end() const {
   return section_iterator(SectionRef(toDRI((*SectionsOrErr).end()), this));
 }
 
-template <class ELFT> uint8_t ELFObjectFile<ELFT>::getBytesInAddress() const {
+template <class ELFT>
+uint8_t ELFObjectFile<ELFT>::getBytesInAddress() const {
   return ELFT::Is64Bits ? 8 : 4;
 }
 
-template <class ELFT> StringRef ELFObjectFile<ELFT>::getFileFormatName() const {
+template <class ELFT>
+StringRef ELFObjectFile<ELFT>::getFileFormatName() const {
   constexpr bool IsLittleEndian = ELFT::TargetEndianness == support::little;
   switch (EF.getHeader().e_ident[ELF::EI_CLASS]) {
   case ELF::ELFCLASS32:

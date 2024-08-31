@@ -435,8 +435,7 @@ ELFFile<ELFT>::android_relas(const Elf_Shdr &Sec) const {
 
     uint64_t GroupFlags = Data.getSLEB128(Cur);
     bool GroupedByInfo = GroupFlags & ELF::RELOCATION_GROUPED_BY_INFO_FLAG;
-    bool GroupedByOffsetDelta =
-        GroupFlags & ELF::RELOCATION_GROUPED_BY_OFFSET_DELTA_FLAG;
+    bool GroupedByOffsetDelta = GroupFlags & ELF::RELOCATION_GROUPED_BY_OFFSET_DELTA_FLAG;
     bool GroupedByAddend = GroupFlags & ELF::RELOCATION_GROUPED_BY_ADDEND_FLAG;
     bool GroupHasAddend = GroupFlags & ELF::RELOCATION_GROUP_HAS_ADDEND_FLAG;
 
@@ -539,9 +538,7 @@ std::string ELFFile<ELFT>::getDynamicTagAsString(unsigned Arch,
 #define RISCV_DYNAMIC_TAG(name, value)
 // Also ignore marker tags such as DT_HIOS (maps to DT_VERNEEDNUM), etc.
 #define DYNAMIC_TAG_MARKER(name, value)
-#define DYNAMIC_TAG(name, value)                                               \
-  case value:                                                                  \
-    return #name;
+#define DYNAMIC_TAG(name, value) case value: return #name;
 #include "llvm/BinaryFormat/DynamicTags.def"
 #undef DYNAMIC_TAG
 #undef AARCH64_DYNAMIC_TAG
@@ -772,7 +769,8 @@ ELFFile<ELFT>::decodeBBAddrMap(const Elf_Shdr &Sec,
 }
 
 template <class ELFT>
-Expected<MapVector<const typename ELFT::Shdr *, const typename ELFT::Shdr *>>
+Expected<
+    MapVector<const typename ELFT::Shdr *, const typename ELFT::Shdr *>>
 ELFFile<ELFT>::getSectionAndRelocations(
     std::function<Expected<bool>(const Elf_Shdr &)> IsMatch) const {
   MapVector<const Elf_Shdr *, const Elf_Shdr *> SecToRelocMap;
@@ -809,7 +807,7 @@ ELFFile<ELFT>::getSectionAndRelocations(
     if (*DoesRelTargetMatch)
       SecToRelocMap[ContentsSec] = &Sec;
   }
-  if (Errors)
+  if(Errors)
     return std::move(Errors);
   return SecToRelocMap;
 }
