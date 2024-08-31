@@ -43,9 +43,12 @@
 namespace lldb {
 
 class LLDB_API SBAddress;
+class LLDB_API SBAddressRange;
+class LLDB_API SBAddressRangeList;
 class LLDB_API SBAttachInfo;
 class LLDB_API SBBlock;
 class LLDB_API SBBreakpoint;
+class LLDB_API SBBreakpointList;
 class LLDB_API SBBreakpointLocation;
 class LLDB_API SBBreakpointName;
 class LLDB_API SBBreakpointNameImpl;
@@ -58,6 +61,7 @@ class LLDB_API SBCommandPluginInterface;
 class LLDB_API SBCommandReturnObject;
 class LLDB_API SBCommunication;
 class LLDB_API SBCompileUnit;
+class LLDB_API SBSaveCoreOptions;
 class LLDB_API SBData;
 class LLDB_API SBDebugger;
 class LLDB_API SBDeclaration;
@@ -70,6 +74,7 @@ class LLDB_API SBExpressionOptions;
 class LLDB_API SBFile;
 class LLDB_API SBFileSpec;
 class LLDB_API SBFileSpecList;
+class LLDB_API SBFormat;
 class LLDB_API SBFrame;
 class LLDB_API SBFunction;
 class LLDB_API SBHostOS;
@@ -85,15 +90,19 @@ class LLDB_API SBModule;
 class LLDB_API SBModuleSpec;
 class LLDB_API SBModuleSpecList;
 class LLDB_API SBPlatform;
+class LLDB_API SBPlatformConnectOptions;
 class LLDB_API SBPlatformShellCommand;
 class LLDB_API SBProcess;
 class LLDB_API SBProcessInfo;
+class LLDB_API SBProcessInfoList;
 class LLDB_API SBQueue;
 class LLDB_API SBQueueItem;
+class LLDB_API SBReplayOptions;
 class LLDB_API SBReproducer;
 class LLDB_API SBScriptObject;
 class LLDB_API SBSection;
 class LLDB_API SBSourceManager;
+class LLDB_API SBStatisticsOptions;
 class LLDB_API SBStream;
 class LLDB_API SBStringList;
 class LLDB_API SBStructuredData;
@@ -123,6 +132,7 @@ class LLDB_API SBValue;
 class LLDB_API SBValueList;
 class LLDB_API SBVariablesOptions;
 class LLDB_API SBWatchpoint;
+class LLDB_API SBWatchpointOptions;
 class LLDB_API SBUnixSignals;
 
 typedef bool (*SBBreakpointHitCallback)(void *baton, SBProcess &process,

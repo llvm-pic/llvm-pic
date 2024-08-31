@@ -4,6 +4,7 @@ set(LLVM_LINK_COMPONENTS
   Core
   Support
   Passes
+  TargetParser
   TransformUtils
   ScalarOpts
   )
@@ -13,8 +14,10 @@ add_llvm_unittest(IRTests
   AsmWriterTest.cpp
   AttributesTest.cpp
   BasicBlockTest.cpp
+  BasicBlockDbgInfoTest.cpp
   CFGBuilder.cpp
   ConstantRangeTest.cpp
+  ConstantRangeListTest.cpp
   ConstantsTest.cpp
   DataLayoutTest.cpp
   DebugInfoTest.cpp
@@ -29,6 +32,7 @@ add_llvm_unittest(IRTests
   IntrinsicsTest.cpp
   LegacyPassManagerTest.cpp
   MDBuilderTest.cpp
+  MemoryModelRelaxationAnnotationsTest.cpp
   ManglerTest.cpp
   MetadataTest.cpp
   ModuleTest.cpp
@@ -47,6 +51,7 @@ add_llvm_unittest(IRTests
   VectorBuilderTest.cpp
   VectorTypesTest.cpp
   VerifierTest.cpp
+  VFABIDemanglerTest.cpp
   VPIntrinsicTest.cpp
   CoreBindings.cpp
   )

@@ -143,15 +143,15 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
       return std::make_unique<DarwinAArch64TargetInfo>(Triple, Opts);
 
     switch (os) {
-    case llvm::Triple::CloudABI:
-      return std::make_unique<CloudABITargetInfo<AArch64leTargetInfo>>(Triple,
-                                                                       Opts);
     case llvm::Triple::FreeBSD:
       return std::make_unique<FreeBSDTargetInfo<AArch64leTargetInfo>>(Triple,
                                                                       Opts);
     case llvm::Triple::Fuchsia:
       return std::make_unique<FuchsiaTargetInfo<AArch64leTargetInfo>>(Triple,
                                                                       Opts);
+    case llvm::Triple::Haiku:
+      return std::make_unique<HaikuTargetInfo<AArch64leTargetInfo>>(Triple,
+                                                                    Opts);
     case llvm::Triple::Linux:
       switch (Triple.getEnvironment()) {
       default:
@@ -203,9 +203,6 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
       return std::make_unique<DarwinARMTargetInfo>(Triple, Opts);
 
     switch (os) {
-    case llvm::Triple::CloudABI:
-      return std::make_unique<CloudABITargetInfo<ARMleTargetInfo>>(Triple,
-                                                                   Opts);
     case llvm::Triple::Linux:
       switch (Triple.getEnvironment()) {
       default:
@@ -223,6 +220,8 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
       return std::make_unique<OpenBSDTargetInfo<ARMleTargetInfo>>(Triple, Opts);
     case llvm::Triple::RTEMS:
       return std::make_unique<RTEMSTargetInfo<ARMleTargetInfo>>(Triple, Opts);
+    case llvm::Triple::Haiku:
+      return std::make_unique<HaikuTargetInfo<ARMleTargetInfo>>(Triple, Opts);
     case llvm::Triple::NaCl:
       return std::make_unique<NaClTargetInfo<ARMleTargetInfo>>(Triple, Opts);
     case llvm::Triple::Win32:
@@ -249,12 +248,8 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
     switch (os) {
     case llvm::Triple::Linux:
       return std::make_unique<LinuxTargetInfo<ARMbeTargetInfo>>(Triple, Opts);
-    case llvm::Triple::FreeBSD:
-      return std::make_unique<FreeBSDTargetInfo<ARMbeTargetInfo>>(Triple, Opts);
     case llvm::Triple::NetBSD:
       return std::make_unique<NetBSDTargetInfo<ARMbeTargetInfo>>(Triple, Opts);
-    case llvm::Triple::OpenBSD:
-      return std::make_unique<OpenBSDTargetInfo<ARMbeTargetInfo>>(Triple, Opts);
     case llvm::Triple::RTEMS:
       return std::make_unique<RTEMSTargetInfo<ARMbeTargetInfo>>(Triple, Opts);
     case llvm::Triple::NaCl:
@@ -360,7 +355,7 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
 
   case llvm::Triple::le64:
     return std::make_unique<Le64TargetInfo>(Triple, Opts);
-  
+
   case llvm::Triple::picmid:
     return std::make_unique<PICMidTargetInfo>(Triple, Opts);
 
@@ -436,11 +431,10 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
     return std::make_unique<AMDGPUTargetInfo>(Triple, Opts);
 
   case llvm::Triple::riscv32:
-    // TODO: add cases for NetBSD, RTEMS once tested.
     switch (os) {
-    case llvm::Triple::FreeBSD:
-      return std::make_unique<FreeBSDTargetInfo<RISCV32TargetInfo>>(Triple,
-                                                                    Opts);
+    case llvm::Triple::NetBSD:
+      return std::make_unique<NetBSDTargetInfo<RISCV32TargetInfo>>(Triple,
+                                                                   Opts);
     case llvm::Triple::Linux:
       return std::make_unique<LinuxTargetInfo<RISCV32TargetInfo>>(Triple, Opts);
     default:
@@ -448,17 +442,21 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
     }
 
   case llvm::Triple::riscv64:
-    // TODO: add cases for NetBSD, RTEMS once tested.
     switch (os) {
     case llvm::Triple::FreeBSD:
       return std::make_unique<FreeBSDTargetInfo<RISCV64TargetInfo>>(Triple,
                                                                     Opts);
+    case llvm::Triple::NetBSD:
+      return std::make_unique<NetBSDTargetInfo<RISCV64TargetInfo>>(Triple,
+                                                                   Opts);
     case llvm::Triple::OpenBSD:
       return std::make_unique<OpenBSDTargetInfo<RISCV64TargetInfo>>(Triple,
                                                                     Opts);
     case llvm::Triple::Fuchsia:
       return std::make_unique<FuchsiaTargetInfo<RISCV64TargetInfo>>(Triple,
                                                                     Opts);
+    case llvm::Triple::Haiku:
+      return std::make_unique<HaikuTargetInfo<RISCV64TargetInfo>>(Triple, Opts);
     case llvm::Triple::Linux:
       switch (Triple.getEnvironment()) {
       default:
@@ -488,15 +486,11 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
       return std::make_unique<SparcV8TargetInfo>(Triple, Opts);
     }
 
-  // The 'sparcel' architecture copies all the above cases except for Solaris.
   case llvm::Triple::sparcel:
     switch (os) {
     case llvm::Triple::Linux:
       return std::make_unique<LinuxTargetInfo<SparcV8elTargetInfo>>(Triple,
                                                                     Opts);
-    case llvm::Triple::NetBSD:
-      return std::make_unique<NetBSDTargetInfo<SparcV8elTargetInfo>>(Triple,
-                                                                     Opts);
     case llvm::Triple::RTEMS:
       return std::make_unique<RTEMSTargetInfo<SparcV8elTargetInfo>>(Triple,
                                                                     Opts);
@@ -545,11 +539,6 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
       return std::make_unique<DarwinI386TargetInfo>(Triple, Opts);
 
     switch (os) {
-    case llvm::Triple::Ananas:
-      return std::make_unique<AnanasTargetInfo<X86_32TargetInfo>>(Triple, Opts);
-    case llvm::Triple::CloudABI:
-      return std::make_unique<CloudABITargetInfo<X86_32TargetInfo>>(Triple,
-                                                                    Opts);
     case llvm::Triple::Linux: {
       switch (Triple.getEnvironment()) {
       default:
@@ -575,8 +564,6 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
     case llvm::Triple::KFreeBSD:
       return std::make_unique<KFreeBSDTargetInfo<X86_32TargetInfo>>(Triple,
                                                                     Opts);
-    case llvm::Triple::Minix:
-      return std::make_unique<MinixTargetInfo<X86_32TargetInfo>>(Triple, Opts);
     case llvm::Triple::Solaris:
       return std::make_unique<SolarisTargetInfo<X86_32TargetInfo>>(Triple,
                                                                    Opts);
@@ -611,11 +598,6 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
       return std::make_unique<DarwinX86_64TargetInfo>(Triple, Opts);
 
     switch (os) {
-    case llvm::Triple::Ananas:
-      return std::make_unique<AnanasTargetInfo<X86_64TargetInfo>>(Triple, Opts);
-    case llvm::Triple::CloudABI:
-      return std::make_unique<CloudABITargetInfo<X86_64TargetInfo>>(Triple,
-                                                                    Opts);
     case llvm::Triple::Linux: {
       switch (Triple.getEnvironment()) {
       default:
@@ -665,6 +647,8 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
       return std::make_unique<PS4OSTargetInfo<X86_64TargetInfo>>(Triple, Opts);
     case llvm::Triple::PS5:
       return std::make_unique<PS5OSTargetInfo<X86_64TargetInfo>>(Triple, Opts);
+    case llvm::Triple::Hurd:
+      return std::make_unique<HurdTargetInfo<X86_64TargetInfo>>(Triple, Opts);
     default:
       return std::make_unique<X86_64TargetInfo>(Triple, Opts);
     }
@@ -681,6 +665,9 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
       return nullptr;
     return std::make_unique<SPIR64TargetInfo>(Triple, Opts);
   }
+  case llvm::Triple::spirv: {
+    return std::make_unique<SPIRVTargetInfo>(Triple, Opts);
+  }
   case llvm::Triple::spirv32: {
     if (os != llvm::Triple::UnknownOS ||
         Triple.getEnvironment() != llvm::Triple::UnknownEnvironment)
@@ -689,8 +676,11 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
   }
   case llvm::Triple::spirv64: {
     if (os != llvm::Triple::UnknownOS ||
-        Triple.getEnvironment() != llvm::Triple::UnknownEnvironment)
+        Triple.getEnvironment() != llvm::Triple::UnknownEnvironment) {
+      if (os == llvm::Triple::OSType::AMDHSA)
+        return std::make_unique<SPIRV64AMDGCNTargetInfo>(Triple, Opts);
       return nullptr;
+    }
     return std::make_unique<SPIRV64TargetInfo>(Triple, Opts);
   }
   case llvm::Triple::wasm32:
@@ -699,17 +689,17 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
         !Triple.isOSBinFormatWasm())
       return nullptr;
     switch (os) {
-      case llvm::Triple::WASI:
+    case llvm::Triple::WASI:
       return std::make_unique<WASITargetInfo<WebAssembly32TargetInfo>>(Triple,
                                                                        Opts);
-      case llvm::Triple::Emscripten:
+    case llvm::Triple::Emscripten:
       return std::make_unique<EmscriptenTargetInfo<WebAssembly32TargetInfo>>(
           Triple, Opts);
-      case llvm::Triple::UnknownOS:
+    case llvm::Triple::UnknownOS:
       return std::make_unique<WebAssemblyOSTargetInfo<WebAssembly32TargetInfo>>(
           Triple, Opts);
-      default:
-        return nullptr;
+    default:
+      return nullptr;
     }
   case llvm::Triple::wasm64:
     if (Triple.getSubArch() != llvm::Triple::NoSubArch ||
@@ -717,17 +707,17 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
         !Triple.isOSBinFormatWasm())
       return nullptr;
     switch (os) {
-      case llvm::Triple::WASI:
+    case llvm::Triple::WASI:
       return std::make_unique<WASITargetInfo<WebAssembly64TargetInfo>>(Triple,
                                                                        Opts);
-      case llvm::Triple::Emscripten:
+    case llvm::Triple::Emscripten:
       return std::make_unique<EmscriptenTargetInfo<WebAssembly64TargetInfo>>(
           Triple, Opts);
-      case llvm::Triple::UnknownOS:
+    case llvm::Triple::UnknownOS:
       return std::make_unique<WebAssemblyOSTargetInfo<WebAssembly64TargetInfo>>(
           Triple, Opts);
-      default:
-        return nullptr;
+    default:
+      return nullptr;
     }
 
   case llvm::Triple::dxil:
@@ -745,25 +735,25 @@ std::unique_ptr<TargetInfo> AllocateTarget(const llvm::Triple &Triple,
   case llvm::Triple::csky:
     switch (os) {
     case llvm::Triple::Linux:
-        return std::make_unique<LinuxTargetInfo<CSKYTargetInfo>>(Triple, Opts);
+      return std::make_unique<LinuxTargetInfo<CSKYTargetInfo>>(Triple, Opts);
     default:
-        return std::make_unique<CSKYTargetInfo>(Triple, Opts);
+      return std::make_unique<CSKYTargetInfo>(Triple, Opts);
     }
   case llvm::Triple::loongarch32:
     switch (os) {
     case llvm::Triple::Linux:
-        return std::make_unique<LinuxTargetInfo<LoongArch32TargetInfo>>(Triple,
-                                                                        Opts);
+      return std::make_unique<LinuxTargetInfo<LoongArch32TargetInfo>>(Triple,
+                                                                      Opts);
     default:
-        return std::make_unique<LoongArch32TargetInfo>(Triple, Opts);
+      return std::make_unique<LoongArch32TargetInfo>(Triple, Opts);
     }
   case llvm::Triple::loongarch64:
     switch (os) {
     case llvm::Triple::Linux:
-        return std::make_unique<LinuxTargetInfo<LoongArch64TargetInfo>>(Triple,
-                                                                        Opts);
+      return std::make_unique<LinuxTargetInfo<LoongArch64TargetInfo>>(Triple,
+                                                                      Opts);
     default:
-        return std::make_unique<LoongArch64TargetInfo>(Triple, Opts);
+      return std::make_unique<LoongArch64TargetInfo>(Triple, Opts);
     }
   }
 }
@@ -776,7 +766,7 @@ using namespace clang::targets;
 TargetInfo *
 TargetInfo::CreateTargetInfo(DiagnosticsEngine &Diags,
                              const std::shared_ptr<TargetOptions> &Opts) {
-  llvm::Triple Triple(Opts->Triple);
+  llvm::Triple Triple(llvm::Triple::normalize(Opts->Triple));
 
   // Construct the target
   std::unique_ptr<TargetInfo> Target = AllocateTarget(Triple, *Opts);
@@ -797,8 +787,7 @@ TargetInfo::CreateTargetInfo(DiagnosticsEngine &Diags,
   }
 
   // Check the TuneCPU name if specified.
-  if (!Opts->TuneCPU.empty() &&
-      !Target->isValidTuneCPUName(Opts->TuneCPU)) {
+  if (!Opts->TuneCPU.empty() && !Target->isValidTuneCPUName(Opts->TuneCPU)) {
     Diags.Report(diag::err_target_unknown_cpu) << Opts->TuneCPU;
     SmallVector<StringRef, 32> ValidList;
     Target->fillValidTuneCPUList(ValidList);
