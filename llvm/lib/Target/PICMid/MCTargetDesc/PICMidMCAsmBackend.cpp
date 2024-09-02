@@ -1,7 +1,6 @@
 #include "PICMidMCAsmBackend.h"
 #include "PICMidELFObjectWriter.h"
 #include "PICMidFixupKinds.h"
-#include "llvm/MC/MCAsmLayout.h"
 #include "llvm/MC/MCAssembler.h"
 #include "llvm/MC/MCELFObjectWriter.h"
 #include "llvm/MC/MCValue.h"
@@ -11,7 +10,7 @@
 namespace llvm {
 
 PICMidMCAsmBackend::PICMidMCAsmBackend(Triple::OSType OSType)
-    : MCAsmBackend(support::little), OSType(OSType) {}
+    : MCAsmBackend(endianness::little), OSType(OSType) {}
 
 std::unique_ptr<MCObjectTargetWriter>
 PICMidMCAsmBackend::createObjectTargetWriter() const {
@@ -81,52 +80,22 @@ void PICMidMCAsmBackend::applyFixup(const MCAssembler &Asm,
 }
 
 bool PICMidMCAsmBackend::evaluateTargetFixup(const MCAssembler &Asm,
-                                             const MCAsmLayout &Layout,
                                              const MCFixup &Fixup,
                                              const MCFragment *DF,
                                              const MCValue &Target,
+                                             const MCSubtargetInfo *STI,
                                              uint64_t &Value, bool &WasForced) {
-
-  const bool IsPCAbs11 = Fixup.getKind() == (MCFixupKind)PICMid::PCAbs11;
-
-  assert(IsPCAbs11 && "unexpected target fixup kind");
-
-  Value = Target.getConstant();
-  if (const MCSymbolRefExpr *A = Target.getSymA()) {
-    const MCSymbol &Sym = A->getSymbol();
-    if (Sym.isDefined()) {
-      Value += Layout.getSymbolOffset(Sym);
-    }
-  }
-
-  if (const MCSymbolRefExpr *B = Target.getSymB()) {
-    const MCSymbol &Sym = B->getSymbol();
-    if (Sym.isDefined()) {
-      Value -= Layout.getSymbolOffset(Sym);
-    }
-  }
-
-  //   Value -= Layout.getFragmentOffset(DF) + Fixup.getOffset();
-
-  assert(Value % 2 == 0 &&
-         "Program memory address in bytes must be evenly divisible by 2");
-  Value /= 2;
-
   return false;
 }
 
 bool PICMidMCAsmBackend::fixupNeedsRelaxation(const MCFixup &Fixup,
-                                              uint64_t Value,
-                                              const MCRelaxableFragment *DF,
-                                              const MCAsmLayout &Layout) const {
+                                              uint64_t Value) const {
   return false;
 }
 
 bool PICMidMCAsmBackend::fixupNeedsRelaxationAdvanced(
-    const MCFixup &Fixup, bool Resolved, uint64_t Value,
-    const MCRelaxableFragment *DF, const MCAsmLayout &Layout,
-    const bool WasForced) const {
-  //   return Fixup.getKind() == (MCFixupKind)PICMid::PCAbs11;
+    const MCAssembler &Asm, const MCFixup &Fixup, bool Resolved, uint64_t Value,
+    const MCRelaxableFragment *DF, const bool WasForced) const {
   return false;
 }
 

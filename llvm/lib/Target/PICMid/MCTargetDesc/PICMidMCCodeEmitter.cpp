@@ -26,16 +26,8 @@ PICMidMCCodeEmitter::PICMidMCCodeEmitter(const MCInstrInfo &MCII,
                                          MCContext &Ctx)
     : mcii(MCII), ctx(Ctx) {}
 
-static void emitLittleEndian(uint64_t BinaryOpCode, unsigned Size,
-                             raw_ostream &OS) {
-  for (unsigned i = 0; i < Size; ++i) {
-    char next = (BinaryOpCode & 0xFF);
-    BinaryOpCode >>= 8;
-    OS << next;
-  }
-}
-
-void PICMidMCCodeEmitter::encodeInstruction(const MCInst &Inst, raw_ostream &OS,
+void PICMidMCCodeEmitter::encodeInstruction(const MCInst &Inst,
+                                            SmallVectorImpl<char> &OS,
                                             SmallVectorImpl<MCFixup> &Fixups,
                                             const MCSubtargetInfo &STI) const {
   const MCInstrDesc &Desc = mcii.get(Inst.getOpcode());
@@ -44,7 +36,8 @@ void PICMidMCCodeEmitter::encodeInstruction(const MCInst &Inst, raw_ostream &OS,
 
   assert(Size > 0 && "Instruction size cannot be zero");
   uint64_t BinaryOpCode = getBinaryCodeForInstr(Inst, Fixups, STI);
-  emitLittleEndian(BinaryOpCode, Size, OS);
+  assert(BinaryOpCode <= UINT16_MAX);
+  support::endian::write(OS, (uint16_t)BinaryOpCode, endianness::little);
 }
 
 template <PICMid::Fixups Fixup, unsigned Offset>

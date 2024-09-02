@@ -29,7 +29,7 @@ public:
   PICMidMCCodeEmitter(const MCInstrInfo &mcii, MCContext &ctx);
 
 private:
-  void encodeInstruction(const MCInst &Inst, raw_ostream &OS,
+  void encodeInstruction(const MCInst &Inst, SmallVectorImpl<char> &OS,
                          SmallVectorImpl<MCFixup> &Fixups,
                          const MCSubtargetInfo &STI) const override;
 

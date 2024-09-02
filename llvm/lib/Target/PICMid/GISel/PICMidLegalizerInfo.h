@@ -17,10 +17,12 @@ class PICMidLegalizerInfo : public LegalizerInfo {
 
 public:
   PICMidLegalizerInfo();
-  bool legalizeCustom(LegalizerHelper &Helper,
-                              MachineInstr &MI) const override;
-  bool legalizeBrCond(LegalizerHelper &Helper, MachineInstr &MI, MachineRegisterInfo &MRI) const;
-  bool legalizeICmp(LegalizerHelper &Helper, MachineInstr &MI, MachineRegisterInfo &MRI) const;
+  bool legalizeCustom(LegalizerHelper &Helper, MachineInstr &MI,
+                      LostDebugLocObserver &LocObserver) const override;
+  bool legalizeBrCond(LegalizerHelper &Helper, MachineInstr &MI,
+                      MachineRegisterInfo &MRI) const;
+  bool legalizeICmp(LegalizerHelper &Helper, MachineInstr &MI,
+                    MachineRegisterInfo &MRI) const;
   bool legalizeSelect(LegalizerHelper &Helper, MachineInstr &MI) const;
 };
 

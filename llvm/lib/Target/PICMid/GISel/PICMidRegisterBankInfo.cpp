@@ -56,7 +56,7 @@ llvm::PICMidRegisterBankInfo::getInstrMapping(const MachineInstr &MI) const {
 }
 
 void llvm::PICMidRegisterBankInfo::applyMappingImpl(
-    const OperandsMapper &OpdMapper) const {
+    MachineIRBuilder &Builder, const OperandsMapper &OpdMapper) const {
   applyDefaultMapping(OpdMapper);
 }
 
