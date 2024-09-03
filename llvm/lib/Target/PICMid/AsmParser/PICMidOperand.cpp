@@ -42,7 +42,7 @@ const MCExpr *PICMidOperand::getImm() const {
   return imm;
 }
 
-unsigned PICMidOperand::getReg() const {
+MCRegister PICMidOperand::getReg() const {
   assert(isReg());
   return reg;
 }

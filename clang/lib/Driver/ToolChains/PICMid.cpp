@@ -21,26 +21,24 @@ using namespace clang::driver::tools;
 using namespace clang::driver::toolchains;
 
 PICMidToolChain::PICMidToolChain(const Driver &D, const llvm::Triple &Triple,
-         const llvm::opt::ArgList &Args)
+                                 const llvm::opt::ArgList &Args)
     : ToolChain(D, Triple, Args) {
   // Look for binaries in both the installation and driver directory.
-  getProgramPaths().push_back(getDriver().getInstalledDir());
-  if (getDriver().getInstalledDir() != getDriver().Dir)
-    getProgramPaths().push_back(getDriver().Dir);
+  getProgramPaths().push_back(getDriver().Dir);
 }
 
 void PICMidToolChain::addClangTargetOptions(const ArgList &DriverArgs,
-                                ArgStringList &CC1Args,
-                                Action::OffloadKind) const {
+                                            ArgStringList &CC1Args,
+                                            Action::OffloadKind) const {
   CC1Args.push_back("-nobuiltininc");
   // set to freestanding environment (main return type void)
   CC1Args.push_back("-ffreestanding");
-  // omit frame pointers because we don't use frame pointers for our simulated stack
-  // CC1Args.push_back("-mframe-pointer=none");
+  // omit frame pointers because we don't use frame pointers for our simulated
+  // stack CC1Args.push_back("-mframe-pointer=none");
 }
 
 void PICMidToolChain::AddClangSystemIncludeArgs(const ArgList &DriverArgs,
-                                    ArgStringList &CC1Args) const {
+                                                ArgStringList &CC1Args) const {
   if (DriverArgs.hasArg(options::OPT_nostdinc))
     return;
 
@@ -65,9 +63,10 @@ void PICMidToolChain::AddClangSystemIncludeArgs(const ArgList &DriverArgs,
 // }
 
 void picmid::Linker::ConstructJob(Compilation &C, const JobAction &JA,
-                               const InputInfo &Output,
-                               const InputInfoList &Inputs, const ArgList &Args,
-                               const char *LinkingOutput) const {
+                                  const InputInfo &Output,
+                                  const InputInfoList &Inputs,
+                                  const ArgList &Args,
+                                  const char *LinkingOutput) const {
   ArgStringList CmdArgs;
 
   auto &TC = static_cast<const toolchains::PICMidToolChain &>(getToolChain());
@@ -86,17 +85,23 @@ void picmid::Linker::ConstructJob(Compilation &C, const JobAction &JA,
     CmdArgs.push_back(Args.MakeArgString("--sysroot=" + D.SysRoot));
 
   TC.AddFilePathLibArgs(Args, CmdArgs);
-  Args.AddAllArgs(CmdArgs, {options::OPT_L, options::OPT_T_Group,
-                            options::OPT_e, options::OPT_s, options::OPT_t,
-                            options::OPT_Z_Flag, options::OPT_r,});
+  Args.addAllArgs(CmdArgs, {
+                               options::OPT_L,
+                               options::OPT_T_Group,
+                               options::OPT_e,
+                               options::OPT_s,
+                               options::OPT_t,
+                               options::OPT_Z_Flag,
+                               options::OPT_r,
+                           });
 
   // c runtime startup files
   // if (!Args.hasArg(options::OPT_nostartfiles, options::OPT_nostdlib)) {
-    // Prefixing a colon causes GNU LD-like linkers to search for this filename
-    // as-is. This contains the minimum necessary startup library.
-    // CmdArgs.push_back("crt0.o");
-    // config memory
-    // CmdArgs.push_back("config.o");
+  // Prefixing a colon causes GNU LD-like linkers to search for this filename
+  // as-is. This contains the minimum necessary startup library.
+  // CmdArgs.push_back("crt0.o");
+  // config memory
+  // CmdArgs.push_back("config.o");
   // }
 
   // libcrt0.a contains optional startup objects that are only pulled in if
@@ -116,7 +121,7 @@ void picmid::Linker::ConstructJob(Compilation &C, const JobAction &JA,
   // No matter what's included in the link, the default linker script is
   // nonsense for the pic. Accordingly, use one named "link.ld" if none is
   // specified.
-  // if (!Args.hasArg(options::OPT_T)) 
+  // if (!Args.hasArg(options::OPT_T))
   //   CmdArgs.push_back("-Tlink.ld");
 
   CmdArgs.push_back("-o");
@@ -127,21 +132,23 @@ void picmid::Linker::ConstructJob(Compilation &C, const JobAction &JA,
                                          CmdArgs, Inputs, Output));
   // seems to be some llvm-mos specific stuff
   // if (!hasLTOEmitAsm(Args)) {
-    // for (StringRef PostLinkTool :
-    //      Args.getAllArgValues(options::OPT_fpost_link_tool)) {
-    //   ArgStringList PostLinkToolArgs;
-    //   PostLinkToolArgs.push_back(
-    //       Args.MakeArgString(Twine(Output.getFilename()) + ".elf"));
+  // for (StringRef PostLinkTool :
+  //      Args.getAllArgValues(options::OPT_fpost_link_tool)) {
+  //   ArgStringList PostLinkToolArgs;
+  //   PostLinkToolArgs.push_back(
+  //       Args.MakeArgString(Twine(Output.getFilename()) + ".elf"));
 
-    //   std::string Path = PostLinkTool.str();
-    //   if (!llvm::sys::fs::exists(Path))
-    //     Path = getToolChain().GetProgramPath(Path.c_str());
+  //   std::string Path = PostLinkTool.str();
+  //   if (!llvm::sys::fs::exists(Path))
+  //     Path = getToolChain().GetProgramPath(Path.c_str());
 
-    //   C.addCommand(std::make_unique<Command>(
-    //       JA, *this, ResponseFileSupport::None(),
-    //       Args.MakeArgString(Path.c_str()), PostLinkToolArgs, Inputs, Output));
-    // }
+  //   C.addCommand(std::make_unique<Command>(
+  //       JA, *this, ResponseFileSupport::None(),
+  //       Args.MakeArgString(Path.c_str()), PostLinkToolArgs, Inputs, Output));
+  // }
   // }
 }
 
-Tool *PICMidToolChain::buildLinker() const { return new tools::picmid::Linker(*this); }
+Tool *PICMidToolChain::buildLinker() const {
+  return new tools::picmid::Linker(*this);
+}

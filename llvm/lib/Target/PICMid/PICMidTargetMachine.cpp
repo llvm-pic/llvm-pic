@@ -1,4 +1,5 @@
-//===-- PICMidTargetMachine.cpp - Instruction class definition -------*- C++ -*-===//
+//===-- PICMidTargetMachine.cpp - Instruction class definition -------*- C++
+//-*-===//
 //
 // Part of the LLVM-PIC Project, a fork of the LLVM Project,
 // by Hannes Diener, Lennart Schuster, Quang Thanh Ta, ${year),
@@ -44,7 +45,7 @@ PICMidTargetMachine::PICMidTargetMachine(const Target &T, const Triple &TT,
                                          const TargetOptions &Options,
                                          std::optional<Reloc::Model> RM,
                                          std::optional<CodeModel::Model> CM,
-                                         CodeGenOpt::Level OL, bool JIT)
+                                         CodeGenOptLevel OL, bool JIT)
     : LLVMTargetMachine(T, PICMidDataLayout, TT, getCPU(CPU), FS, Options,
                         Reloc::Static, CodeModel::Small, OL),
       TLOF(std::make_unique<TargetLoweringObjectFileELF>()) {

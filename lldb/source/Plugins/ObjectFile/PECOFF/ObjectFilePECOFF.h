@@ -82,8 +82,7 @@ public:
                                         lldb_private::ModuleSpecList &specs);
 
   static bool SaveCore(const lldb::ProcessSP &process_sp,
-                       const lldb_private::FileSpec &outfile,
-                       lldb::SaveCoreStyle &core_style,
+                       const lldb_private::SaveCoreOptions &options,
                        lldb_private::Status &error);
 
   static bool MagicBytesMatch(lldb::DataBufferSP data_sp);
@@ -263,6 +262,7 @@ protected:
   llvm::StringRef GetSectionName(const section_header_t &sect);
   static lldb::SectionType GetSectionType(llvm::StringRef sect_name,
                                           const section_header_t &sect);
+  size_t GetSectionDataSize(lldb_private::Section *section) override;
 
   typedef std::vector<section_header_t> SectionHeaderColl;
   typedef SectionHeaderColl::iterator SectionHeaderCollIter;

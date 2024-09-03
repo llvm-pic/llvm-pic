@@ -265,7 +265,8 @@ struct MCDwarfLineTableHeader {
   StringMap<unsigned> SourceIdMap;
   std::string CompilationDir;
   MCDwarfFile RootFile;
-  bool HasSource = false;
+  bool HasAnySource = false;
+
 private:
   bool HasAllMD5 = true;
   bool HasAnyMD5 = false;
@@ -305,7 +306,7 @@ public:
     RootFile.Checksum = Checksum;
     RootFile.Source = Source;
     trackMD5Usage(Checksum.has_value());
-    HasSource = Source.has_value();
+    HasAnySource |= Source.has_value();
   }
 
   void resetFileTable() {
@@ -313,7 +314,7 @@ public:
     MCDwarfFiles.clear();
     RootFile.Name.clear();
     resetMD5Usage();
-    HasSource = false;
+    HasAnySource = false;
   }
 
 private:
@@ -385,7 +386,7 @@ public:
     Header.RootFile.Checksum = Checksum;
     Header.RootFile.Source = Source;
     Header.trackMD5Usage(Checksum.has_value());
-    Header.HasSource = Source.has_value();
+    Header.HasAnySource |= Source.has_value();
   }
 
   void resetFileTable() { Header.resetFileTable(); }
@@ -482,7 +483,7 @@ public:
 
 class MCCFIInstruction {
 public:
-  enum OpType {
+  enum OpType : uint8_t {
     OpSameValue,
     OpRememberState,
     OpRestoreState,
@@ -499,39 +500,56 @@ public:
     OpRegister,
     OpWindowSave,
     OpNegateRAState,
-    OpGnuArgsSize
+    OpGnuArgsSize,
+    OpLabel,
   };
 
 private:
-  OpType Operation;
   MCSymbol *Label;
-  unsigned Register;
   union {
-    int Offset;
-    unsigned Register2;
-  };
-  unsigned AddressSpace = ~0u;
+    struct {
+      unsigned Register;
+      int Offset;
+    } RI;
+    struct {
+      unsigned Register;
+      int Offset;
+      unsigned AddressSpace;
+    } RIA;
+    struct {
+      unsigned Register;
+      unsigned Register2;
+    } RR;
+    MCSymbol *CfiLabel;
+  } U;
+  OpType Operation;
   SMLoc Loc;
   std::vector<char> Values;
   std::string Comment;
 
   MCCFIInstruction(OpType Op, MCSymbol *L, unsigned R, int O, SMLoc Loc,
                    StringRef V = "", StringRef Comment = "")
-      : Operation(Op), Label(L), Register(R), Offset(O), Loc(Loc),
-        Values(V.begin(), V.end()), Comment(Comment) {
+      : Label(L), Operation(Op), Loc(Loc), Values(V.begin(), V.end()),
+        Comment(Comment) {
     assert(Op != OpRegister && Op != OpLLVMDefAspaceCfa);
+    U.RI = {R, O};
   }
-
   MCCFIInstruction(OpType Op, MCSymbol *L, unsigned R1, unsigned R2, SMLoc Loc)
-      : Operation(Op), Label(L), Register(R1), Register2(R2), Loc(Loc) {
+      : Label(L), Operation(Op), Loc(Loc) {
     assert(Op == OpRegister);
+    U.RR = {R1, R2};
   }
-
   MCCFIInstruction(OpType Op, MCSymbol *L, unsigned R, int O, unsigned AS,
                    SMLoc Loc)
-      : Operation(Op), Label(L), Register(R), Offset(O), AddressSpace(AS),
-        Loc(Loc) {
+      : Label(L), Operation(Op), Loc(Loc) {
     assert(Op == OpLLVMDefAspaceCfa);
+    U.RIA = {R, O, AS};
+  }
+
+  MCCFIInstruction(OpType Op, MCSymbol *L, MCSymbol *CfiLabel, SMLoc Loc)
+      : Label(L), Operation(Op), Loc(Loc) {
+    assert(Op == OpLabel);
+    U.CfiLabel = CfiLabel;
   }
 
 public:
@@ -654,34 +672,48 @@ public:
     return MCCFIInstruction(OpGnuArgsSize, L, 0, Size, Loc);
   }
 
+  static MCCFIInstruction createLabel(MCSymbol *L, MCSymbol *CfiLabel,
+                                      SMLoc Loc) {
+    return MCCFIInstruction(OpLabel, L, CfiLabel, Loc);
+  }
+
   OpType getOperation() const { return Operation; }
   MCSymbol *getLabel() const { return Label; }
 
   unsigned getRegister() const {
+    if (Operation == OpRegister)
+      return U.RR.Register;
+    if (Operation == OpLLVMDefAspaceCfa)
+      return U.RIA.Register;
     assert(Operation == OpDefCfa || Operation == OpOffset ||
            Operation == OpRestore || Operation == OpUndefined ||
            Operation == OpSameValue || Operation == OpDefCfaRegister ||
-           Operation == OpRelOffset || Operation == OpRegister ||
-           Operation == OpLLVMDefAspaceCfa);
-    return Register;
+           Operation == OpRelOffset);
+    return U.RI.Register;
   }
 
   unsigned getRegister2() const {
     assert(Operation == OpRegister);
-    return Register2;
+    return U.RR.Register2;
   }
 
   unsigned getAddressSpace() const {
     assert(Operation == OpLLVMDefAspaceCfa);
-    return AddressSpace;
+    return U.RIA.AddressSpace;
   }
 
   int getOffset() const {
+    if (Operation == OpLLVMDefAspaceCfa)
+      return U.RIA.Offset;
     assert(Operation == OpDefCfa || Operation == OpOffset ||
            Operation == OpRelOffset || Operation == OpDefCfaOffset ||
-           Operation == OpAdjustCfaOffset || Operation == OpGnuArgsSize ||
-           Operation == OpLLVMDefAspaceCfa);
-    return Offset;
+           Operation == OpAdjustCfaOffset || Operation == OpGnuArgsSize);
+    return U.RI.Offset;
+  }
+
+  MCSymbol *getCfiLabel() const {
+    assert(Operation == OpLabel);
+    return U.CfiLabel;
   }
 
   StringRef getValues() const {

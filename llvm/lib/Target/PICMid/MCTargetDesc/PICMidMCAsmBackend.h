@@ -40,19 +40,18 @@ public:
   /// @return bool If true, fixup may be resolved prior to linking stage.
   ///               In that case, the fixup is not listed as a relocation
   ///               entry.
-  bool evaluateTargetFixup(const MCAssembler &Asm, const MCAsmLayout &Layout,
-                           const MCFixup &Fixup, const MCFragment *DF,
-                           const MCValue &Target, uint64_t &Value,
+  bool evaluateTargetFixup(const MCAssembler &Asm, const MCFixup &Fixup,
+                           const MCFragment *DF, const MCValue &Target,
+                           const MCSubtargetInfo *STI, uint64_t &Value,
                            bool &WasForced) override;
 
-  bool fixupNeedsRelaxation(const MCFixup &Fixup, uint64_t Value,
-                            const MCRelaxableFragment *DF,
-                            const MCAsmLayout &Layout) const override;
+  bool fixupNeedsRelaxation(const MCFixup &Fixup,
+                            uint64_t Value) const override;
 
-  bool fixupNeedsRelaxationAdvanced(const MCFixup &Fixup, bool Resolved,
+  bool fixupNeedsRelaxationAdvanced(const MCAssembler &Asm,
+                                    const MCFixup &Fixup, bool Resolved,
                                     uint64_t Value,
                                     const MCRelaxableFragment *DF,
-                                    const MCAsmLayout &Layout,
                                     const bool WasForced) const override;
 
   bool writeNopData(raw_ostream &OS, uint64_t Count,

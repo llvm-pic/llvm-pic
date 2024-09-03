@@ -1,6 +1,7 @@
 #ifndef __PROJECTS_LLVM_LLVM_PIC_LLVM_LIB_TARGET_PICMID_ASMPARSER_PICMIDOPERAND_H_
 #define __PROJECTS_LLVM_LLVM_PIC_LLVM_LIB_TARGET_PICMID_ASMPARSER_PICMIDOPERAND_H_
 
+#include "MCTargetDesc/PICMidMCTargetDesc.h"
 #include "PICMidSubtarget.h"
 #include "llvm/MC/MCExpr.h"
 #include "llvm/MC/MCInst.h"
@@ -13,10 +14,12 @@ namespace llvm {
 
 class PICMidOperand : public MCParsedAsmOperand {
 public:
-    PICMidOperand() = delete;
-    PICMidOperand(const PICMidSubtarget & sti, const MCExpr *val, SMLoc s, SMLoc e);
-    PICMidOperand(const PICMidSubtarget & sti, unsigned regNum, SMLoc s, SMLoc e);
-    PICMidOperand(const PICMidSubtarget & sti, StringRef str, SMLoc s);
+  PICMidOperand() = delete;
+  PICMidOperand(const PICMidSubtarget &sti, const MCExpr *val, SMLoc s,
+                SMLoc e);
+  PICMidOperand(const PICMidSubtarget &sti, unsigned regNum, SMLoc s, SMLoc e);
+  PICMidOperand(const PICMidSubtarget &sti, StringRef str, SMLoc s);
+
 private:
   enum KindTy { None, Token, Register, Immediate } Kind{None};
 
@@ -24,7 +27,7 @@ private:
   StringRef tok;
   const MCExpr *imm{};
   unsigned int reg{};
-  const PICMidSubtarget & sti;
+  const PICMidSubtarget &sti;
 
 public:
   template <int64_t Low, int64_t High> bool isImmediate() const;
@@ -40,7 +43,7 @@ public:
 
   const StringRef &getToken() const;
   const MCExpr *getImm() const;
-  unsigned getReg() const override;
+  MCRegister getReg() const override;
 
   bool isImm1() const;
   bool isImm3() const;
@@ -69,15 +72,21 @@ public:
 
 template <int64_t Low, int64_t High>
 inline bool PICMidOperand::isImmediate() const {
-  if (!isImm()) { return false; }
+  if (!isImm()) {
+    return false;
+  }
 
-// TODO: Handle PIC specific modifiers
+  // TODO: Handle PIC specific modifiers
 
-  const auto * sre = dyn_cast<MCSymbolRefExpr>(getImm());
-  if (sre) { return true; }
+  const auto *sre = dyn_cast<MCSymbolRefExpr>(getImm());
+  if (sre) {
+    return true;
+  }
 
   const auto *ce = dyn_cast<MCConstantExpr>(getImm());
-  if (!ce) { return true; }
+  if (!ce) {
+    return true;
+  }
 
   int64_t value = ce->getValue();
   return value >= Low && value <= High;

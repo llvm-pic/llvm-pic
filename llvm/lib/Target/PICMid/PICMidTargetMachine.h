@@ -1,4 +1,5 @@
-//===-- PICMidTargetMachine.h - Define TargetMachine for PICMid -------*- C++ -*-===//
+//===-- PICMidTargetMachine.h - Define TargetMachine for PICMid -------*- C++
+//-*-===//
 //
 // Part of LLVM-PIC, under the Apache License v2.0 with LLVM Exceptions.
 // See https://llvm.org/LICENSE.txt for license information.
@@ -19,13 +20,12 @@
 
 namespace llvm {
 
-/// A generic MOS implementation.
 class PICMidTargetMachine : public LLVMTargetMachine {
 public:
   PICMidTargetMachine(const Target &T, const Triple &TT, StringRef CPU,
                       StringRef FS, const TargetOptions &Options,
                       std::optional<Reloc::Model> RM,
-                      std::optional<CodeModel::Model> CM, CodeGenOpt::Level OL,
+                      std::optional<CodeModel::Model> CM, CodeGenOptLevel OL,
                       bool JIT);
 
   TargetPassConfig *createPassConfig(PassManagerBase &PM) override;

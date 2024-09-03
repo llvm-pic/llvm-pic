@@ -112,11 +112,11 @@ public:
   bool parseRegister(MCRegister &Reg, SMLoc &StartLoc, SMLoc &EndLoc) override {
     auto result = tryParseRegister(Reg, StartLoc, EndLoc);
 
-    return result != MatchOperand_Success;
+    return result.isSuccess();
   }
 
-  OperandMatchResultTy tryParseRegister(MCRegister &Reg, SMLoc &StartLoc,
-                                        SMLoc &EndLoc) override {
+  ParseStatus tryParseRegister(MCRegister &Reg, SMLoc &StartLoc,
+                               SMLoc &EndLoc) override {
     std::string AnyCase(StartLoc.getPointer(),
                         EndLoc.getPointer() - StartLoc.getPointer());
     std::transform(AnyCase.begin(), AnyCase.end(), AnyCase.begin(),
@@ -124,7 +124,7 @@ public:
     StringRef RegisterName(AnyCase.c_str(), AnyCase.size());
     Reg = MCRegister(MatchRegisterName(RegisterName));
 
-    return Reg.isValid() ? MatchOperand_Success : MatchOperand_NoMatch;
+    return Reg.isValid() ? ParseStatus::Success : ParseStatus::NoMatch;
   }
 
   bool ParseInstruction(ParseInstructionInfo &Info, StringRef Name,
@@ -159,7 +159,7 @@ public:
     SMLoc s = getLexer().getLoc();
     SMLoc e = getLexer().getTok().getEndLoc();
 
-    if (tryParseRegister(reg, s, e) != MatchOperand_Success) {
+    if (tryParseRegister(reg, s, e).isSuccess()) {
       return true;
     }
 

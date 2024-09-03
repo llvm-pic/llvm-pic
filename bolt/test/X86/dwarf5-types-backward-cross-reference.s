@@ -5,8 +5,8 @@
 # RUN: llvm-bolt %t.exe -o %t.bolt --update-debug-sections
 # RUN: llvm-dwarfdump --show-form --verbose --debug-info %t.bolt | FileCheck --check-prefix=POSTCHECK %s
 
-# This test checks that BOLT handles backward cross CU references for dwarf5
-# when -fdebug-types-sections is specified.
+## This test checks that BOLT handles backward cross CU references for dwarf5
+## when -fdebug-types-sections is specified.
 
 # The assembly was manually modified to do cross CU reference.
 
@@ -26,7 +26,7 @@
 # POSTCHECK-SAME: version = 0x0005
 # POSTCHECK: DW_TAG_variable [9]
 # POSTCHECK: DW_TAG_variable [12]
-# POSTCHECK: DW_AT_type [DW_FORM_ref_addr] (0x0000000000000199 "Foo")
+# POSTCHECK: DW_AT_type [DW_FORM_ref_addr] (0x{{[0-9a-f]+}} "Foo")
 
 
 # main.cpp

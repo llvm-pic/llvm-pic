@@ -150,8 +150,9 @@ PICMidLegalizerInfo::PICMidLegalizerInfo() {
   getLegacyLegalizerInfo().computeTables();
 };
 
-bool PICMidLegalizerInfo::legalizeCustom(LegalizerHelper &Helper,
-                                         MachineInstr &MI) const {
+bool PICMidLegalizerInfo::legalizeCustom(
+    LegalizerHelper &Helper, MachineInstr &MI,
+    LostDebugLocObserver &LocObserver) const {
   MachineRegisterInfo &MRI = MI.getMF()->getRegInfo();
   switch (MI.getOpcode()) {
   case G_ICMP:

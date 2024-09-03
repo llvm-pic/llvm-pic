@@ -1,6 +1,5 @@
 #include "PICMidMCExpr.h"
 
-#include "llvm/MC/MCAsmLayout.h"
 #include "llvm/MC/MCAssembler.h"
 #include "llvm/MC/MCContext.h"
 #include "llvm/MC/MCStreamer.h"
@@ -79,16 +78,16 @@ void PICMidMCExpr::printImpl(raw_ostream &OS, const MCAsmInfo *MAI) const {
     OS << '-';
   }
 
-//   OS << getName() << '(';
+  //   OS << getName() << '(';
   getSubExpr()->print(OS, MAI);
-//   OS << ')';
+  //   OS << ')';
 }
 
 bool PICMidMCExpr::evaluateAsRelocatableImpl(MCValue &Result,
-                                             const MCAsmLayout *Layout,
+                                             const MCAssembler *Asm,
                                              const MCFixup *Fixup) const {
   MCValue Value;
-  bool IsRelocatable = SubExpr->evaluateAsRelocatable(Value, Layout, Fixup);
+  bool IsRelocatable = SubExpr->evaluateAsRelocatable(Value, Asm, Fixup);
 
   if (!IsRelocatable) {
     return false;
@@ -97,7 +96,7 @@ bool PICMidMCExpr::evaluateAsRelocatableImpl(MCValue &Result,
   if (Value.isAbsolute()) {
     Result = MCValue::get(evaluateAsInt64(Value.getConstant()));
   } else {
-    if (!Layout) {
+    if (!Asm) {
       return false;
     }
 
@@ -107,7 +106,7 @@ bool PICMidMCExpr::evaluateAsRelocatableImpl(MCValue &Result,
       return false;
     }
 
-    MCContext &Context = Layout->getAssembler().getContext();
+    MCContext &Context = Asm->getContext();
     Sym = MCSymbolRefExpr::create(&Sym->getSymbol(), Modifier, Context);
     Result = MCValue::get(Sym, Value.getSymB(), Value.getConstant());
   }
