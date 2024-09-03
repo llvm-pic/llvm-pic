@@ -112,7 +112,7 @@ public:
   bool parseRegister(MCRegister &Reg, SMLoc &StartLoc, SMLoc &EndLoc) override {
     auto result = tryParseRegister(Reg, StartLoc, EndLoc);
 
-    return result != MatchOperand_Success;
+    return result.isSuccess();
   }
 
   ParseStatus tryParseRegister(MCRegister &Reg, SMLoc &StartLoc,
@@ -159,7 +159,7 @@ public:
     SMLoc s = getLexer().getLoc();
     SMLoc e = getLexer().getTok().getEndLoc();
 
-    if (tryParseRegister(reg, s, e) != MatchOperand_Success) {
+    if (tryParseRegister(reg, s, e).isSuccess()) {
       return true;
     }
 
