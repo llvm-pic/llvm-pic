@@ -38,7 +38,7 @@ jobs:
           sudo apt-get install python3-github
 
       - name: Checkout LLVM
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@2d7d9f7ff5b310f983d059b68785b3c74d8b8edd # v4.1.1
 
       - name: Create Release
         env:
