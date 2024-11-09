@@ -60,7 +60,9 @@ llvm::PICMidInstrInfo::PICMidInstrInfo()
 void llvm::PICMidInstrInfo::copyPhysReg(MachineBasicBlock &MBB,
                                         MachineBasicBlock::iterator MI,
                                         const DebugLoc &DL, MCRegister DestReg,
-                                        MCRegister SrcReg, bool KillSrc) const {
+                                        MCRegister SrcReg, bool KillSrc,
+                                        bool RenamableDest,
+                                        bool RenamableSrc) const {
   MachineIRBuilder Builder(MBB, MI);
   Builder.setDebugLoc(DL);
   copyPhysRegImpl(Builder, DestReg, SrcReg, false, KillSrc);

@@ -71,7 +71,7 @@ public:
     return false;
   }
 
-  bool MatchAndEmitInstruction(SMLoc loc, unsigned &opcode,
+  bool matchAndEmitInstruction(SMLoc loc, unsigned &opcode,
                                OperandVector &operands, MCStreamer &out,
                                uint64_t &errorInfo,
                                bool matchingInlineAsm) override {
@@ -127,7 +127,7 @@ public:
     return Reg.isValid() ? ParseStatus::Success : ParseStatus::NoMatch;
   }
 
-  bool ParseInstruction(ParseInstructionInfo &Info, StringRef Name,
+  bool parseInstruction(ParseInstructionInfo &Info, StringRef Name,
                         SMLoc NameLoc, OperandVector &Operands) override {
     Operands.push_back(PICMidOperand::createToken(sti, Name, NameLoc));
 
