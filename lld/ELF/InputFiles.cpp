@@ -1665,6 +1665,8 @@ static uint16_t getBitcodeMachineKind(StringRef path, const Triple &t) {
     return EM_MIPS;
   case Triple::msp430:
     return EM_MSP430;
+  case Triple::picmid: // TODO: Insert more PIC families
+    return EM_MCHP_PIC;
   case Triple::ppc:
   case Triple::ppcle:
     return EM_PPC;

@@ -507,6 +507,32 @@ enum {
 #include "ELFRelocs/AVR.def"
 };
 
+// PIC specific e_flags across all PIC device types
+enum : unsigned {
+  EF_PIC_ARCH = 0x0000F000,
+};
+
+// PICMid specific e_flags
+enum : unsigned {
+  EF_PICMID_ARCH_MID = 0x00000000,
+  EF_PICMID_ARCH_MID_ENHANCED = 0x00001000,
+};
+
+// ELF Relocation types for PICMid
+enum {
+#include "ELFRelocs/PICMid.def"
+};
+
+// PICBase specific e_flags
+enum : unsigned {
+  EF_PICBASE_ARCH_BASE = 0x00002000,
+};
+
+// ELF Relocation types for PICBase
+// enum {
+// #include "ELFRelocs/PICBase.def" // TODO: Make it work
+// };
+
 // Mips Specific e_flags
 enum : unsigned {
   EF_MIPS_NOREORDER = 0x00000001, // Don't reorder instructions

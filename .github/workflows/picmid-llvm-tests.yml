@@ -1,0 +1,61 @@
+name: LLVM Tests (PICMid)
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "develop"
+    paths:
+      - "llvm/**"
+      - ".github/workflows/picmid-llvm-tests.yml"
+      - ".github/workflows/picmid-llvm-project-tests.yml"
+  pull_request:
+    branches:
+      - "develop"
+    paths:
+      - "llvm/**"
+      - ".github/workflows/picmid-llvm-tests.yml"
+      - ".github/workflows/picmid-llvm-project-tests.yml"
+
+concurrency:
+  # Skip intermediate builds: always.
+  # Cancel intermediate builds: only if it is a pull request build.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+
+jobs:
+  check_mc:
+    if: github.repository_owner == 'llvm-pic'
+    name: Test LLVM MC
+    uses: ./.github/workflows/picmid-llvm-project-tests.yml
+    with:
+      build_target: check-llvm-mc-picmid
+      projects:
+
+  check_codegen:
+    if: github.repository_owner == 'llvm-pic'
+    name: Test LLVM Code Generation
+    uses: ./.github/workflows/picmid-llvm-project-tests.yml
+    with:
+      build_target: check-llvm-codegen-picmid
+      projects:
+
+  check_lld:
+    if: github.repository_owner == 'llvm-pic'
+    name: Test lld
+    uses: ./.github/workflows/picmid-llvm-project-tests.yml
+    with:
+      build_target: check-lld-elf
+      projects: lld
+
+  check_clang_driver:
+    if: github.repository_owner == 'llvm-pic'
+    name: Test clang driver
+    uses: ./.github/workflows/picmid-llvm-project-tests.yml
+    with:
+      build_target: check-clang-driver-picmid
+      projects: lld;clang
+      extra_cmake_args: "-DCLANG_TEST_DEPS=lld"

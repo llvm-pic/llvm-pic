@@ -75,6 +75,8 @@ void elf::setTarget(Ctx &ctx) {
     return setMipsTargetInfo(ctx);
   case EM_MSP430:
     return setMSP430TargetInfo(ctx);
+  case EM_MCHP_PIC: // TODO: Extend to other PIC controller families
+    return setPICMidTargetInfo(ctx);
   case EM_PPC:
     return setPPCTargetInfo(ctx);
   case EM_PPC64:

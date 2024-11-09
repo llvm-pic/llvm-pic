@@ -1295,6 +1295,8 @@ StringRef ELFObjectFile<ELFT>::getFileFormatName() const {
       return (IsLittleEndian ? "elf32-littlearm" : "elf32-bigarm");
     case ELF::EM_AVR:
       return "elf32-avr";
+    case ELF::EM_MCHP_PIC:
+      return "elf32-pic";
     case ELF::EM_HEXAGON:
       return "elf32-hexagon";
     case ELF::EM_LANAI:
@@ -1372,6 +1374,18 @@ template <class ELFT> Triple::ArchType ELFObjectFile<ELFT>::getArch() const {
     return Triple::arm;
   case ELF::EM_AVR:
     return Triple::avr;
+  case ELF::EM_MCHP_PIC:
+    switch (EF.getHeader().e_flags & ELF::EF_PIC_ARCH) {
+    case ELF::EF_PICMID_ARCH_MID:
+    case ELF::EF_PICMID_ARCH_MID_ENHANCED:
+      return Triple::picmid;
+      break;
+    case ELF::EF_PICBASE_ARCH_BASE:
+      return Triple::picbase;
+    default:
+      break;
+    }
+    return Triple::UnknownArch; // TODO: Add other PIC ISAs
   case ELF::EM_HEXAGON:
     return Triple::hexagon;
   case ELF::EM_LANAI:
