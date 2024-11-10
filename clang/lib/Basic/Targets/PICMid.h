@@ -21,20 +21,21 @@ public:
     LongWidth = 16;
     LongLongWidth = 32;
     LongAlign = LongLongAlign = 16;
-    //FloatWidth = 8;
-    //FloatAlign = 8;
-    //DoubleWidth = LongDoubleWidth = 8;
-    //DoubleAlign = LongDoubleAlign = 8;
+    // FloatWidth = 8;
+    // FloatAlign = 8;
+    // DoubleWidth = LongDoubleWidth = 8;
+    // DoubleAlign = LongDoubleAlign = 8;
     PointerWidth = 8;
     PointerAlign = 8;
     SuitableAlign = 8;
     SizeType = UnsignedInt;
-    //IntMaxType = SignedLongLong;
-    //IntPtrType = SignedInt;
-    //PtrDiffType = SignedInt;
-    //SigAtomicType = SignedLong;
+    // IntMaxType = SignedLongLong;
+    // IntPtrType = SignedInt;
+    // PtrDiffType = SignedInt;
+    // SigAtomicType = SignedLong;
     MaxAtomicPromoteWidth = 8;
-    resetDataLayout("E-p:8:8-i:8:8");
+    resetDataLayout(
+        "e-m:e-p:16:8-p1:8:8-i16:8-i32:8-i64:8-f32:8-f64:8-a:8-Fi8-n8");
   }
   void getTargetDefines(const LangOptions &Opts,
                         MacroBuilder &Builder) const override;
