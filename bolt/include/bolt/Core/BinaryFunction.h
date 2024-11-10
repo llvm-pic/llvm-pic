@@ -117,7 +117,6 @@ inline raw_ostream &operator<<(raw_ostream &OS,
     TotalCount += CSP.Count;
     TotalMispreds += CSP.Mispreds;
   }
-  SS.flush();
 
   OS << TotalCount << " (" << TotalMispreds << " misses) :" << TempString;
   return OS;
@@ -386,6 +385,9 @@ private:
 
   /// Raw branch count for this function in the profile.
   uint64_t RawBranchCount{0};
+
+  /// Dynamically executed function bytes, used for density computation.
+  uint64_t SampleCountInBytes{0};
 
   /// Indicates the type of profile the function is using.
   uint16_t ProfileFlags{PF_NONE};
@@ -1692,6 +1694,8 @@ public:
 
   void setPseudo(bool Pseudo) { IsPseudo = Pseudo; }
 
+  void setPreserveNops(bool Value) { PreserveNops = Value; }
+
   BinaryFunction &setUsesGnuArgsSize(bool Uses = true) {
     UsesGnuArgsSize = Uses;
     return *this;
@@ -1793,11 +1797,6 @@ public:
     return ParentFragments.contains(&Other);
   }
 
-  /// Returns if this function is a parent of \p Other function.
-  bool isParentOf(const BinaryFunction &Other) const {
-    return Fragments.contains(&Other);
-  }
-
   /// Return the child fragment form parent function
   iterator_range<FragmentsSetTy::const_iterator> getFragments() const {
     return iterator_range<FragmentsSetTy::const_iterator>(Fragments.begin(),
@@ -1806,11 +1805,6 @@ public:
 
   /// Return the parent function for split function fragments.
   FragmentsSetTy *getParentFragments() { return &ParentFragments; }
-
-  /// Returns if this function is a parent or child of \p Other function.
-  bool isParentOrChildOf(const BinaryFunction &Other) const {
-    return isChildOf(Other) || isParentOf(Other);
-  }
 
   /// Set the profile data for the number of times the function was called.
   BinaryFunction &setExecutionCount(uint64_t Count) {
@@ -1852,6 +1846,9 @@ public:
   /// Set the profile data about the number of branch executions corresponding
   /// to this function.
   void setRawBranchCount(uint64_t Count) { RawBranchCount = Count; }
+
+  /// Return the number of dynamically executed bytes, from raw perf data.
+  uint64_t getSampleCountInBytes() const { return SampleCountInBytes; }
 
   /// Return the execution count for functions with known profile.
   /// Return 0 if the function has no profile.

@@ -14,6 +14,9 @@ void llvm::PICMidFrameLowering::emitEpilogue(MachineFunction &MF,
                                              MachineBasicBlock &MBB) const {}
 
 bool llvm::PICMidFrameLowering::hasFP(const MachineFunction &MF) const {
+  return TargetFrameLowering::hasFP(MF);
+}
+bool llvm::PICMidFrameLowering::hasFPImpl(const MachineFunction &MF) const {
   return false;
 }
 

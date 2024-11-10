@@ -425,6 +425,14 @@ class ParamInfo : public VariableInfo {
   LLVM_PREFERRED_TYPE(bool)
   unsigned NoEscape : 1;
 
+  /// Whether lifetimebound was specified.
+  LLVM_PREFERRED_TYPE(bool)
+  unsigned LifetimeboundSpecified : 1;
+
+  /// Whether the this parameter has the 'lifetimebound' attribute.
+  LLVM_PREFERRED_TYPE(bool)
+  unsigned Lifetimebound : 1;
+
   /// A biased RetainCountConventionKind, where 0 means "unspecified".
   ///
   /// Only relevant for out-parameters.
@@ -432,7 +440,9 @@ class ParamInfo : public VariableInfo {
 
 public:
   ParamInfo()
-      : NoEscapeSpecified(false), NoEscape(false), RawRetainCountConvention() {}
+      : NoEscapeSpecified(false), NoEscape(false),
+        LifetimeboundSpecified(false), Lifetimebound(false),
+        RawRetainCountConvention() {}
 
   std::optional<bool> isNoEscape() const {
     if (!NoEscapeSpecified)
@@ -442,6 +452,16 @@ public:
   void setNoEscape(std::optional<bool> Value) {
     NoEscapeSpecified = Value.has_value();
     NoEscape = Value.value_or(false);
+  }
+
+  std::optional<bool> isLifetimebound() const {
+    if (!LifetimeboundSpecified)
+      return std::nullopt;
+    return Lifetimebound;
+  }
+  void setLifetimebound(std::optional<bool> Value) {
+    LifetimeboundSpecified = Value.has_value();
+    Lifetimebound = Value.value_or(false);
   }
 
   std::optional<RetainCountConventionKind> getRetainCountConvention() const {
@@ -463,6 +483,11 @@ public:
       NoEscape = RHS.NoEscape;
     }
 
+    if (!LifetimeboundSpecified && RHS.LifetimeboundSpecified) {
+      LifetimeboundSpecified = true;
+      Lifetimebound = RHS.Lifetimebound;
+    }
+
     if (!RawRetainCountConvention)
       RawRetainCountConvention = RHS.RawRetainCountConvention;
 
@@ -478,6 +503,8 @@ inline bool operator==(const ParamInfo &LHS, const ParamInfo &RHS) {
   return static_cast<const VariableInfo &>(LHS) == RHS &&
          LHS.NoEscapeSpecified == RHS.NoEscapeSpecified &&
          LHS.NoEscape == RHS.NoEscape &&
+         LHS.LifetimeboundSpecified == RHS.LifetimeboundSpecified &&
+         LHS.Lifetimebound == RHS.Lifetimebound &&
          LHS.RawRetainCountConvention == RHS.RawRetainCountConvention;
 }
 
@@ -656,6 +683,12 @@ public:
   GlobalFunctionInfo() {}
 };
 
+/// Describes API notes data for a C/C++ record field.
+class FieldInfo : public VariableInfo {
+public:
+  FieldInfo() {}
+};
+
 /// Describes API notes data for a C++ method.
 class CXXMethodInfo : public FunctionInfo {
 public:
@@ -684,6 +717,9 @@ public:
   std::optional<std::string> SwiftImportAs;
   std::optional<std::string> SwiftRetainOp;
   std::optional<std::string> SwiftReleaseOp;
+
+  /// The Swift protocol that this type should be automatically conformed to.
+  std::optional<std::string> SwiftConformance;
 
   std::optional<EnumExtensibilityKind> EnumExtensibility;
 
@@ -720,6 +756,9 @@ public:
     if (!SwiftReleaseOp)
       SwiftReleaseOp = RHS.SwiftReleaseOp;
 
+    if (!SwiftConformance)
+      SwiftConformance = RHS.SwiftConformance;
+
     if (!HasFlagEnum)
       setFlagEnum(RHS.isFlagEnum());
 
@@ -742,6 +781,7 @@ inline bool operator==(const TagInfo &LHS, const TagInfo &RHS) {
          LHS.SwiftImportAs == RHS.SwiftImportAs &&
          LHS.SwiftRetainOp == RHS.SwiftRetainOp &&
          LHS.SwiftReleaseOp == RHS.SwiftReleaseOp &&
+         LHS.SwiftConformance == RHS.SwiftConformance &&
          LHS.isFlagEnum() == RHS.isFlagEnum() &&
          LHS.isSwiftCopyable() == RHS.isSwiftCopyable() &&
          LHS.EnumExtensibility == RHS.EnumExtensibility;

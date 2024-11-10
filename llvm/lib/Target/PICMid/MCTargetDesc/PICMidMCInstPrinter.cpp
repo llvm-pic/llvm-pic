@@ -6,7 +6,7 @@ namespace llvm {
 void PICMidMCInstPrinter::printInst(const MCInst *MI, uint64_t Address,
                                     StringRef Annot, const MCSubtargetInfo &STI,
                                     raw_ostream &OS) {
-  assert(getMnemonic(MI).second && "Missing opcode for instruction");
+  assert(getMnemonic(*MI).second && "Missing opcode for instruction");
 
   std::string airyOperands;
   raw_string_ostream airyOperandStream(airyOperands);
@@ -58,8 +58,8 @@ void PICMidMCInstPrinter::printBranchOperand(const MCInst *MI, unsigned OpNo,
   O << formatImm(target);
 }
 
-void PICMidMCInstPrinter::printRegName(raw_ostream &OS, MCRegister Reg) const {
-    OS << getRegisterName(Reg);
+void PICMidMCInstPrinter::printRegName(raw_ostream &OS, MCRegister Reg) {
+  OS << getRegisterName(Reg);
 }
 
 // void PICMidMCInstPrinter::printCustomAliasOperand(const MCInst *MI,

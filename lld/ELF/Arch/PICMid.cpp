@@ -18,7 +18,7 @@ namespace elf {
 namespace {
 class PICMid final : public TargetInfo {
 public:
-  PICMid();
+  PICMid(Ctx &);
   //   uint32_t calcEFlags() const override; // TODO: Handle
   RelExpr getRelExpr(RelType type, const Symbol &s,
                      const uint8_t *loc) const override;
@@ -29,7 +29,7 @@ public:
 
 } // namespace
 
-PICMid::PICMid() {
+PICMid::PICMid(Ctx &ctx) : TargetInfo(ctx) {
   defaultMaxPageSize = 4;
   defaultCommonPageSize = 4;
 }
@@ -46,11 +46,11 @@ void PICMid::relocate(uint8_t *loc, const Relocation &rel, uint64_t val) const {
   uint64_t pcAddr;
   switch (rel.type) {
   case R_PICMID_IMM8:
-    checkIntUInt(loc, val, 8, rel);
+    checkIntUInt(ctx, loc, val, 8, rel);
     *loc = static_cast<unsigned char>(val);
     break;
   case R_PICMID_ADDR7:
-    checkUInt(loc, val, 7, rel);
+    checkUInt(ctx, loc, val, 7, rel);
     *loc &= ~0x7F;
     *loc |= static_cast<unsigned char>(val);
     break;
@@ -58,23 +58,20 @@ void PICMid::relocate(uint8_t *loc, const Relocation &rel, uint64_t val) const {
     assert(val % 2 == 0 &&
            "Program memory address in bytes must be evenly divisible by 2");
     pcAddr = val / 2;
-    checkUInt(loc, pcAddr, 11, rel);
+    checkUInt(ctx, loc, pcAddr, 11, rel);
     write16le(loc, (read16le(loc) & ~0x07FF) | (pcAddr & 0x07FF));
     break;
   default:
   case R_PICMID_IMM1:
   case R_PICMID_IMM3:
-    error(getErrorLocation(loc) + "unrecognized relocation " +
+    error(getErrorLoc(ctx, loc) + "unrecognized relocation " +
           toString(rel.type));
     break;
   }
 }
 
-TargetInfo *getPICMidTargetInfo() {
-  static PICMid target;
-  return &target;
-}
-
 } // namespace elf
+
+void elf::setPICMidTargetInfo(Ctx &ctx) { ctx.target.reset(new PICMid(ctx)); }
 
 } // namespace lld
