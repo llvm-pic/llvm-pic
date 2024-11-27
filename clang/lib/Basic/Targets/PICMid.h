@@ -34,8 +34,7 @@ public:
     // PtrDiffType = SignedInt;
     // SigAtomicType = SignedLong;
     MaxAtomicPromoteWidth = 8;
-    resetDataLayout(
-        "e-m:e-p:16:8-p1:8:8-i16:8-i32:8-i64:8-f32:8-f64:8-a:8-Fi8-n8");
+    resetDataLayout("E-p:9:8-i8:8");
   }
   void getTargetDefines(const LangOptions &Opts,
                         MacroBuilder &Builder) const override;
