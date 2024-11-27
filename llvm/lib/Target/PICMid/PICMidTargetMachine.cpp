@@ -16,6 +16,8 @@
 #include "PICMidTargetMachine.h"
 #include "GISel/PICMidInstructionSelector.h"
 #include "MCTargetDesc/PICMidMCTargetDesc.h"
+#include "PICMid.h"
+#include "PICMidFrameIndexConversion.h"
 #include "TargetInfo/PICMidTargetInfo.h"
 #include "llvm/CodeGen/GlobalISel/IRTranslator.h"
 #include "llvm/CodeGen/GlobalISel/InstructionSelect.h"
@@ -87,6 +89,7 @@ public:
   }
 
   bool addIRTranslator() override;
+  void addPreLegalizeMachineIR() override;
   bool addLegalizeMachineIR() override;
   bool addRegBankSelect() override;
   bool addGlobalInstructionSelect() override;
@@ -95,6 +98,10 @@ public:
 bool PICMidPassConfig::addIRTranslator() {
   addPass(new IRTranslator(getOptLevel()));
   return false;
+}
+
+void PICMidPassConfig::addPreLegalizeMachineIR() {
+  addPass(createPICMidFrameIndexConversion());
 }
 
 bool PICMidPassConfig::addLegalizeMachineIR() {
@@ -124,4 +131,5 @@ extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializePICMidTarget() {
 
   PassRegistry &PR = *PassRegistry::getPassRegistry();
   initializeGlobalISel(PR);
+  initializePICMidFrameIndexConversionPass(PR);
 }

@@ -226,5 +226,5 @@ def G_ICMP_LW : PICMidBinaryInstrWithLiteral<imm8>, PseudoInstExpansion<(SUBLW i
 def G_ICMP_W : PICMidBinaryInstrResultToW<Imag>, PseudoInstExpansion<(SUBWF addr7:$f, (imm1 0))>;
 
 
-//def : Pat<(store 0, Imag:$r), (G_CLRF Imag:$r)>;
+def : Pat<(store (i8 0), Imag:$r), (G_CLRF Imag:$r)>;
 def : Pat<(i8 imm:$k), (G_MOVLW imm:$k)>;

@@ -129,9 +129,17 @@ bool PICMidInstructionSelector::select(MachineInstr &I) {
     constrainGeneric(I);
     return true;
   }
+
+  switch (I.getOpcode()) {
+  case PICMid::G_FRAME_INDEX:
+    return selectFrameIndex(I);
+    // TODO other instructions
+  }
+
   if (selectImpl(I, *CoverageInfo)) {
     return true;
   }
+
   switch (I.getOpcode()) {
   case PICMid::G_STORE:
   case PICMid::G_LOAD:
@@ -141,10 +149,10 @@ bool PICMidInstructionSelector::select(MachineInstr &I) {
     return selectShift(I);
   case PICMid::G_FRAME_INDEX:
     return selectFrameIndex(I);
-  // TODO other instructions
-  default:
-    return true;
+    // TODO other instructions
   }
+
+  return false;
 }
 
 bool PICMidInstructionSelector::selectFrameIndex(MachineInstr &I) const {
@@ -154,6 +162,19 @@ bool PICMidInstructionSelector::selectFrameIndex(MachineInstr &I) const {
   MachineFunction *MF = I.getMF();
   MachineRegisterInfo *MRI = Builder.getMRI();
   Register stack = I.getOperand(0).getReg();
+
+  LLT S8 = LLT::scalar(8);
+
+  const auto FrameAddr = Builder.buildInstr(PICMid::G_CONSTANT, {}, {})
+                             .addDef(I.getOperand(0).getReg())
+                             .add(I.getOperand(1));
+
+  //   if (!constrainSelectedInstRegOperands(*FrameAddr, TII, TRI, RBI)) {
+  //     llvm_unreachable("Cannot constrain instruction");
+  //   }
+
+  I.removeFromParent();
+
   return false;
 }
 

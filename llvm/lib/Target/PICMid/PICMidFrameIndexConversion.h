@@ -1,0 +1,12 @@
+#ifndef __PROJECTS_LLVM_LLVM_PIC_LLVM_LIB_TARGET_PICMID_PICMIDFRAMEINDEXCONVERSION_H_
+#define __PROJECTS_LLVM_LLVM_PIC_LLVM_LIB_TARGET_PICMID_PICMIDFRAMEINDEXCONVERSION_H_
+
+#include "llvm/CodeGen/MachineFunctionPass.h"
+
+namespace llvm {
+
+MachineFunctionPass *createPICMidFrameIndexConversion();
+
+} // namespace llvm
+
+#endif // __PROJECTS_LLVM_LLVM_PIC_LLVM_LIB_TARGET_PICMID_PICMIDFRAMEINDEXCONVERSION_H_

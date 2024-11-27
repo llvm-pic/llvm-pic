@@ -14,3 +14,16 @@ class PICMidPseudo : Instruction {
 class PICMidCallFramePseudo : PICMidPseudo {
     
 }
+
+def MOVFromDataMemory : PICMidPseudo {
+    let mayLoad = true;
+    let isPseudo = true;
+    let isCodeGenOnly = true;
+}
+
+def MOVToDataMemory : PICMidPseudo {
+    let hasSideEffects = true;
+    let mayStore = true;
+    let isPseudo = true;
+    let isCodeGenOnly = true;
+}

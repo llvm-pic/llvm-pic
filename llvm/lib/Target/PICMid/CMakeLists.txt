@@ -44,6 +44,7 @@ add_llvm_target(PICMidCodeGen
 #   PICMidPostRAScavenging.cpp
   GISel/PICMidRegisterBankInfo.cpp
   PICMidRegisterInfo.cpp
+  PICMidFrameIndexConversion.cpp
 #   PICMidStaticStackAlloc.cpp
   PICMidSubtarget.cpp
   PICMidTargetLowering.cpp
