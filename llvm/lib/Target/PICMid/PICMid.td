@@ -7,6 +7,8 @@ include "PICMidRegisterInfo.td"
 include "PICMidRegisterBanks.td"
 include "PICMidInstrInfo.td"
 
+include "PICMidCombine.td"
+
 
 def PICMidInstrInfo : InstrInfo {
     let guessInstructionProperties = 0;

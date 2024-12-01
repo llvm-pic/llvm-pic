@@ -17,13 +17,14 @@ class PICMidCallFramePseudo : PICMidPseudo {
 
 def MOVFromDataMemory : PICMidPseudo {
     let mayLoad = true;
-    let isPseudo = true;
-    let isCodeGenOnly = true;
 }
 
 def MOVToDataMemory : PICMidPseudo {
     let hasSideEffects = true;
     let mayStore = true;
-    let isPseudo = true;
-    let isCodeGenOnly = true;
+}
+
+def MOVFromDataMemory_Indirect : PICMidPseudo {
+    let OutOperandList = (outs INDFc:$dst);
+    let InOperandList = (ins );
 }

@@ -31,6 +31,9 @@ def STATUS : PICMidReg<3, "STATUS"> {
 
 // Pseudo Registers
 
+// Pseudo register for indirect addressing
+def INDF : PICMidReg<0x100, "INDF">;
+
 defvar ImagRegsAddrOffset = 0x70;
 defvar MaxImagRegs = 16;
 
@@ -56,4 +59,5 @@ def PDc : PICMidReg1Class<(add PD)>;
 def TOc : PICMidReg1Class<(add TO)>;
 def STATUSc : PICMidReg8Class<(add STATUS)>;
 
+def INDFc : PICMidReg8Class<(add INDF)>;
 def Imag : PICMidReg8Class<(sequence "R%u", 0, !add(MaxImagRegs, -1))>;
