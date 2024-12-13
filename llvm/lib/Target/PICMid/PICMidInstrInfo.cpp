@@ -12,7 +12,7 @@ using namespace llvm;
 static bool isTargetCopy(MachineInstr &MI) {
   switch (MI.getOpcode()) {
   case PICMid::G_MOVF_W:
-  case PICMid::G_MOVWF:
+  case PICMid::G_MOVWF_Any:
     return true;
   default:
     return false;
@@ -92,9 +92,11 @@ void llvm::PICMidInstrInfo::copyPhysRegImpl(MachineIRBuilder &Builder,
   };
 
   if (AreClasses(PICMid::ImagRegClass, PICMid::ImagRegClass)) {
-    Builder.buildInstr(PICMid::G_MOVWF).addDef(PICMid::R8).addUse(PICMid::W);
+    Builder.buildInstr(PICMid::G_MOVWF_Imag)
+        .addDef(PICMid::R8)
+        .addUse(PICMid::W);
     Builder.buildInstr(PICMid::G_MOVF_W).addDef(PICMid::W).addUse(SrcReg);
-    Builder.buildInstr(PICMid::G_MOVWF).addDef(DestReg).addUse(PICMid::W);
+    Builder.buildInstr(PICMid::G_MOVWF_Imag).addDef(DestReg).addUse(PICMid::W);
     Builder.buildInstr(PICMid::G_MOVF_W).addDef(PICMid::W).addUse(PICMid::R8);
     // No need to do anything
     return;
@@ -106,7 +108,7 @@ void llvm::PICMidInstrInfo::copyPhysRegImpl(MachineIRBuilder &Builder,
   }
 
   if (AreClasses(PICMid::ImagRegClass, PICMid::WcRegClass)) {
-    Builder.buildInstr(PICMid::G_MOVWF).addDef(DestReg).addUse(SrcReg);
+    Builder.buildInstr(PICMid::G_MOVWF_Imag).addDef(DestReg).addUse(SrcReg);
     return;
   }
 

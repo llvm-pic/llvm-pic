@@ -39,7 +39,7 @@ static StringRef getCPU(StringRef CPU) {
   return (CPU.empty() || CPU == "generic") ? "pic16f88x" : CPU;
 }
 
-static const char *PICMidDataLayout = "E-p:9:8-i8:8";
+static const char *PICMidDataLayout = "E-p:8:8-i8:8";
 
 PICMidTargetMachine::PICMidTargetMachine(const Target &T, const Triple &TT,
                                          StringRef CPU, StringRef FS,
@@ -101,6 +101,9 @@ bool PICMidPassConfig::addIRTranslator() {
 }
 
 void PICMidPassConfig::addPreLegalizeMachineIR() {
+  if (getOptLevel() == CodeGenOptLevel::None) {
+    return;
+  }
   addPass(createPICMidFrameIndexConversion());
 }
 

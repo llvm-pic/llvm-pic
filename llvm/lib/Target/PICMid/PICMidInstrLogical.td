@@ -12,6 +12,9 @@
 // Inspired by LLVM-MOS instructions are normalized to reduce copy and pasting
 // of instruction patterns.
 //
+// See llvm/include/llvm/Target/TargetSelectionDAG.td for list of instructions and
+// nodes available inside patterns.
+//
 // FIXME: Although for our use case, normalization does not offer any benefits
 //        because PIC's instruction set is simple. Perhaps its better to get
 //        rid of this file.
@@ -204,14 +207,25 @@ class PICMidClearF<RegisterClass rc> : PICMidLogicalInstr {
 }
 
 def G_CLRF : PICMidClearF<Imag>, PseudoInstExpansion<(CLRF addr7:$f)>; // TODO: Figure out how to do this
+def G_CLRF_Any : PICMidLogicalInstr, PseudoInstExpansion<(CLRF addr7:$f)> {
+    dag InOperandList = (ins addr7:$f);
+    let hasSideEffects = true;
+    let mayStore = true;
+}
 def G_MOVLW : PICMidLogicalInstr, PseudoInstExpansion<(MOVLW imm8:$k)> {
     dag InOperandList = (ins imm8:$k);
     dag OutOperandList = (outs Wc:$dst);
 }
 def G_MOVF_W : PICMidUnaryInstrResultToW<Imag>, PseudoInstExpansion<(MOVF addr7:$f, (imm1 0))>;
-def G_MOVWF : PICMidLogicalInstr, PseudoInstExpansion<(MOVWF addr7:$f)> {
+def G_MOVWF_Imag : PICMidLogicalInstr, PseudoInstExpansion<(MOVWF addr7:$f)> {
     dag InOperandList = (ins Wc:$w);
     dag OutOperandList = (outs Imag:$f);
+}
+def G_MOVWF_Any : PICMidLogicalInstr, PseudoInstExpansion<(MOVWF addr7:$f)> {
+    dag InOperandList = (ins Wc:$w, addr7:$f);
+    dag OutOperandList = (outs);
+    let hasSideEffects = true;
+    let mayStore = true;
 }
 
 // Integer Comparison
@@ -226,5 +240,7 @@ def G_ICMP_LW : PICMidBinaryInstrWithLiteral<imm8>, PseudoInstExpansion<(SUBLW i
 def G_ICMP_W : PICMidBinaryInstrResultToW<Imag>, PseudoInstExpansion<(SUBWF addr7:$f, (imm1 0))>;
 
 
-def : Pat<(store (i8 0), Imag:$r), (G_CLRF Imag:$r)>;
+def : Pat<(store (i8 0), frameindex:$r), (G_CLRF_Any iPTR:$r)>;
 def : Pat<(i8 imm:$k), (G_MOVLW imm:$k)>;
+// def : Pat<(store (i8 imm:$val), (iPTR frameindex:$fi)), (G_MOVWF_Any (G_MOVLW imm:$val), frameindex:$fi)>;
+// def : Pat<(iPTR frameindex:$fi), (G_MOVLW $fi)>;

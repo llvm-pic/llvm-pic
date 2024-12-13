@@ -131,9 +131,9 @@ bool PICMidInstructionSelector::select(MachineInstr &I) {
   }
 
   switch (I.getOpcode()) {
-  case PICMid::G_FRAME_INDEX:
-    return selectFrameIndex(I);
-    // TODO other instructions
+    //   case PICMid::G_FRAME_INDEX:
+    //     return selectFrameIndex(I);
+    //     // TODO other instructions
   }
 
   if (selectImpl(I, *CoverageInfo)) {
@@ -190,7 +190,7 @@ bool PICMidInstructionSelector::selectLoadStore(MachineInstr &I) const {
     Opcode = PICMid::G_MOVF_W;
     break;
   case PICMid::G_STORE:
-    Opcode = PICMid::G_MOVWF;
+    Opcode = PICMid::G_MOVWF_Any;
     break;
   }
   Builder.buildInstr(Opcode).addUse(Arg1).addUse(Arg2);

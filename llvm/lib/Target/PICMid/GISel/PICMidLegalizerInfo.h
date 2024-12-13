@@ -13,7 +13,7 @@ namespace llvm {
 class PICMidLegalizerInfo : public LegalizerInfo {
   LLT S1 = LLT::scalar(1);
   LLT S8 = LLT::scalar(8);
-  LLT P = LLT::pointer(0, 9);
+  LLT P = LLT::pointer(0, 8);
 
 public:
   PICMidLegalizerInfo();
